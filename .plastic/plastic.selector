@@ -1,0 +1,4 @@
+repository "Stamp The Card/Stamp The Card@18968280591013@cloud"
+  path "/"
+    br "/main"
+    co "/main"
