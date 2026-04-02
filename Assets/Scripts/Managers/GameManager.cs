@@ -1,18 +1,23 @@
+using Fusion;
+using Unity.Mathematics;
 using UnityEngine;
 
-public class GameManager : Singleton<GameManager>
+public class GameManager : NetworkBehaviour
 {
     #region Game State
     public enum GameState
     {
         WaitingForPlayers,
-        Dealing,
-        Playing,
-        CheckResults,
-        Ending
+        DrawPhase,
+        MainPhase,
+        CalculatePhase,
+        EndPhase
     }
     #endregion
 
+
+    [Networked]
+    public GameState CurrentGameState { get; set; }
     
 
 }

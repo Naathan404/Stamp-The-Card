@@ -4,6 +4,7 @@ using Fusion.Sockets;
 using System.Collections.Generic;
 using System;
 using UnityEngine.SceneManagement;
+using System.Linq;
 
 [RequireComponent(typeof(NetworkRunner))]
 public class Launcher : MonoBehaviour, INetworkRunnerCallbacks
@@ -13,28 +14,18 @@ public class Launcher : MonoBehaviour, INetworkRunnerCallbacks
     [SerializeField] private NetworkPrefabRef _playerPrefab;
     private Dictionary<PlayerRef, NetworkObject> _spawnedCharacterDic = new Dictionary<PlayerRef, NetworkObject>();
 
-
     public async void StartGame(GameMode mode, string roomName)
     {
         _runner = GetComponent<NetworkRunner>();
         // Create the Fusion runner and let it know that we will be providing user input
         _runner.ProvideInput = true;
 
-        // Create the NetworkSceneInfo from the current scene
-        //var scene = SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex);
-        var scene = SceneRef.FromIndex(1);
-        var sceneInfo = new NetworkSceneInfo();
-        if(scene.IsValid)
-        {
-            sceneInfo.AddSceneRef(scene, LoadSceneMode.Single);
-        }
-
         // Start or join (depends on gamemode) a session with a specific name
         await _runner.StartGame(new StartGameArgs
         {
            GameMode = mode,
-           Scene = scene,
            SessionName = roomName,
+           PlayerCount = 2,
            SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>()
         });
     }
@@ -102,9 +93,27 @@ public class Launcher : MonoBehaviour, INetworkRunnerCallbacks
         // nếu máy đang chạy là server
         if(runner.IsServer)
         {
-            Vector3 spawnPosition = new Vector3((player.RawEncoded % runner.Config.Simulation.PlayerCount) * 3, 1, 0);
-            NetworkObject networkPlayerObject = runner.Spawn(_playerPrefab, spawnPosition, Quaternion.identity, player);
-            _spawnedCharacterDic.Add(player, networkPlayerObject);
+            // NetworkObject networkPlayerObject = runner.Spawn(_playerPrefab, Vector2.zero, Quaternion.identity, player);
+            // _spawnedCharacterDic.Add(player, networkPlayerObject);
+            // if(runner.ActivePlayers.Count() == 2)
+            // {
+            //     runner.LoadScene(SceneRef.FromIndex(1), LoadSceneMode.Single);
+            // }
+            if (SceneManager.GetActiveScene().buildIndex == 0)
+            {
+                // KHÔNG Spawn ở đây. Chỉ đếm xem đủ 2 người chưa để chuyển Scene
+                if(runner.ActivePlayers.Count() == 2)
+                {
+                    Debug.Log("Đã đủ 2 người! Đang tải Scene GamePlay...");
+                    runner.LoadScene(SceneRef.FromIndex(1), LoadSceneMode.Single);
+                }
+            }
+            // Nếu người chơi bị rớt mạng và vào lại khi game đang diễn ra (Scene 1)
+            else if (SceneManager.GetActiveScene().buildIndex == 1)
+            {
+                NetworkObject networkPlayerObject = runner.Spawn(_playerPrefab, Vector2.zero, Quaternion.identity, player);
+                _spawnedCharacterDic.Add(player, networkPlayerObject);
+            }            
         }
     }
 
@@ -128,6 +137,21 @@ public class Launcher : MonoBehaviour, INetworkRunnerCallbacks
 
     void INetworkRunnerCallbacks.OnSceneLoadDone(NetworkRunner runner)
     {
+        if (runner.IsServer)
+        {
+            // Khi Host load xong Scene 1 (GamePlay), bàn chơi đã sẵn sàng
+            if (SceneManager.GetActiveScene().buildIndex == 1)
+            {
+                Debug.Log("Scene GamePlay đã tải xong. Bắt đầu Spawn người chơi...");
+                
+                // Duyệt qua tất cả những người đang có trong phòng và Spawn nhân vật cho họ
+                foreach (var p in runner.ActivePlayers)
+                {
+                    NetworkObject networkPlayerObject = runner.Spawn(_playerPrefab, Vector2.zero, Quaternion.identity, p);
+                    _spawnedCharacterDic.Add(p, networkPlayerObject);
+                }
+            }
+        }        
     }
 
     void INetworkRunnerCallbacks.OnSceneLoadStart(NetworkRunner runner)
