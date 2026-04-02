@@ -8,7 +8,7 @@ public class Singleton<T> : NetworkBehaviour where T : class
     {
         if(Instance != null && Instance != this as T)
         {
-           Destroy(gameObject);
+           Destroy(this.gameObject);
            return; 
         }
         Instance = this as T;
