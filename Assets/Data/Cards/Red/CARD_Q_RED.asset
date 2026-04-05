@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a32fdd2053bee3347b3025780090339f, type: 3}
+  m_Name: CARD_Q_RED
+  m_EditorClassIdentifier: Assembly-CSharp::CardData
+  _cardType: 12
+  _cardColor: 0
+  _baseScore: 10
+  Artwork: {fileID: 3234541107871089733, guid: 740e66343a99c90479248edf6633bc21, type: 3}

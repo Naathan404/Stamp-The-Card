@@ -1,3 +1,5 @@
+using System.Linq;
+using System.Net.Security;
 using Fusion;
 using UnityEngine;
 
@@ -6,17 +8,21 @@ public class GameStateManager : NetworkSingleton<GameStateManager>
     #region Game Phase Enum
     public enum GamePhase
     {
+        Waiting,
         DrawPhase,
         MainPhase,
         CalculatePhase,
-        EndPhase
+        EndPhase,
+        GameOver
     }
     #endregion
 
 
 
-    [Networked] public GamePhase CurrentGameState { get; set; } = GamePhase.DrawPhase;
+    [Networked] public GamePhase CurrentGameState { get; set; } = GamePhase.Waiting;
     [Networked] public bool IsHostPriority { get; set; } = true;
+    [Networked] public NetworkBool HasStartedFirstTurn { get; set; } = false;
+    [Networked] private TickTimer _startDelayTimer { get; set; }
     private ChangeDetector _changeDetector;
 
     public override void Spawned()
@@ -30,19 +36,40 @@ public class GameStateManager : NetworkSingleton<GameStateManager>
         switch(n)
         {
             case 1:
-                newPhase = GamePhase.MainPhase;
+                newPhase = GamePhase.DrawPhase;
                 break;
             case 2:
-                newPhase = GamePhase.CalculatePhase;
+                newPhase = GamePhase.MainPhase;
                 break;
             case 3:
+                newPhase = GamePhase.CalculatePhase;
+                break;
+            case 4:
                 newPhase = GamePhase.EndPhase;
                 break;
             default:
-                newPhase = GamePhase.DrawPhase;
+                newPhase = GamePhase.Waiting;
                 break;
         }
         ChangePhase(newPhase);
+    }
+
+    public override void FixedUpdateNetwork()
+    {
+        if (!Object.HasStateAuthority) return;
+        if (HasStartedFirstTurn) return;
+
+        if (Runner.ActivePlayers.Count() == 2 && !_startDelayTimer.IsRunning)
+        {
+            _startDelayTimer = TickTimer.CreateFromSeconds(Runner, 1.5f);
+        }
+
+        if (_startDelayTimer.Expired(Runner))
+        {
+            _startDelayTimer = TickTimer.None; 
+            HasStartedFirstTurn = true; 
+            ChangePhase(GamePhase.DrawPhase);
+        }
     }
 
     /// <summary>

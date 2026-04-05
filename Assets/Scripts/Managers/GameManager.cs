@@ -1,9 +1,15 @@
+using System.Linq;
 using Fusion;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SocialPlatforms.GameCenter;
 
 public class GameManager : NetworkSingleton<GameManager>
 {
+
+    [Header("DATABASE (Từ điển gốc - Không xáo trộn)")]
+    public CardData[] CardDatabase = new CardData[GameConstants.MAINDECK_SIZE];    
+
     [Header("MAIN DECK")]
     public int[] MainDeck = new int[GameConstants.MAINDECK_SIZE];
     public int CurrentCardIndexFromMainDeck = 0;
@@ -15,6 +21,14 @@ public class GameManager : NetworkSingleton<GameManager>
     // Opponent hand 
     [Networked, Capacity(GameConstants.PLAYER_HAND_SIZE)] 
     private NetworkArray<int> ClientHand => default;
+
+    [Header("Change Detector")]
+    private ChangeDetector _changeDetector;
+
+    public override void Spawned()
+    {
+        _changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
+    }
 
     
     public void ExecuteDrawPhase()
@@ -42,6 +56,35 @@ public class GameManager : NetworkSingleton<GameManager>
     {
         Debug.Log("thực thi endphase");
     }
+
+    #region RENDER
+    public override void Render()
+    {
+        foreach(var change in _changeDetector.DetectChanges(this))
+        {
+            switch (change)
+            {
+                case nameof(HostHand):
+                    TriggerDealAnimation(HostHand, true);
+                    break;
+                case nameof(ClientHand):
+                    TriggerDealAnimation(ClientHand, false);
+                    break;
+            }
+        }
+    }
+
+    private void TriggerDealAnimation(NetworkArray<int> cardIDs, bool isHost)
+    {   
+        CardData[] cardDatas = new CardData[3];
+        for(int i = 0; i < 3; i++)
+        {
+            cardDatas[i] = CardDatabase[cardIDs[i]]; 
+        }
+        TableVisualManager.Instance.PlayDealAnimation(cardDatas, isHost);
+    }
+
+    #endregion
 
     #region Xử lý Logic
     /// <summary>
@@ -94,8 +137,8 @@ public class GameManager : NetworkSingleton<GameManager>
 
     public void DebugPlayerHand()
     {
-        Debug.Log($"HostHand: {HostHand[0]} - {HostHand[1]} - {HostHand[2]}");
-        Debug.Log($"ClientHand: {ClientHand[0]} - {ClientHand[1]} - {ClientHand[2]}");
+        Debug.Log($"Host Hand: {HostHand[0]}, {HostHand[1]}, {HostHand[2]}");
+        Debug.Log($"Client Hand: {ClientHand[0]}, {ClientHand[1]}, {ClientHand[2]}");
     }
 
     #endregion
