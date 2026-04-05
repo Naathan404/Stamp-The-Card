@@ -5,6 +5,7 @@ using UnityEngine.Rendering;
 
 public class TableManager : Singleton<TableManager>
 {
+    [Header("Seat UI")]
     public Transform BottomSeatTransform;
     public Transform TopSeatTransform;
     public TextMeshProUGUI bottomNameUI;

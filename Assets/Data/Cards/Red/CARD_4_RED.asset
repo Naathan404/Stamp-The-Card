@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a32fdd2053bee3347b3025780090339f, type: 3}
+  m_Name: CARD_4_RED
+  m_EditorClassIdentifier: Assembly-CSharp::CardData
+  _cardType: 4
+  _cardColor: 0
+  _baseScore: 4
+  Artwork: {fileID: -7854476218757073749, guid: 854b9a7a987f2ff419c0752539f616bf, type: 3}

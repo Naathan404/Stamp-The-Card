@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Stamp", menuName = "Scriptable Objects/StampData")]
+[CreateAssetMenu(fileName = "New Stamp", menuName = "Stamp The Card/Stamp Data")]
 public class StampData : ScriptableObject
 {
     
