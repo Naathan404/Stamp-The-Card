@@ -20,10 +20,13 @@ public class TableManager : Singleton<TableManager>
         if(isYourself)
         {
             playerData.gameObject.transform.position = BottomSeatTransform.position;
+            playerData.gameObject.GetComponentInChildren<SpriteRenderer>().color = Color.deepSkyBlue;
         }
         else
         {
             playerData.gameObject.transform.position = TopSeatTransform.position;
+            playerData.gameObject.GetComponentInChildren<SpriteRenderer>().color = Color.softRed;
+
         }
     }
 

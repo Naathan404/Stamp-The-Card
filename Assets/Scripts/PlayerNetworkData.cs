@@ -28,33 +28,26 @@ public class PlayerNetworkData : NetworkBehaviour
 
     private IEnumerator WaitAndAssignSeat(bool isMe)
     {
-        Debug.Log($"[1] Nhân vật {(isMe ? "Mình" : "Đối thủ")} bắt đầu đi tìm TableManager...");
         TableManager table = null;
 
         while (table == null)
         {
             table = TableManager.Instance;
-            if (table == null) table = FindObjectOfType<TableManager>();
+            if (table == null) table = FindAnyObjectByType<TableManager>();
             if (table == null) yield return null; 
         }
-
-        Debug.Log($"[2] Đã tìm thấy TableManager! Chuẩn bị gọi hàm SetSeatPosition...");
         
-        // Dùng Try-Catch để bắt lỗi nếu có thứ gì đó bị Null bên trong TableManager
         try 
         {
             table.SetSeatPosition(this, isMe);
-            Debug.Log($"[3] Gọi SetSeatPosition thành công! Đã ngồi vào ghế.");
 
             if (!string.IsNullOrEmpty(Username.ToString()))
             {
                 table.UpdateNameUI(this, isMe);
-                Debug.Log($"[4] Gọi UpdateNameUI thành công!");
             }
         }
         catch (System.Exception e)
         {
-            // Nếu có lỗi đỏ, nó sẽ in rõ ra đây thay vì âm thầm làm kẹt nhân vật
             Debug.LogError($"[BÁO ĐỘNG] Crash tại TableManager: {e.Message}\n{e.StackTrace}");
         }
     }
