@@ -7,7 +7,7 @@ using UnityEngine.SocialPlatforms.GameCenter;
 public class GameManager : NetworkSingleton<GameManager>
 {
 
-    [Header("DATABASE (Từ điển gốc - Không xáo trộn)")]
+    [Header("CARD DATABASE")]
     public CardData[] CardDatabase = new CardData[GameConstants.MAINDECK_SIZE];    
 
     [Header("MAIN DECK")]
@@ -30,7 +30,7 @@ public class GameManager : NetworkSingleton<GameManager>
         _changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
     }
 
-    
+    #region EXECUTING
     public void ExecuteDrawPhase()
     {
         Debug.Log("thực thi draw phase");
@@ -86,7 +86,7 @@ public class GameManager : NetworkSingleton<GameManager>
 
     #endregion
 
-    #region Xử lý Logic
+    #region DRAW PHASE
     /// <summary>
     /// Shuffle the main dekc
     /// </summary>
@@ -116,7 +116,7 @@ public class GameManager : NetworkSingleton<GameManager>
 
 
     /// <summary>
-    /// deal 3 card for each player
+    /// deal 3 cards for each player
     /// </summary>
     public void DealCards()
     {
@@ -134,6 +134,11 @@ public class GameManager : NetworkSingleton<GameManager>
             CurrentCardIndexFromMainDeck++;
         }
     }
+    #endregion
+
+    #region MAIN PHASE
+    
+    #endregion
 
     public void DebugPlayerHand()
     {
