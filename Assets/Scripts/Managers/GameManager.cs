@@ -22,6 +22,11 @@ public class GameManager : NetworkSingleton<GameManager>
     [Networked, Capacity(GameConstants.PLAYER_HAND_SIZE)] 
     private NetworkArray<int> ClientHand => default;
 
+    [Header("MAIN PHASE STATS")]
+    [Networked] public NetworkBool IsHostDone { get; set; }
+    [Networked] public NetworkBool IsClientDone { get; set; }
+
+
     [Header("Change Detector")]
     private ChangeDetector _changeDetector;
 
@@ -43,6 +48,7 @@ public class GameManager : NetworkSingleton<GameManager>
 
     public void ExecuteMainPhase()
     {
+        IsHostDone = IsClientDone = false;
         Debug.Log("thực thi main phase");
     }
 
@@ -137,6 +143,30 @@ public class GameManager : NetworkSingleton<GameManager>
     #endregion
 
     #region MAIN PHASE
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    public void RPC_PlayStamp(int slotIndex, int stampID, bool isHostAction)
+    {
+        
+        // dummy
+        // - kiểm tra slotIndex đã đầy stamp chưa
+        // - lưu stampId vào mảng stamp của slot index
+        // - cập nhật hình ảnh stamp vào slot index
+    }
+
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    public void RPC_EndPhase(bool isHostAction)
+    {
+        if(isHostAction)
+        {
+            IsHostDone = true;
+            Debug.Log("Host bấm end phase");
+        }
+        else
+        {
+            IsClientDone = true;
+            Debug.Log("Client bấm end phase");
+        }
+    }
     
     #endregion
 
