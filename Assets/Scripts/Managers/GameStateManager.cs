@@ -31,6 +31,9 @@ public class GameStateManager : NetworkSingleton<GameStateManager>
     [Header("UI")]
     [SerializeField] private GameObject _timerZone;
     [SerializeField] private TextMeshProUGUI _timer;
+    [SerializeField] private GameObject _endPhaseButton;
+
+    [Header("Detector")]
     private ChangeDetector _changeDetector;
 
     public override void Spawned()
@@ -85,7 +88,8 @@ public class GameStateManager : NetworkSingleton<GameStateManager>
         }
         else if(CurrentGameState == GamePhase.MainPhase)
         {
-            if(_mainPhaseTimer.Expired(Runner))
+            bool isBothPlayerDone = GameManager.Instance.IsHostDone && GameManager.Instance.IsClientDone;
+            if(_mainPhaseTimer.Expired(Runner) || isBothPlayerDone)
             {
                 _mainPhaseTimer = TickTimer.None;
                 ChangePhase(GamePhase.CalculatePhase);
@@ -129,6 +133,22 @@ public class GameStateManager : NetworkSingleton<GameStateManager>
         }
     }
 
+    public void OnEndPhase()
+    {
+        if(CurrentGameState != GamePhase.MainPhase) return;
+        _endPhaseButton.transform.DOScaleY(0f, 0.4f).SetEase(Ease.OutQuad).OnComplete(() =>
+        {
+           _endPhaseButton.SetActive(false); 
+        });
+        if(Runner.IsServer)
+        {
+            GameManager.Instance.RPC_EndPhase(true);
+        }
+        else
+        {
+            GameManager.Instance.RPC_EndPhase(false);
+        }
+    }
 
     public override void Render()
     {
@@ -138,26 +158,34 @@ public class GameStateManager : NetworkSingleton<GameStateManager>
             {
                 case nameof(CurrentGameState):
                     Debug.Log($"change to phase: [{CurrentGameState.ToString()}]");
-                    if(CurrentGameState == GamePhase.MainPhase)
+                    if(CurrentGameState == GamePhase.DrawPhase)
                     {
-                        _timerZone.gameObject.SetActive(true);
-                        _timerZone.transform.DOScaleY(1f, 0.4f).SetEase(Ease.OutQuart);
-                    }
-                    if(CurrentGameState == GamePhase.CalculatePhase)
-                    {
+                        // ẩn đồng hồ bấm giờ
                         _timerZone.transform.DOScaleY(0f, 0.4f).OnComplete(() =>
                         {
                             _timer.text = "0";
                             _timerZone.gameObject.SetActive(false); 
                         });
+                        _endPhaseButton.SetActive(false);                        
                     }
-                    if(CurrentGameState == GamePhase.DrawPhase)
+                    else if(CurrentGameState == GamePhase.MainPhase)
                     {
+                        // hiện đồng hồ bấm giờ
+                        _timerZone.gameObject.SetActive(true);
+                        _timerZone.transform.DOScaleY(1f, 0.4f).SetEase(Ease.OutQuad);
+
+                        // hiện nút end phase
+                        _endPhaseButton.SetActive(true);
+                        _endPhaseButton.transform.DOScaleY(1f, 0.4f).SetEase(Ease.OutQuad);
+                    }
+                    else if(CurrentGameState == GamePhase.CalculatePhase)
+                    {
+                        // ẩn đồng hồ bấm giờ
                         _timerZone.transform.DOScaleY(0f, 0.4f).OnComplete(() =>
                         {
                             _timer.text = "0";
                             _timerZone.gameObject.SetActive(false); 
-                        });                        
+                        });
                     }
                     // call UI, sound, bla bla, etc
                     break;
