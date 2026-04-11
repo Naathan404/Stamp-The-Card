@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Fusion;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using WebSocketSharp;
 
-public class MatchFindUI : Singleton<MatchFindUI>
+public class MatchFindUI : MonoBehaviour
 {
     [Header("LAUNCHER")]
     [SerializeField] private Launcher _launcher;
@@ -17,6 +18,19 @@ public class MatchFindUI : Singleton<MatchFindUI>
 
     [Header("GENERAL ELEMENTS")]
     [SerializeField] private TMP_InputField _usernameTMP;
+
+    public static MatchFindUI Instance;
+    private void Awake()
+    {
+        if(Instance != null && Instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
 
     // Buttons
     public void OnQuickPlayButtonClicked()
@@ -49,4 +63,9 @@ public class MatchFindUI : Singleton<MatchFindUI>
         LocalPlayerData.Username = currentName;
         _launcher.StartGame(GameMode.AutoHostOrClient, roomName); 
     }     
+
+    public void LoadScene(string sceneName)
+    {
+        SceneTransitionManager.Instance.LoadSceneAsync(sceneName);
+    }
 }
