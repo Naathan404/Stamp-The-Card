@@ -29,7 +29,8 @@ public class AudioManager : Singleton<AudioManager>
 
     [Header("UI Interact")]
     public AudioClip ButtonClick;
-    public AudioClip Swoosh;
+    public AudioClip SceenTransition;
+    public AudioClip Hover;
 
     public void PlaySFX(AudioClip sfx, bool randomPitch = false, bool isOverrided = false, float volume = 1f)
     {
