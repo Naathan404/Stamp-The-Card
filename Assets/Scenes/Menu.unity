@@ -1407,7 +1407,7 @@ MonoBehaviour:
   BattleBgMusic: {fileID: 0}
   ButtonClick: {fileID: 8300000, guid: acf423aa14f476c4584351539610a7d0, type: 3}
   SceenTransition: {fileID: 8300000, guid: 734113ab3e1233545b85beff4dac0164, type: 3}
-  Hover: {fileID: 8300000, guid: 080d6de7ebf01f649924b35f3ca102f7, type: 3}
+  Hover: {fileID: 8300000, guid: 1525966fe67dbb44e8890a8b14899e61, type: 3}
 --- !u!1 &1290169478
 GameObject:
   m_ObjectHideFlags: 0
