@@ -31,13 +31,14 @@ public class AudioManager : Singleton<AudioManager>
     public AudioClip ButtonClick;
     public AudioClip SceenTransition;
     public AudioClip Hover;
+    public AudioClip InputFieldClick;
 
     public void PlaySFX(AudioClip sfx, bool randomPitch = false, bool isOverrided = false, float volume = 1f)
     {
         SFX.volume = volume;
         if(randomPitch)
         {
-            SFX.pitch = Random.Range(0.9f, 1.1f);
+            SFX.pitch = Random.Range(0.8f, 1.2f);
         }
         else
         {
