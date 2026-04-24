@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Runtime.CompilerServices;
 using DG.Tweening;
 using TMPro;
 using Unity.VisualScripting;
@@ -7,6 +9,7 @@ using UnityEngine.UI;
 
 public class LoginUI : MonoBehaviour
 {
+    [Header("Login Panel Elements")]
     [SerializeField] private Button _loginButton;
     [SerializeField] private Button _signUpButton;
     [SerializeField] private Button _googleButton;
@@ -14,6 +17,14 @@ public class LoginUI : MonoBehaviour
     [SerializeField] private TMP_InputField _usernameInput;
     [SerializeField] private TMP_InputField _passwordInput;
 
+    [Header("Notification Panel Elements")]
+    [SerializeField] private GameObject _notificationPanel;
+    [SerializeField] private TMP_Text _notificationText;
+    private Vector2 _notificationOriginalScale;
+    [SerializeField] private float _notificationDuration = 2f;
+    [SerializeField] private float _popUpDuration = 0.5f;
+
+    [Header("Validation Settings")]
     [SerializeField] private int _maxUsernameLength = 12;
     [SerializeField] private int _minPasswordLength = 6;
     private string _currentUsername = string.Empty;
@@ -30,6 +41,9 @@ public class LoginUI : MonoBehaviour
 
         _originalUsernameInputPosition = _usernameInput.transform.position;
         _originalPasswordInputPosition = _passwordInput.transform.position;
+
+        _notificationOriginalScale = _notificationPanel.transform.localScale;
+        _notificationPanel.SetActive(false);
     }
 
     private void OnEnable()
@@ -154,6 +168,15 @@ public class LoginUI : MonoBehaviour
             return;
         }
 
+        if(newValue.Contains(" "))
+        {
+            _usernameInput.transform.DOShakePosition(0.5f, new Vector3(10f, 0, 0), 20, 90).OnComplete(() =>
+            {
+                _usernameInput.transform.position = _originalUsernameInputPosition;
+            });
+            _usernameInput.text = _currentUsername; // Revert to the last valid username
+            return;
+        }
         _currentUsername = _usernameInput.text;
     }
 
@@ -169,7 +192,41 @@ public class LoginUI : MonoBehaviour
             _passwordInput.text = _currentPassword; // Revert to the last valid password
             return;
         }
+        
+        if(_passwordInput.text.Contains(" "))
+        {
+            _passwordInput.transform.DOShakePosition(0.5f, new Vector3(10f, 0, 0), 20, 90).OnComplete(() =>
+            {
+                _passwordInput.transform.position = _originalPasswordInputPosition;
+            });
+            _passwordInput.text = _currentPassword; // Revert to the last valid password
+            return;
+        }
         _currentPassword = _passwordInput.text;
+    }
+
+public void ShowNotification(string message)
+    {
+        _notificationPanel.transform.DOKill(); 
+        StopAllCoroutines(); 
+
+        _notificationPanel.SetActive(true);
+        _notificationPanel.transform.localScale = Vector2.zero; 
+        StartCoroutine(HandleNotification(message, _notificationDuration));
+    }
+
+    private IEnumerator HandleNotification(string message, float duration)
+    {
+        _notificationText.text = message;
+        _notificationPanel.transform.DOScale(_notificationOriginalScale, _popUpDuration).SetEase(Ease.OutBack);
+        
+        yield return new WaitForSeconds(_popUpDuration);
+        yield return new WaitForSeconds(duration);
+
+        _notificationPanel.transform.DOScale(Vector2.zero, _popUpDuration).SetEase(Ease.InBack).OnComplete(() =>
+        {
+            _notificationPanel.SetActive(false);
+        }); 
     }
 
     public string GetCurrentUsername()

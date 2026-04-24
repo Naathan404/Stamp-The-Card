@@ -38,6 +38,7 @@ public class AuthManager : Singleton<AuthManager>
         {
             Username = username,
             Password = password,
+            Email = username + "@example.com", // create a dummy email to scam playfab
             RequireBothUsernameAndEmail = false
         };
 
@@ -49,6 +50,7 @@ public class AuthManager : Singleton<AuthManager>
     public void LoginWithGoogle()
     {
         Debug.Log("This feature is currently unavailable.");
+        _loginUI.ShowNotification("This feature is currently unavailable.");
 
         // var request = new LoginWithGoogleAccountRequest
         // {
@@ -59,11 +61,11 @@ public class AuthManager : Singleton<AuthManager>
         // // api call to login with google
         // PlayFabClientAPI.LoginWithGoogleAccount(request, OnLoginSuccess, OnError);
     }
-
     // Login with Facebook
     public void LoginWithFacebook()
     {
         Debug.Log("This feature is currently unavailable.");
+        _loginUI.ShowNotification("This feature is currently unavailable.");
     }
 
     private void OnLoginSuccess(LoginResult result)
@@ -79,6 +81,7 @@ public class AuthManager : Singleton<AuthManager>
     private void OnSignUpSuccess(RegisterPlayFabUserResult result)
     {
         Debug.Log("<color=green>Sign up API call successful! Welcome, " + result.PlayFabId + "</color>");
+        _loginUI.ShowNotification("Sign up successful! Please log in with your new account.");
     }
 
     private void OnError(PlayFabError error)
@@ -86,13 +89,25 @@ public class AuthManager : Singleton<AuthManager>
         Debug.Log("API call failed!");
 
         if (error.Error == PlayFabErrorCode.AccountNotFound)
-            Debug.LogAssertion("Tài khoản không tồn tại!");
+        {
+            Debug.LogWarning("Tài khoản không tồn tại!");
+            _loginUI.ShowNotification("Account not found!");
+        }
         else if (error.Error == PlayFabErrorCode.InvalidUsernameOrPassword)
-            Debug.LogAssertion("Sai mật khẩu!");
+        {
+            Debug.LogWarning("Sai mật khẩu!");
+            _loginUI.ShowNotification("Invalid username or password!");
+        }
         else if (error.Error == PlayFabErrorCode.UsernameNotAvailable)
-            Debug.LogAssertion("Tên tài khoản này đã có người xài!");
+        {
+            Debug.LogWarning("Tên tài khoản này đã có người xài!");
+            _loginUI.ShowNotification("Username is already taken!");
+        }
         else
+        {
             Debug.LogError("Lỗi kết nối: " + error.ErrorMessage);
+            _loginUI.ShowNotification("Invalid username or password!");
+        }
 
         Debug.LogError(error.GenerateErrorReport());
     }
