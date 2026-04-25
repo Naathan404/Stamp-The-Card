@@ -32,6 +32,7 @@ public class SceneTransitionManager : Singleton<SceneTransitionManager>
 
     private IEnumerator HandleLoadSceneAsync(string sceneName)
     {
+        AudioManager.Instance.PlaySFX(AudioManager.Instance.SceenTransition, true, false, 0.5f);
         _isTransitioning = true;
         _canvasGroup.blocksRaycasts = true;
         yield return _panel.transform.DOMoveX(posB.transform.position.x, _duration).SetEase(Ease.InOutQuint).WaitForCompletion();

@@ -17,6 +17,7 @@ public class MenuObjectHover : MonoBehaviour, IPointerEnterHandler, IPointerExit
     public void OnPointerEnter(PointerEventData eventData)
     {
         transform.DOScale(orginalScale * scaleAmount, timeScaleChange).SetEase(Ease.OutBack);
+        AudioManager.Instance.PlaySFX(AudioManager.Instance.Hover, true, true);
     }
 
     public void OnPointerExit(PointerEventData eventData)

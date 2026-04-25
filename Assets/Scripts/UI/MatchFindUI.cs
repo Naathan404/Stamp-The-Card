@@ -66,6 +66,7 @@ public class MatchFindUI : MonoBehaviour
 
     public void LoadScene(string sceneName)
     {
+        AudioManager.Instance.PlaySFX(AudioManager.Instance.ButtonClick, true);
         SceneTransitionManager.Instance.LoadSceneAsync(sceneName);
     }
 }
