@@ -562,7 +562,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0.3584904, b: 0.0016381328, a: 1}
+  m_Color: {r: 0, g: 0.041004602, b: 0.21293801, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1408,6 +1408,7 @@ MonoBehaviour:
   ButtonClick: {fileID: 8300000, guid: acf423aa14f476c4584351539610a7d0, type: 3}
   SceenTransition: {fileID: 8300000, guid: 734113ab3e1233545b85beff4dac0164, type: 3}
   Hover: {fileID: 8300000, guid: 1525966fe67dbb44e8890a8b14899e61, type: 3}
+  InputFieldClick: {fileID: 0}
 --- !u!1 &1290169478
 GameObject:
   m_ObjectHideFlags: 0

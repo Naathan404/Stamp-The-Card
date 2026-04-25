@@ -106,7 +106,7 @@ public class AuthManager : Singleton<AuthManager>
         else
         {
             Debug.LogError("Lỗi kết nối: " + error.ErrorMessage);
-            _loginUI.ShowNotification("Invalid username or password!");
+            _loginUI.ShowNotification("Incorrect username or password!");
         }
 
         Debug.LogError(error.GenerateErrorReport());
