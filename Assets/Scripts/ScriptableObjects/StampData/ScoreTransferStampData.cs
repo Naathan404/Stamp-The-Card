@@ -18,10 +18,10 @@ public class ScoreTransferStampData : BaseStampData
         for (int i = 1; i < targets.Length; i++)
         {
             targetToSteal = FindTargetToCheck(targets[i], myCards, enemyCards, currentCardIndex);
-            if (targetToSteal != null && !targetToSteal.isImmuneLowerScore)
+            if (targetToSteal != null && !targetToSteal.IsImmuneLowerScore)
             {
-                targetToSteal.score -= amountToTransfer;
-                targetToReceive.score += amountToTransfer;
+                targetToSteal.Score -= amountToTransfer;
+                targetToReceive.Score += amountToTransfer;
             }
         }
     }

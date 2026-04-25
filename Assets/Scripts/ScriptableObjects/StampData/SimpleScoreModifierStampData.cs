@@ -57,9 +57,9 @@ public class SimpleScoreModifierStampData : BaseStampData
 
     protected void ApplyScoreOperator(CardSlot targetSlot, int value, ScoreOperator op)
     {
-        if (targetSlot == null || targetSlot.data == null) return;
+        if (targetSlot == null || targetSlot.Data == null) return;
 
-        if (targetSlot.isImmuneLowerScore)
+        if (targetSlot.IsImmuneLowerScore)
         {
             if (op == ScoreOperator.ADD && value < 0) return;
             if (op == ScoreOperator.MULTIPLY && value < 1) return;
@@ -68,9 +68,9 @@ public class SimpleScoreModifierStampData : BaseStampData
         switch (op)
         {
             case ScoreOperator.ADD:
-                targetSlot.score += value; break;
+                targetSlot.Score += value; break;
             case ScoreOperator.MULTIPLY:
-                targetSlot.score *= value; break;
+                targetSlot.Score *= value; break;
         }
     }
 }

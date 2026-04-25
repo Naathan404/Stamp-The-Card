@@ -20,6 +20,12 @@ public class TableVisualManager : Singleton<TableVisualManager>
     [Header("Back Card")]
     [SerializeField] private Sprite CardBackSprite;
 
+    [Header("Card Setting")]
+    [SerializeField] private Vector2 _cardDealScale = new Vector2(1.8f, 1.8f);
+    [SerializeField] private Vector3 _cardSpacing = new Vector3(1.5f, 0, 0);
+    [SerializeField] private Vector2 _cardScale = new Vector2(2.5f, 2.5f);
+
+
     [Header("Animation Settings")]
     [SerializeField] private float _animCardSlideDuration = 0.4f;
 
@@ -83,7 +89,7 @@ public class TableVisualManager : Singleton<TableVisualManager>
             slots[i].transform.localScale = Vector3.zero;
 
             // phóng bài ra
-            slots[i].transform.DOScale(new Vector2(1.8f, 1.8f), _animCardSlideDuration).SetEase(Ease.OutBack);
+            slots[i].transform.DOScale(_cardDealScale, _animCardSlideDuration).SetEase(Ease.OutBack);
             slots[i].transform.DORotate(new Vector3(0, 0, 0), _animCardSlideDuration).SetEase(Ease.OutBack);
             slots[i].transform.DOMove(targetPositions[i], _animCardSlideDuration).SetEase(Ease.OutQuad);
 
@@ -96,7 +102,7 @@ public class TableVisualManager : Singleton<TableVisualManager>
                 slots[i].sprite = cards[i].Artwork;
                 scores[i].text = cards[i].BaseScore.ToString();
                 // mở bài
-                slots[i].transform.DOScale(new Vector2(2f, 2f), 0.15f).SetEase(Ease.OutBack);
+                slots[i].transform.DOScale(_cardScale, 0.15f).SetEase(Ease.OutBack);
             });
             yield return new WaitForSeconds(0.3f); 
         }
