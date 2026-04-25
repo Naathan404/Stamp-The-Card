@@ -2292,11 +2292,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.6666667, y: 1}
   m_EdgeRadius: 0
---- !u!1 &1437913236 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7697644720409172977, guid: 414df9ded6d00b54eafb10fc4e3d1250, type: 3}
-  m_PrefabInstance: {fileID: 6968346343984139791}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1437913237 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1983429003017882146, guid: 414df9ded6d00b54eafb10fc4e3d1250, type: 3}
@@ -2307,24 +2302,6 @@ SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 2056837993609523954, guid: 414df9ded6d00b54eafb10fc4e3d1250, type: 3}
   m_PrefabInstance: {fileID: 6968346343984139791}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1437913240
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1437913236}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b195325a918645a48a48149a8f3f2d4e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CardSlot
-  data: {fileID: 0}
-  score: 0
-  stamps: []
-  isImmuneLowerScore: 0
-  lastRandomValue: 0
-  isIgnored: 0
 --- !u!1 &1484420851
 GameObject:
   m_ObjectHideFlags: 0
@@ -2895,12 +2872,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b195325a918645a48a48149a8f3f2d4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardSlot
-  data: {fileID: 0}
-  score: 0
-  stamps: []
-  isImmuneLowerScore: 0
-  lastRandomValue: 0
-  isIgnored: 0
+  Data: {fileID: 0}
+  Score: 0
+  Stamps: []
+  StampRenderers: []
+  IsImmuneLowerScore: 0
+  LastRandomValue: 0
+  IsIgnored: 0
 --- !u!1 &1848851241
 GameObject:
   m_ObjectHideFlags: 0
@@ -3372,12 +3350,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b195325a918645a48a48149a8f3f2d4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardSlot
-  data: {fileID: 0}
-  score: 0
-  stamps: []
-  isImmuneLowerScore: 0
-  lastRandomValue: 0
-  isIgnored: 0
+  Data: {fileID: 0}
+  Score: 0
+  Stamps: []
+  StampRenderers: []
+  IsImmuneLowerScore: 0
+  LastRandomValue: 0
+  IsIgnored: 0
 --- !u!1 &1978405591
 GameObject:
   m_ObjectHideFlags: 0
@@ -4477,9 +4456,6 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 7697644720409172977, guid: 414df9ded6d00b54eafb10fc4e3d1250, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1437913240}
     - targetCorrespondingSourceObject: {fileID: 5064730188828081052, guid: 414df9ded6d00b54eafb10fc4e3d1250, type: 3}
       insertIndex: -1
       addedObject: {fileID: 0}
