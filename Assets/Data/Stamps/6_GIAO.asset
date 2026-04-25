@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c61e349e93a7a94ca0abb017f814ee6, type: 3}
+  m_Name: 6_GIAO
+  m_EditorClassIdentifier: Assembly-CSharp::SimpleScoreModifierStampData
+  _stampID: 6
+  _stampRank: 0
+  _stampName: "Gi\xE1o"
+  _stampEffect: "+1 n\xFAt cho l\xE1 b\xE0i \u0111\u01B0\u1EE3c \u0111\xF3ng d\u1EA5u
+    v\xE0 +1 n\xFAt l\xE1 b\xE0i b\xEAn tr\xE1i"
+  targets: 0000000002000000
+  _bloodCost: 0
+  stampArt: {fileID: 0}
+  isEnabled: 1
+  amountToChange: 1
+  scoreOperator: 0

@@ -55,35 +55,35 @@ public class ConditionalScoreModifierStampData : SimpleScoreModifierStampData
                 }
 
             case Condition.IS_NOT_HIGHER_THAN_5:
-                        return targetToCheck.data.BaseScore <= 5;
+                 return targetToCheck.data.BaseScore <= 5;
 
-                    case Condition.IS_CENTERED:
-                        return currentCardIndex == 1;
+             case Condition.IS_CENTERED:
+                 return currentCardIndex == 1;
 
-                    case Condition.IS_NOT_CENTERED:
-                        return currentCardIndex != 1;
+             case Condition.IS_NOT_CENTERED:
+                 return currentCardIndex != 1;
 
-                    case Condition.IS_MYSCORE_LOWER_THAN_ENEMYSCORE:
-                        int myScore = 0;
-                        int enemyScore = 0;
-                        foreach (var card in myCards)
-                            myScore += card.score;
-                        foreach (var card in enemyCards)
-                            enemyScore += card.score;
-                        return myScore < enemyScore;
+             case Condition.IS_MYSCORE_LOWER_THAN_ENEMYSCORE:
+                 int myScore = 0;
+                 int enemyScore = 0;
+                 foreach (var card in myCards)
+                     myScore += card.score;
+                 foreach (var card in enemyCards)
+                     enemyScore += card.score;
+                 return myScore < enemyScore;
 
-                    case Condition.DISABLE_OTHER_STAMPS:
-                        foreach (var stamp in targetToCheck.stamps)
-                        {
-                            if (stamp.stampName != this.stampName)
-                            {
-                                stamp.isEnabled = false;
-                            }
-                        }
-                        return true;
+             case Condition.DISABLE_OTHER_STAMPS:
+                  foreach (var stamp in targetToCheck.stamps)
+                  {
+                       if (stamp.stampName != this.stampName)
+                       {
+                            stamp.isEnabled = false;
+                       }
+                  }
+                  return true;
 
-                    default:
-                        return false;
-                    }
+             default:
+                  return false;
+             }
     }
 }

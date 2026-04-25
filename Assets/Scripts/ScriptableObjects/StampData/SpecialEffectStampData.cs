@@ -7,7 +7,8 @@ public enum EffectType
     COPY,                       //(Guong)
     IMMUNITY,                   //(Ao Choang)
     RESET_SCORE,                //Reset score ve basescore (Rua Toi, Thanh Tay)
-    RANDOM_SCORE_CHANGE         //Thay doi score random (An May)
+    RANDOM_SCORE_CHANGE,         //Thay doi score random (An May)
+    BALANCE_SCORE               //(Can Can Cong Bang)
 }
 
 [CreateAssetMenu(fileName = "New Stamp", menuName = "Stamp The Card/Stamp Data/SepcialEffectStamp")]
@@ -55,6 +56,10 @@ public class SpecialEffectStampData : BaseStampData
             case EffectType.RANDOM_SCORE_CHANGE:
                 CardSlot currentCard = myCards[currentCardIndex];
                 currentCard.score += currentCard.lastRandomValue;
+                break;
+
+            case EffectType.BALANCE_SCORE:
+                myCards[currentCardIndex].score = enemyCards[2 - currentCardIndex].data.BaseScore;
                 break;
         }
     }

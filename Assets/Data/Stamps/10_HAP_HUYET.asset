@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a488f51b86b2c7458332e8c52ce3959, type: 3}
+  m_Name: 10_HAP_HUYET
+  m_EditorClassIdentifier: Assembly-CSharp::ScoreTransferStampData
+  _stampID: 10
+  _stampRank: 0
+  _stampName: "H\u1EA5p huy\u1EBFt"
+  _stampEffect: "C\u01B0\u1EDBp 1 n\xFAt t\u1EEB l\xE1 b\xE0i \u0111\u1ED1i di\u1EC7n"
+  targets: 0000000003000000
+  _bloodCost: 0
+  stampArt: {fileID: 0}
+  isEnabled: 1
+  amountToTransfer: 1

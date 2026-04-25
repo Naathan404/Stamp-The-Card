@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0122b5ef3ddb13941bf61227b065daf7, type: 3}
+  m_Name: 15_PHAN_TAN
+  m_EditorClassIdentifier: Assembly-CSharp::VariableScoreModifierStampData
+  _stampID: 15
+  _stampRank: 0
+  _stampName: 
+  _stampEffect: "-X n\xFAt c\u1EE7a l\xE1 b\xE0i \u0111\u1ED1i di\u1EC7n (X l\xE0
+    s\u1ED1 stamp \u0111\xF3ng tr\xEAn l\xE1 b\xE0i)"
+  targets: 0000000003000000
+  _bloodCost: 0
+  stampArt: {fileID: 0}
+  isEnabled: 1
+  amountToChange: -1
+  scoreOperator: 0
