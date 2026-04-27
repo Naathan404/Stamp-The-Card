@@ -55,35 +55,37 @@ public class ConditionalScoreModifierStampData : SimpleScoreModifierStampData
                 }
 
             case Condition.IS_NOT_HIGHER_THAN_5:
-                        return targetToCheck.Data.BaseScore <= 5;
 
-                    case Condition.IS_CENTERED:
-                        return currentCardIndex == 1;
+                 return targetToCheck.Data.BaseScore <= 5;
 
-                    case Condition.IS_NOT_CENTERED:
-                        return currentCardIndex != 1;
 
-                    case Condition.IS_MYSCORE_LOWER_THAN_ENEMYSCORE:
-                        int myScore = 0;
-                        int enemyScore = 0;
-                        foreach (var card in myCards)
-                            myScore += card.Score;
-                        foreach (var card in enemyCards)
-                            enemyScore += card.Score;
-                        return myScore < enemyScore;
+             case Condition.IS_CENTERED:
+                 return currentCardIndex == 1;
 
-                    case Condition.DISABLE_OTHER_STAMPS:
-                        foreach (var stamp in targetToCheck.Stamps)
-                        {
-                            if (stamp.stampName != this.stampName)
-                            {
-                                stamp.isEnabled = false;
-                            }
-                        }
-                        return true;
+             case Condition.IS_NOT_CENTERED:
+                 return currentCardIndex != 1;
 
-                    default:
-                        return false;
-                    }
+             case Condition.IS_MYSCORE_LOWER_THAN_ENEMYSCORE:
+                 int myScore = 0;
+                 int enemyScore = 0;
+                 foreach (var card in myCards)
+                     myScore += card.Score;
+                 foreach (var card in enemyCards)
+                     enemyScore += card.Score;
+                 return myScore < enemyScore;
+
+             case Condition.DISABLE_OTHER_STAMPS:
+                  foreach (var stamp in targetToCheck.Stamps)
+                  {
+                       if (stamp.stampName != this.stampName)
+                       {
+                            stamp.isEnabled = false;
+                       }
+                  }
+                  return true;
+
+             default:
+                  return false;
+             }
     }
 }

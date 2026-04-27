@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d1f71ba2781f8c43a163c2d67f9e888, type: 3}
+  m_Name: 40_HOA_THIEU
+  m_EditorClassIdentifier: Assembly-CSharp::BattleRuleStampData
+  _stampID: 40
+  _stampRank: 3
+  _stampName: "H\u1ECFa thi\xEAu"
+  _stampEffect: "Ch\u1ECDn 1 l\xE1 b\xE0i ng\u1EABu nhi\xEAn c\u1EE7a \u0111\u1ED1i
+    th\u1EE7, \u1EDF l\u01B0\u1EE3t k\xEDch ho\u1EA1t, l\xE1 b\xE0i \u0111\u01B0\u1EE3c
+    ch\u1ECDn coi nh\u01B0 kh\xF4ng c\xF2n t\xE1c d\u1EE5ng g\xEC n\u1EEFa. \u1EDE
+    c\xE1c l\u01B0\u1EE3t sau, l\xE1 b\xE0i \u0111\u01B0\u1EE3c \u0111\xF3ng d\u1EA5u
+    n\xE0y v\xE0 l\xE1 b\xE0i \u0111\u01B0\u1EE3c ch\u1ECDn kh\xF4ng c\xF2n t\xE1c
+    d\u1EE5ng l\xEAn tr\u1EADn \u0111\u1EA5u n\u1EEFa, v\u1EABn chi\u1EBFm 2 slot
+    trong deck chung"
+  targets: 
+  _bloodCost: 1
+  stampArt: {fileID: 0}
+  isEnabled: 1
+  battleRuleType: 4

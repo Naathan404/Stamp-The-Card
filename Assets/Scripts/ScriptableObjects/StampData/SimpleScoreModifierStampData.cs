@@ -1,5 +1,6 @@
-using UnityEngine;
+using System;
 using System.Linq;
+using UnityEngine;
 
 public enum ScoreOperator 
 { 
@@ -12,7 +13,7 @@ public enum ScoreOperator
 public class SimpleScoreModifierStampData : BaseStampData
 {
     [Header("The score operator")]
-    public int amountToChange;
+    public float amountToChange;
     public ScoreOperator scoreOperator;
 
     public override void ApplyEffect(CardSlot[] myCards, CardSlot[] enemyCards, int currentCardIndex)
@@ -55,7 +56,7 @@ public class SimpleScoreModifierStampData : BaseStampData
         }
     }
 
-    protected void ApplyScoreOperator(CardSlot targetSlot, int value, ScoreOperator op)
+    protected void ApplyScoreOperator(CardSlot targetSlot, float value, ScoreOperator op)
     {
         if (targetSlot == null || targetSlot.Data == null) return;
 
@@ -65,12 +66,15 @@ public class SimpleScoreModifierStampData : BaseStampData
             if (op == ScoreOperator.MULTIPLY && value < 1) return;
         }
 
+        float result;
         switch (op)
         {
             case ScoreOperator.ADD:
-                targetSlot.Score += value; break;
+                result = targetSlot.Score + value;
+                targetSlot.Score = (int)result; break;
             case ScoreOperator.MULTIPLY:
-                targetSlot.Score *= value; break;
+                result = targetSlot.Score * value;
+                targetSlot.Score = (int)Math.Round(result, MidpointRounding.AwayFromZero); break;
         }
     }
 }

@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cdb312c59beb5548818c3bd7907a573, type: 3}
+  m_Name: 34_KE_NHANH_NHAU
+  m_EditorClassIdentifier: Assembly-CSharp::SpecialEffectStampData
+  _stampID: 34
+  _stampRank: 2
+  _stampName: "K\u1EBB nhanh nh\u1EA3u"
+  _stampEffect: "N\u1EBFu \u0111\u01B0\u1EE3c resolve tr\u01B0\u1EDBc \u1EDF l\u01B0\u1EE3t
+    n\xE0y, v\xF4 hi\u1EC7u h\xF3a to\xE0n b\u1ED9 stamp l\xE1 b\xE0i \u0111\u1ED1i
+    di\u1EC7n"
+  targets: 03000000
+  _bloodCost: 0
+  stampArt: {fileID: 0}
+  isEnabled: 1
+  effectType: 0
