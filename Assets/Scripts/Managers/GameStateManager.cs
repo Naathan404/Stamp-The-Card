@@ -39,8 +39,11 @@ public class GameStateManager : NetworkSingleton<GameStateManager>
     public override void Spawned()
     {
         _changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
-        CurrentGameState = GamePhase.Waiting;
-        HasStartedFirstTurn = false;
+        if (HasStateAuthority)
+        {
+            CurrentGameState = GamePhase.Waiting;
+            HasStartedFirstTurn = false;
+        }
     }
 
     public void testChangePhase(int n)

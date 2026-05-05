@@ -19,7 +19,7 @@ MonoBehaviour:
     v\xE0 +1 n\xFAt l\xE1 b\xE0i b\xEAn tr\xE1i"
   targets: 0000000002000000
   _bloodCost: 0
-  stampArt: {fileID: 0}
+  stampArt: {fileID: -1005510873, guid: ce657d230f49d7643a5bd9c607a8c31b, type: 3}
   isEnabled: 1
   amountToChange: 1
   scoreOperator: 0

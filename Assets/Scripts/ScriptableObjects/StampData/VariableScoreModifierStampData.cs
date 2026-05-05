@@ -11,9 +11,9 @@ public class VariableScoreModifierStampData : SimpleScoreModifierStampData
 
         float valueToChange = 0;
         CardSlot targetToCount = FindTargetToCheck(targets[0], myCards, enemyCards, currentCardIndex);
-        if (targetToCount != null && targetToCount.data != null)
+        if (targetToCount != null && targetToCount.Data != null)
         {
-            valueToChange = targetToCount.stamps.Count;
+            valueToChange = targetToCount.Stamps.Count;
             if (amountToChange < 0) valueToChange = -valueToChange;                 //Danh dau de biet day la phep tru
         }
 
@@ -28,7 +28,7 @@ public class VariableScoreModifierStampData : SimpleScoreModifierStampData
         else
         {
             CardSlot targetToChange = FindTargetToCheck(targets[1], myCards, enemyCards, currentCardIndex);
-            if (targetToChange != null && targetToChange.data != null)
+            if (targetToChange != null && targetToChange.Data != null)
             {
                 ApplyScoreOperator(targetToChange, valueToChange, scoreOperator);
             }
