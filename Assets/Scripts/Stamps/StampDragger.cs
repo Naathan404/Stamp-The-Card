@@ -8,6 +8,7 @@ public class StampDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
     [Header("References")]
     public GameObject stampToolPrefab;
     public int stampID = 1;
+    public bool isUsed = false;
 
     [Header("Game Juice Settings")]
     [SerializeField] private float _pickUpScale = 1.2f;
@@ -28,7 +29,7 @@ public class StampDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
     private GameObject _stampToolInstance;
 
-
+    public Vector2 OriginalScale => _originalScale;
     private void Start()
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
@@ -43,6 +44,7 @@ public class StampDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
     // 1. KHI VỪA NẮM CHUỘT KÉO ĐI
     public void OnBeginDrag(PointerEventData eventData)
     {
+        if(isUsed) return;
         _spriteRenderer.sortingOrder = 100; // Đưa lên trên cùng
         transform.DOScale(_originalScale * _pickUpScale, 0.1f).SetEase(Ease.OutBack);
     }
@@ -50,6 +52,7 @@ public class StampDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
     // 2. KHI ĐANG RÊ CHUỘT
     public void OnDrag(PointerEventData eventData)
     {
+        if(isUsed) return;
         Vector3 worldPoint = Camera.main.ScreenToWorldPoint(eventData.position);
         worldPoint.z = 0f; 
         
@@ -58,7 +61,9 @@ public class StampDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        if(isUsed) return;
         _spriteRenderer.sortingOrder = _originalSortingOrder;
+        transform.DOScale(_originalScale, 0.1f).SetEase(Ease.OutBack);
         Vector2 dropPoint = Camera.main.ScreenToWorldPoint(eventData.position);
 
         Collider2D[] hits = Physics2D.OverlapPointAll(dropPoint);
@@ -82,12 +87,15 @@ public class StampDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
     private void ReturnToStart()
     {
-        transform.DOScale(_originalScale, 0.2f);
+        transform.DOScale(_originalScale, 0.1f).SetEase(Ease.OutBack);
         transform.DOMove(_originalPosition, 0.3f).SetEase(Ease.OutBack);
     }
 
-private void StampOnCard(GameObject targetCard)
+    private void StampOnCard(GameObject targetCard)
     {
+        int slotIndex = targetCard.GetComponent<CardSlot>().Index;
+
+        // ANIMATION
         transform.SetParent(targetCard.transform);
         transform.position = targetCard.transform.position; // Đặt đúng tâm lá bài
         _spriteRenderer.enabled = false; // Tàng hình cái vết mực đi!
@@ -132,13 +140,15 @@ private void StampOnCard(GameObject targetCard)
         seq.Append(_stampToolInstance.transform.DOMove(targetCard.transform.position + Vector3.up * 2f, _stampImpactDuration).SetEase(Ease.OutQuad));
         seq.Join(_stampToolInstance.GetComponent<SpriteRenderer>().DOFade(0, _stampImpactDuration).SetEase(Ease.OutQuad));
 
-        // [CLEAN UP] - Xóa cái cán mộc rác đi
         seq.OnComplete(() => 
         {
             _stampToolInstance.SetActive(false);
-            
+            isUsed = true;
+
             // call RPC to sync the stamp effect across all clients
-            // GameManager.Instance.RPC_PlayStamp(...);
+            bool amIHost = GameManager.Instance.Runner.IsServer;
+            GameManager.Instance.RPC_PlayStamp(slotIndex, stampID, amIHost);
+            gameObject.SetActive(false);
         });
     }
 }

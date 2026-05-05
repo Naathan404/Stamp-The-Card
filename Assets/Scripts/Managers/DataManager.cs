@@ -4,7 +4,7 @@ using UnityEngine;
 public class DataManager : Singleton<DataManager>
 {
     [SerializeField] private CardData[] _allCards;
-    [SerializeField] private BaseStampData[] _allStamps;
+    [SerializeField] private List<BaseStampData> _allStamps = new List<BaseStampData>();
 
     private Dictionary<int, CardData> _cardDataDict = new Dictionary<int, CardData>();
     private Dictionary<int, BaseStampData> _stampDataDict = new Dictionary<int, BaseStampData>();
@@ -23,7 +23,7 @@ public class DataManager : Singleton<DataManager>
 
         foreach (var stamp in _allStamps)
         {
-            _stampDataDict[stamp.GetInstanceID()] = stamp;
+            _stampDataDict[stamp.stampID] = stamp;
         }
     }
 

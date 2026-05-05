@@ -11,6 +11,7 @@ public class CardSlot : MonoBehaviour
     public bool IsImmuneLowerScore = false;             //Kiem tra xem co mien nhiem viec tru so nut --> Dung cho stamp "Ao Choang"
     public int LastRandomValue = 0;                     //Luu gia tri random nhan tu Network --> Dung cho stamp "An May"
     public bool IsIgnored = false;                      //La bai bi vo hieu --> Dung cho stamp "Hoa thieu"
+    public int Index;
 
     //Ham cap nhat so nut cua la bai
     public void UpdateUI()

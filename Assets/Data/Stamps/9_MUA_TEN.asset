@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c61e349e93a7a94ca0abb017f814ee6, type: 3}
+  m_Name: 9_MUA_TEN
+  m_EditorClassIdentifier: Assembly-CSharp::SimpleScoreModifierStampData
+  _stampID: 9
+  _stampRank: 0
+  _stampName: "M\u01B0a t\xEAn"
+  _stampEffect: "-1 n\xFAt cho to\xE0n b\u1ED9 3 l\xE1 b\xE0i phe \u0111\u1ECBch"
+  targets: 04000000
+  _bloodCost: 0
+  stampArt: {fileID: 594764700, guid: ce657d230f49d7643a5bd9c607a8c31b, type: 3}
+  isEnabled: 1
+  amountToChange: -1
+  scoreOperator: 0

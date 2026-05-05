@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 988b1876846c8ca4198a3b959634181b, type: 3}
+  m_Name: 12_XUNG_KICH
+  m_EditorClassIdentifier: Assembly-CSharp::ConditionalScoreModifierStampData
+  _stampID: 12
+  _stampRank: 0
+  _stampName: "Xung k\xEDch"
+  _stampEffect: "+3 n\xFAt, nh\u01B0ng l\xE1 b\xE0i \u0111\u01B0\u1EE3c \u0111\xF3ng
+    d\u1EA5u kh\xF4ng th\u1EC3 k\xEDch ho\u1EA1t hi\u1EC7u \u1EE9ng c\xE1c stamp
+    c\xF2n l\u1EA1i"
+  targets: 00000000
+  _bloodCost: 0
+  stampArt: {fileID: 0}
+  isEnabled: 1
+  amountToChange: 3
+  scoreOperator: 0
+  Condition: 7

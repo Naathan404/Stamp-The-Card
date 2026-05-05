@@ -19,16 +19,20 @@ public enum Target
 public abstract class BaseStampData : ScriptableObject
 {
     [Header("Stamp Info")]
+    [SerializeField] private int _stampID;
     [SerializeField] private StampRank _stampRank;
     [SerializeField] private string _stampName;
     [TextArea(3, 10)]
     [SerializeField] private string _stampEffect;
     [SerializeField] protected Target[] targets;
+    [SerializeField] private int _bloodCost;
 
     public Sprite stampArt;
+    public int stampID => _stampID;
     public StampRank stampRank => _stampRank;
     public string stampName => _stampName;
     public string stampEffect => _stampEffect;
+    public int bloodCost => _bloodCost;
     public bool isEnabled = true;                           //De dam bao isEnabled hoat dong dung --> Moi lan co stamp moi dong vao card, reset card ve ban dau va ApplyEffect lai tu dau
 
 

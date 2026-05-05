@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c61e349e93a7a94ca0abb017f814ee6, type: 3}
+  m_Name: 4_KHIEN_THEP
+  m_EditorClassIdentifier: Assembly-CSharp::SimpleScoreModifierStampData
+  _stampID: 4
+  _stampRank: 0
+  _stampName: "Khi\xEAn th\xE9p"
+  _stampEffect: "-2 n\xFAt l\xE1 b\xE0i \u0111\u1ED1i di\u1EC7n"
+  targets: 03000000
+  _bloodCost: 0
+  stampArt: {fileID: -761553000, guid: ce657d230f49d7643a5bd9c607a8c31b, type: 3}
+  isEnabled: 1
+  amountToChange: -2
+  scoreOperator: 0

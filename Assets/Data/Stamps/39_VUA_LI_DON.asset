@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d1f71ba2781f8c43a163c2d67f9e888, type: 3}
+  m_Name: 39_VUA_LI_DON
+  m_EditorClassIdentifier: Assembly-CSharp::BattleRuleStampData
+  _stampID: 39
+  _stampRank: 3
+  _stampName: "Vua l\xEC \u0111\xF2n"
+  _stampEffect: "T\xEDnh ri\xEAng c\u1ED9t b\xE0i n\xE0y, n\u1EBFu ta thua th\xEC
+    s\xE1t th\u01B0\u01A1ng nh\u1EADn v\xE0o \u1EDF Calculate Phase b\u1EB1ng 0"
+  targets: 
+  _bloodCost: 1
+  stampArt: {fileID: 0}
+  isEnabled: 1
+  battleRuleType: 1

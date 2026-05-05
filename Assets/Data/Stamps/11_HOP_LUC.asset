@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a488f51b86b2c7458332e8c52ce3959, type: 3}
+  m_Name: 11_HOP_LUC
+  m_EditorClassIdentifier: Assembly-CSharp::ScoreTransferStampData
+  _stampID: 11
+  _stampRank: 0
+  _stampName: "H\u1EE3p l\u1EF1c"
+  _stampEffect: "H\u1EA5p th\u1EE5 1 n\xFAt t\u1EEB c\xE1c l\xE1 b\xE0i b\xEAn c\u1EA1nh"
+  targets: 000000000100000002000000
+  _bloodCost: 0
+  stampArt: {fileID: -1935943432, guid: ce657d230f49d7643a5bd9c607a8c31b, type: 3}
+  isEnabled: 1
+  amountToTransfer: 1

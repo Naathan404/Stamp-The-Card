@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cdb312c59beb5548818c3bd7907a573, type: 3}
+  m_Name: 33_GUONG
+  m_EditorClassIdentifier: Assembly-CSharp::SpecialEffectStampData
+  _stampID: 33
+  _stampRank: 2
+  _stampName: "G\u01B0\u01A1ng"
+  _stampEffect: "Copy hi\u1EC7u \u1EE9ng stamp cu\u1ED1i c\xF9ng (n\u1EBFu c\xF3)
+    tr\xEAn l\xE1 b\xE0i \u0111\u1ED1i di\u1EC7n."
+  targets: 00000000
+  _bloodCost: 0
+  stampArt: {fileID: 0}
+  isEnabled: 1
+  effectType: 1
