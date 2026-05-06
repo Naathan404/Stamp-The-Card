@@ -18,7 +18,7 @@ MonoBehaviour:
   _stampEffect: "-1 n\xFAt cho to\xE0n b\u1ED9 3 l\xE1 b\xE0i phe \u0111\u1ECBch"
   targets: 04000000
   _bloodCost: 0
-  stampArt: {fileID: 0}
+  stampArt: {fileID: 594764700, guid: ce657d230f49d7643a5bd9c607a8c31b, type: 3}
   isEnabled: 1
   amountToChange: -1
   scoreOperator: 0

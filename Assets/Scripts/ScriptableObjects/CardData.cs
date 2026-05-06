@@ -22,6 +22,7 @@ public enum CardColor
 public class CardData : ScriptableObject
 {
     [Header("Card Info")]
+    [SerializeField] private int _id;
     [SerializeField] private CardType _cardType;
     [SerializeField] private CardColor _cardColor;
     [SerializeField] private int _baseScore;
@@ -30,4 +31,5 @@ public class CardData : ScriptableObject
     public CardType CardType => _cardType;
     public CardColor CardColor => _cardColor;
     public int BaseScore => _baseScore;                            //Số nút mặc định của lá bài
+    public int CardID => _id;
 }

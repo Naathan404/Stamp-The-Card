@@ -32,7 +32,7 @@ public class SpecialEffectStampData : BaseStampData
                 break;
 
             case EffectType.COPY:
-                List<BaseStampData> targetStampList = enemyCards[2 - currentCardIndex].stamps;      //Lay danh sach stamp dong tren card doi dien
+                List<BaseStampData> targetStampList = enemyCards[2 - currentCardIndex].Stamps;      //Lay danh sach stamp dong tren card doi dien
                 BaseStampData targetToCopy = targetStampList[targetStampList.Count - 1];
                 if (targetToCopy != null && targetToCopy.stampName != this.stampName)
                 {
@@ -41,7 +41,7 @@ public class SpecialEffectStampData : BaseStampData
                 break;
 
             case EffectType. IMMUNITY:
-                myCards[currentCardIndex].isImmuneLowerScore = true;
+                myCards[currentCardIndex].IsImmuneLowerScore = true;
                 break;
 
             case EffectType.RESET_SCORE:
@@ -55,18 +55,18 @@ public class SpecialEffectStampData : BaseStampData
 
             case EffectType.RANDOM_SCORE_CHANGE:
                 CardSlot currentCard = myCards[currentCardIndex];
-                currentCard.score += currentCard.lastRandomValue;
+                currentCard.Score += currentCard.LastRandomValue;
                 break;
 
             case EffectType.BALANCE_SCORE:
-                myCards[currentCardIndex].score = enemyCards[2 - currentCardIndex].data.BaseScore;
+                myCards[currentCardIndex].Score = enemyCards[2 - currentCardIndex].Data.BaseScore;
                 break;
         }
     }
 
     private void NullifyStampEffect(CardSlot currentCard)
     {
-        var stampList = currentCard.stamps;
+        var stampList = currentCard.Stamps;
 
         foreach (var stamp in stampList)
         {
@@ -77,6 +77,6 @@ public class SpecialEffectStampData : BaseStampData
 
     private void ResetScore(CardSlot currentCard)
     {
-        currentCard.score = currentCard.data.BaseScore;
+        currentCard.Score = currentCard.Data.BaseScore;
     }
 }

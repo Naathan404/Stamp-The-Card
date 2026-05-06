@@ -1,5 +1,6 @@
 using System.Collections;
 using DG.Tweening;
+using Fusion;
 using NUnit.Framework;
 using TMPro;
 using UnityEngine;
@@ -14,21 +15,37 @@ public class TableVisualManager : Singleton<TableVisualManager>
     public SpriteRenderer[] TopCardSprites = new SpriteRenderer[3];
     public TextMeshPro[] TopCardTexts = new TextMeshPro[3];
 
+    [Header("Stamps")]
+    public SpriteRenderer[] StampSprites = new SpriteRenderer[3];
+
     [Header("Center Deck")]
     [SerializeField] private Transform _mainDeckTransform;
 
     [Header("Back Card")]
     [SerializeField] private Sprite CardBackSprite;
 
+    [Header("Card Setting")]
+    [SerializeField] private Vector2 _cardDealScale = new Vector2(1.8f, 1.8f);
+    [SerializeField] private Vector3 _cardSpacing = new Vector3(1.5f, 0, 0);
+    [SerializeField] private Vector2 _cardScale = new Vector2(2.5f, 2.5f);
+
+
     [Header("Animation Settings")]
     [SerializeField] private float _animCardSlideDuration = 0.4f;
+
+    private Vector3[] _bottomInitialPos = new Vector3[3];
+    private Vector3[] _topInitialPos = new Vector3[3];
 
     private void Start()
     {
         for(int i = 0; i < 3; i++)
         {
+            _bottomInitialPos[i] = BottomCardSprites[i].transform.position;
+            _topInitialPos[i] = TopCardSprites[i].transform.position;
+
             BottomCardSprites[i].gameObject.SetActive(false);
             TopCardSprites[i].gameObject.SetActive(false);
+            //StampSprites[i].gameObject.SetActive(false);
         }
     }
 
@@ -49,59 +66,218 @@ public class TableVisualManager : Singleton<TableVisualManager>
         }
     }
 
-    public void PlayDealAnimation(CardData[] cards, bool isHostCard)
+    public void PlayDealAnimation(CardData[] hostCards, CardData[] clientCards)
     {
         bool amIHost = GameManager.Instance.Runner.IsServer;
-        bool isMyCard = (amIHost && isHostCard) || (!amIHost && !isHostCard);
 
-        SpriteRenderer[] targetSlots = isMyCard ? BottomCardSprites : TopCardSprites;
-        TextMeshPro[] targetScores = isMyCard ? BottomCardTexts : TopCardTexts;
+        // Phân định trên dưới
+        CardData[] myCards = amIHost ? hostCards : clientCards;
+        CardData[] oppCards = amIHost ? clientCards : hostCards;
 
-        StartCoroutine(DealCardsRoutine(cards, targetSlots, targetScores));
+        StartCoroutine(DealCardsRoutine(myCards, oppCards));
     }
 
-    private IEnumerator DealCardsRoutine(CardData[] cards, SpriteRenderer[] slots, TextMeshPro[] scores)
+    private IEnumerator DealCardsRoutine(CardData[] myCards, CardData[] oppCards)
     {
-        // lưu vị trí
-        Vector3[] targetPositions = new Vector3[3];
-        for (int i = 0; i < 3; i++)
-        {
-            targetPositions[i] = slots[i].transform.position;
+        // kill hết anim đang chạy
+        for(int i = 0; i < 3; i++) {
+            BottomCardSprites[i].transform.DOKill();
+            TopCardSprites[i].transform.DOKill();
         }
 
-        // chia bài anim
         for (int i = 0; i < 3; i++)
         {
-            slots[i].gameObject.SetActive(true);
-            // set up lá bài: ở giữa, úp bài, ẩn giá trị
-            slots[i].transform.position = _mainDeckTransform.position;
-            slots[i].transform.rotation = Quaternion.Euler(0, 0, 90f);
-            slots[i].sprite = CardBackSprite;
-            scores[i].text = ""; 
-            
-            // ép nhỏ bài
-            slots[i].transform.localScale = Vector3.zero;
+            // set up 
+            BottomCardSprites[i].gameObject.SetActive(true);
+            BottomCardSprites[i].transform.position = _mainDeckTransform.position;
+            BottomCardSprites[i].transform.rotation = Quaternion.Euler(0, 0, 90f);
+            BottomCardSprites[i].sprite = CardBackSprite;
+            BottomCardTexts[i].text = ""; 
+            BottomCardSprites[i].transform.localScale = Vector3.zero;
 
-            // phóng bài ra
-            slots[i].transform.DOScale(new Vector2(1.8f, 1.8f), _animCardSlideDuration).SetEase(Ease.OutBack);
-            slots[i].transform.DORotate(new Vector3(0, 0, 0), _animCardSlideDuration).SetEase(Ease.OutBack);
-            slots[i].transform.DOMove(targetPositions[i], _animCardSlideDuration).SetEase(Ease.OutQuad);
+            TopCardSprites[i].gameObject.SetActive(true);
+            TopCardSprites[i].transform.position = _mainDeckTransform.position;
+            TopCardSprites[i].transform.rotation = Quaternion.Euler(0, 0, 90f);
+            TopCardSprites[i].sprite = CardBackSprite;
+            TopCardTexts[i].text = ""; 
+            TopCardSprites[i].transform.localScale = Vector3.zero;
+
+            // phóng bài
+            BottomCardSprites[i].transform.DOScale(_cardDealScale, _animCardSlideDuration).SetEase(Ease.OutBack);
+            BottomCardSprites[i].transform.DORotate(Vector3.zero, _animCardSlideDuration).SetEase(Ease.OutBack);
+            BottomCardSprites[i].transform.DOMove(_bottomInitialPos[i], _animCardSlideDuration).SetEase(Ease.OutQuad);
+
+            TopCardSprites[i].transform.DOScale(_cardDealScale, _animCardSlideDuration).SetEase(Ease.OutBack);
+            TopCardSprites[i].transform.DORotate(Vector3.zero, _animCardSlideDuration).SetEase(Ease.OutBack);
+            TopCardSprites[i].transform.DOMove(_topInitialPos[i], _animCardSlideDuration).SetEase(Ease.OutQuad);
 
             yield return new WaitForSeconds(_animCardSlideDuration);
 
-            // flip bài
-            slots[i].transform.DOScaleX(0f, 0.15f).OnComplete(() => 
+            // lật bài
+            int index = i; 
+            
+            BottomCardSprites[index].transform.DOScaleX(0f, 0.15f).OnComplete(() => 
             {
-                // lúc lá bài mỏng -> đổi sprite
-                slots[i].sprite = cards[i].Artwork;
-                scores[i].text = cards[i].BaseScore.ToString();
-                // mở bài
-                slots[i].transform.DOScale(new Vector2(2f, 2f), 0.15f).SetEase(Ease.OutBack);
+                BottomCardSprites[index].sprite = myCards[index].Artwork;
+                BottomCardTexts[index].text = myCards[index].BaseScore.ToString();
+                BottomCardSprites[index].transform.DOScale(_cardScale, 0.15f).SetEase(Ease.OutBack).OnComplete(() => 
+                {
+                    // vẽ stamp lên card
+                    RenderStampsOnBoard(GameManager.Instance.CardAttachedStamps);
+                });
             });
+
+            TopCardSprites[index].transform.DOScaleX(0f, 0.15f).OnComplete(() => 
+            {
+                TopCardSprites[index].sprite = oppCards[index].Artwork;
+                TopCardTexts[index].text = oppCards[index].BaseScore.ToString();
+                TopCardSprites[index].transform.DOScale(_cardScale, 0.15f).SetEase(Ease.OutBack);
+            });
+
             yield return new WaitForSeconds(0.3f); 
         }
 
         // chuyển sang main phase
-        GameStateManager.Instance.ChangePhase(GameStateManager.GamePhase.MainPhase);
+        if (GameManager.Instance.Runner.IsServer)
+        {
+            GameStateManager.Instance.ChangePhase(GameStateManager.GamePhase.MainPhase);
+        }
+    }
+
+    // vẽ stamp lên màn hình
+    private void DrawStampsForPlayer(NetworkArray<int> playerHand, SpriteRenderer[] visualSlots, NetworkArray<int> allStamps)
+    {
+        for (int slotIndex = 0; slotIndex < 3; slotIndex++)
+        {
+            int cardID = playerHand[slotIndex];
+
+            if (cardID == -1) continue; 
+
+            CardSlot cardSlot = visualSlots[slotIndex].GetComponent<CardSlot>();
+            if (cardSlot == null) continue;
+
+            int startIndex = cardID * 3; 
+
+            for (int i = 0; i < 3; i++)
+            {
+                int stampID = allStamps[startIndex + i];
+                if (stampID != -1)
+                {
+                    Debug.Log($"[Đồng Bộ] Vẽ vết mực Tem {stampID} lên lá bài {cardID} tại ô số {i}");
+                    if (stampID > 0)
+                    {
+                        // Lấy hình ảnh từ DataManager và bật hiển thị lên
+                        cardSlot.StampRenderers[i].sprite = DataManager.Instance.GetStampDataByID(stampID).stampArt;
+                        cardSlot.StampRenderers[i].enabled = true;
+                    }
+                    else // NẾU TRỐNG
+                    {
+                        // Tắt hiển thị vết mực ở ô này đi
+                        cardSlot.StampRenderers[i].enabled = false;
+                    }
+                }
+            }
+        }
+    }
+
+    // public void PlayDealAnimation(CardData[] cards, bool isHostCard)
+    // {
+    //     bool amIHost = GameManager.Instance.Runner.IsServer;
+    //     bool isMyCard = (amIHost && isHostCard) || (!amIHost && !isHostCard);
+
+    //     SpriteRenderer[] targetSlots = isMyCard ? BottomCardSprites : TopCardSprites;
+    //     TextMeshPro[] targetScores = isMyCard ? BottomCardTexts : TopCardTexts;
+
+    //     StartCoroutine(DealCardsRoutine(cards, targetSlots, targetScores));
+    // }
+
+    // private IEnumerator DealCardsRoutine(CardData[] cards, SpriteRenderer[] slots, TextMeshPro[] scores)
+    // {
+    //     // lưu vị trí
+    //     Vector3[] targetPositions = new Vector3[3];
+    //     for (int i = 0; i < 3; i++)
+    //     {
+    //         targetPositions[i] = slots[i].transform.position;
+    //     }
+
+    //     // chia bài anim
+    //     for (int i = 0; i < 3; i++)
+    //     {
+    //         slots[i].gameObject.SetActive(true);
+    //         // set up lá bài: ở giữa, úp bài, ẩn giá trị
+    //         slots[i].transform.position = _mainDeckTransform.position;
+    //         slots[i].transform.rotation = Quaternion.Euler(0, 0, 90f);
+    //         slots[i].sprite = CardBackSprite;
+    //         scores[i].text = ""; 
+            
+    //         // ép nhỏ bài
+    //         slots[i].transform.localScale = Vector3.zero;
+
+    //         // phóng bài ra
+    //         slots[i].transform.DOScale(_cardDealScale, _animCardSlideDuration).SetEase(Ease.OutBack);
+    //         slots[i].transform.DORotate(new Vector3(0, 0, 0), _animCardSlideDuration).SetEase(Ease.OutBack);
+    //         slots[i].transform.DOMove(targetPositions[i], _animCardSlideDuration).SetEase(Ease.OutQuad);
+
+    //         yield return new WaitForSeconds(_animCardSlideDuration);
+
+    //         // flip bài
+    //         slots[i].transform.DOScaleX(0f, 0.15f).OnComplete(() => 
+    //         {
+    //             // lúc lá bài mỏng -> đổi sprite
+    //             slots[i].sprite = cards[i].Artwork;
+    //             scores[i].text = cards[i].BaseScore.ToString();
+    //             // mở bài
+    //             slots[i].transform.DOScale(_cardScale, 0.15f).SetEase(Ease.OutBack);
+    //         });
+    //         yield return new WaitForSeconds(0.3f); 
+    //     }
+
+    //     // chuyển sang main phase
+    //     GameStateManager.Instance.ChangePhase(GameStateManager.GamePhase.MainPhase);
+    // }
+
+    public void SpawnStampChoices(NetworkArray<int> stampIDs, bool isHostChoice)
+    {
+        bool amIHost = GameManager.Instance.Runner.IsServer;
+        if (isHostChoice != amIHost) return; 
+
+        for (int i = 0; i < 3; i++)
+        {
+            int sID = stampIDs[i];
+            if (sID > 0) 
+            {
+                StampSprites[i].gameObject.SetActive(true);
+                
+                // Lấy Data từ kho và vẽ lên mặt Stamp
+                StampSprites[i].sprite = DataManager.Instance.GetStampDataByID(sID).stampArt;
+                // Gắn cái ID đó vào con chíp vật lý để kéo thả cho đúng
+                var dragger = StampSprites[i].GetComponent<StampDragger>();
+                if (dragger != null)
+                {
+                    dragger.stampID = sID; 
+                    dragger.isUsed = false; 
+                }
+
+                StampSprites[i].transform.localScale = Vector3.zero;
+                StampSprites[i].transform.DOScale(dragger.OriginalScale, 0.4f).SetEase(Ease.OutBack).SetDelay(i * 0.1f);
+            }
+            else 
+            {
+                StampSprites[i].gameObject.SetActive(false);
+            }
+        }
+    }
+
+    public void RenderStampsOnBoard(NetworkArray<int> allStamps)
+    {
+        bool amIHost = GameManager.Instance.Runner.IsServer;
+
+        //  Vẽ 3 lá bài của Host 
+        SpriteRenderer[] hostVisualSlots = amIHost ? BottomCardSprites : TopCardSprites;
+        DrawStampsForPlayer(GameManager.Instance.HostHand, hostVisualSlots, allStamps);
+
+        // Vẽ 3 lá bài của Client 
+        SpriteRenderer[] clientVisualSlots = amIHost ? TopCardSprites : BottomCardSprites;
+        DrawStampsForPlayer(GameManager.Instance.ClientHand, clientVisualSlots, allStamps);
     }
 }

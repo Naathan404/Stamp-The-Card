@@ -18,6 +18,6 @@ MonoBehaviour:
   _stampEffect: "C\u01B0\u1EDBp 1 n\xFAt t\u1EEB l\xE1 b\xE0i \u0111\u1ED1i di\u1EC7n"
   targets: 0000000003000000
   _bloodCost: 0
-  stampArt: {fileID: 0}
+  stampArt: {fileID: -476335471, guid: ce657d230f49d7643a5bd9c607a8c31b, type: 3}
   isEnabled: 1
   amountToTransfer: 1

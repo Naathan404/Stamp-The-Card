@@ -32,18 +32,18 @@ public class ConditionalScoreModifierStampData : SimpleScoreModifierStampData
     {
         CardSlot targetToCheck = FindTargetToCheck(targets[0], myCards, enemyCards, currentCardIndex);
 
-        if (targetToCheck == null || targetToCheck.data == null) return false;
+        if (targetToCheck == null || targetToCheck.Data == null) return false;
 
         switch (Condition)
         {
             case Condition.IS_EVEN:
-                return targetToCheck.data.BaseScore % 2 == 0;
+                return targetToCheck.Data.BaseScore % 2 == 0;
 
             case Condition.IS_ODD:
-                return targetToCheck.data.BaseScore % 2 != 0;
+                return targetToCheck.Data.BaseScore % 2 != 0;
 
             case Condition.IS_STAMPED:
-                if (targetToCheck.stamps.Count > 0)
+                if (targetToCheck.Stamps.Count > 0)
                 {
                     amountToChange = -3;
                     return true;
@@ -55,7 +55,9 @@ public class ConditionalScoreModifierStampData : SimpleScoreModifierStampData
                 }
 
             case Condition.IS_NOT_HIGHER_THAN_5:
-                 return targetToCheck.data.BaseScore <= 5;
+
+                 return targetToCheck.Data.BaseScore <= 5;
+
 
              case Condition.IS_CENTERED:
                  return currentCardIndex == 1;
@@ -67,13 +69,13 @@ public class ConditionalScoreModifierStampData : SimpleScoreModifierStampData
                  int myScore = 0;
                  int enemyScore = 0;
                  foreach (var card in myCards)
-                     myScore += card.score;
+                     myScore += card.Score;
                  foreach (var card in enemyCards)
-                     enemyScore += card.score;
+                     enemyScore += card.Score;
                  return myScore < enemyScore;
 
              case Condition.DISABLE_OTHER_STAMPS:
-                  foreach (var stamp in targetToCheck.stamps)
+                  foreach (var stamp in targetToCheck.Stamps)
                   {
                        if (stamp.stampName != this.stampName)
                        {

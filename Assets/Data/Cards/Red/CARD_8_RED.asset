@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a32fdd2053bee3347b3025780090339f, type: 3}
   m_Name: CARD_8_RED
   m_EditorClassIdentifier: Assembly-CSharp::CardData
+  _id: 6
   _cardType: 8
   _cardColor: 0
   _baseScore: 8

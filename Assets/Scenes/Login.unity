@@ -2597,6 +2597,8 @@ MonoBehaviour:
   _passwordInput: {fileID: 1881162211}
   _notificationPanel: {fileID: 1719855374}
   _notificationText: {fileID: 1051776097}
+  _notificationDuration: 0.8
+  _popUpDuration: 0.25
   _maxUsernameLength: 20
   _minPasswordLength: 6
 --- !u!1 &1257186130
