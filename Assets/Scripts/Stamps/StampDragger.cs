@@ -24,7 +24,7 @@ public class StampDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
     private SpriteRenderer _spriteRenderer;
     private Vector2 _originalPosition;
-    private Vector2 _originalScale;
+    public Vector2 _originalScale = Vector2.one;
     private int _originalSortingOrder;
 
     private GameObject _stampToolInstance;
@@ -34,7 +34,7 @@ public class StampDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _originalPosition = transform.position;
-        _originalScale = transform.localScale;
+        //_originalScale = transform.localScale;
         _originalSortingOrder = _spriteRenderer.sortingOrder;
 
         _stampToolInstance = Instantiate(stampToolPrefab, Vector2.zero, Quaternion.identity);
@@ -93,12 +93,13 @@ public class StampDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
     private void StampOnCard(GameObject targetCard)
     {
+        TableVisualManager.Instance.HideUnusedStamps(this.gameObject);
         int slotIndex = targetCard.GetComponent<CardSlot>().Index;
 
         // ANIMATION
         transform.SetParent(targetCard.transform);
         transform.position = targetCard.transform.position; // Đặt đúng tâm lá bài
-        _spriteRenderer.enabled = false; // Tàng hình cái vết mực đi!
+        _spriteRenderer.enabled = false; // Tàng hình stamp
 
         // spawn stamp tool 
         Vector3 spawnPos = targetCard.transform.position + Vector3.up * _stampStartPosition;

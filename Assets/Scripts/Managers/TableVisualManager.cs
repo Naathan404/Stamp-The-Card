@@ -45,7 +45,7 @@ public class TableVisualManager : Singleton<TableVisualManager>
 
             BottomCardSprites[i].gameObject.SetActive(false);
             TopCardSprites[i].gameObject.SetActive(false);
-            //StampSprites[i].gameObject.SetActive(false);
+            StampSprites[i].gameObject.SetActive(false);
         }
     }
 
@@ -256,10 +256,10 @@ public class TableVisualManager : Singleton<TableVisualManager>
                 {
                     dragger.stampID = sID; 
                     dragger.isUsed = false; 
-                }
 
-                StampSprites[i].transform.localScale = Vector3.zero;
-                StampSprites[i].transform.DOScale(dragger.OriginalScale, 0.4f).SetEase(Ease.OutBack).SetDelay(i * 0.1f);
+                    StampSprites[i].transform.localScale = Vector3.zero;
+                    StampSprites[i].transform.DOScale(dragger.OriginalScale, 0.4f).SetEase(Ease.OutBack).SetDelay(i * 0.1f);
+                }
             }
             else 
             {
@@ -279,5 +279,27 @@ public class TableVisualManager : Singleton<TableVisualManager>
         // Vẽ 3 lá bài của Client 
         SpriteRenderer[] clientVisualSlots = amIHost ? TopCardSprites : BottomCardSprites;
         DrawStampsForPlayer(GameManager.Instance.ClientHand, clientVisualSlots, allStamps);
+    }
+
+
+    /// Hàm chạy hiệu ứng ẩn stamps
+    public void HideUnusedStamps(GameObject usedStampGO)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            // Kiểm tra nếu không phải là stamp đang dùng
+            if (StampSprites[i].gameObject != usedStampGO && StampSprites[i].gameObject.activeSelf)
+            {
+                // Khóa ngay script kéo thả lại để người chơi không lỡ tay chụp được nó lúc nó đang mờ đi
+                var dragger = StampSprites[i].GetComponent<StampDragger>();
+                if (dragger != null) dragger.isUsed = true;
+
+                // hiệu ứng giật lùi rùi tàng hình
+                StampSprites[i].transform.DOScale(Vector3.zero, 0.3f).SetEase(Ease.InBack).OnComplete(() =>
+                {
+                    StampSprites[i].gameObject.SetActive(false);
+                });
+            }
+        }
     }
 }
