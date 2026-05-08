@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8c61e349e93a7a94ca0abb017f814ee6, type: 3}
-  m_Name: 30_AP_DAO
+  m_Name: 29_AP_DAO
   m_EditorClassIdentifier: Assembly-CSharp::SimpleScoreModifierStampData
-  _stampID: 30
+  _stampID: 29
   _stampRank: 2
   _stampName: "\xC1p \u0111\u1EA3o"
   _stampEffect: "Nh\xE2n \u0111\xF4i s\u1ED1 n\xFAt"

@@ -8,6 +8,7 @@ using System;
 public class AuthManager : Singleton<AuthManager>
 {
     private LoginUI _loginUI;
+
     private void Start()
     {
         if(_loginUI == null)
@@ -22,7 +23,13 @@ public class AuthManager : Singleton<AuthManager>
         var request = new LoginWithPlayFabRequest
         {
             Username = username,
-            Password = password
+            Password = password,
+            InfoRequestParameters = new GetPlayerCombinedInfoRequestParams
+            {
+                GetUserAccountInfo = true,
+                GetPlayerStatistics = true,
+                GetUserVirtualCurrency = true
+            }
         };
 
         // call api to login
@@ -74,8 +81,35 @@ public class AuthManager : Singleton<AuthManager>
         
         PlayerPrefs.SetString("PlayFabId", result.PlayFabId);
         PlayerPrefs.SetString("PlayerName", _loginUI.GetCurrentUsername());
-        // load main menu scene
-        SceneTransitionManager.Instance.LoadSceneAsync("Menu");
+
+        //Luu du lieu vao local player data de load len scene Account
+        var payload = result.InfoResultPayload;
+        LocalPlayerData.Username = payload.AccountInfo.Username;                    //Luu Username
+        payload.UserVirtualCurrency.TryGetValue("SL", out LocalPlayerData.Souls);   //Luu Soul
+        foreach (var stat in payload.PlayerStatistics)                              //Luu statistic
+        {
+            switch (stat.StatisticName)
+            {
+                case "TotalWins":
+                    LocalPlayerData.TotalWins = stat.Value; break;
+                case "TotalLoses":
+                    LocalPlayerData.TotalLoses = stat.Value; break;
+                case "RankPoints":
+                    LocalPlayerData.RankPoints = stat.Value; break;
+            }
+        }
+
+        //Kiem tra co phai dang nhap lan dau khong
+        string displayName = payload.AccountInfo.TitleInfo.DisplayName;
+        if (string.IsNullOrEmpty(displayName))
+        {         
+            _loginUI.DisplayInputDisplaynamePanel();
+        }
+        else
+        {
+            LocalPlayerData.DisplayName = displayName;
+            SceneTransitionManager.Instance.LoadSceneAsync("Menu");
+        }
     }    
 
     private void OnSignUpSuccess(RegisterPlayFabUserResult result)
