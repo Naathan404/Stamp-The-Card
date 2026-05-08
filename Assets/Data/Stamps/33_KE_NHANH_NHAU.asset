@@ -10,15 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1cdb312c59beb5548818c3bd7907a573, type: 3}
-  m_Name: 33_GUONG
+  m_Name: 33_KE_NHANH_NHAU
   m_EditorClassIdentifier: Assembly-CSharp::SpecialEffectStampData
   _stampID: 33
   _stampRank: 2
-  _stampName: "G\u01B0\u01A1ng"
-  _stampEffect: "Copy hi\u1EC7u \u1EE9ng stamp cu\u1ED1i c\xF9ng (n\u1EBFu c\xF3)
-    tr\xEAn l\xE1 b\xE0i \u0111\u1ED1i di\u1EC7n."
-  targets: 00000000
+  _stampName: "K\u1EBB nhanh nh\u1EA3u"
+  _stampEffect: "N\u1EBFu \u0111\u01B0\u1EE3c resolve tr\u01B0\u1EDBc \u1EDF l\u01B0\u1EE3t
+    n\xE0y, v\xF4 hi\u1EC7u h\xF3a to\xE0n b\u1ED9 stamp l\xE1 b\xE0i \u0111\u1ED1i
+    di\u1EC7n"
+  targets: 03000000
   _bloodCost: 0
   stampArt: {fileID: 0}
   isEnabled: 1
-  effectType: 1
+  effectType: 0
