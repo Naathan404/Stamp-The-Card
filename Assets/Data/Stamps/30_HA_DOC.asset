@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0122b5ef3ddb13941bf61227b065daf7, type: 3}
-  m_Name: 31_HA_DOC
+  m_Name: 30_HA_DOC
   m_EditorClassIdentifier: Assembly-CSharp::VariableScoreModifierStampData
-  _stampID: 31
+  _stampID: 30
   _stampRank: 2
   _stampName: "H\u1EA1 \u0111\u1ED9c"
   _stampEffect: "V\u1EDBi X stamp tr\xEAn l\xE1 b\xE0i n\xE0y, tr\u1EEB s\u1ED1 X

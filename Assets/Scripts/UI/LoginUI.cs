@@ -32,12 +32,18 @@ public class LoginUI : MonoBehaviour
     private Vector2 _originalUsernameInputPosition;
     private Vector2 _originalPasswordInputPosition;
 
+    [Header("Displayname Input Panel")]
+    [SerializeField] private GameObject _displayNameInputPanel;
+    [SerializeField] private TMP_InputField _displayNameInput;
+    [SerializeField] private Button _confirmButton;
+
     private void Awake()
     {
         _loginButton.onClick.AddListener(OnLoginButtonClicked);
         _signUpButton.onClick.AddListener(OnSignUpButtonClicked);
         _googleButton.onClick.AddListener(OnGoogleButtonClicked);
         _facebookButton.onClick.AddListener(OnFacebookButtonClicked);
+        _confirmButton.onClick.AddListener(OnConfirmButtonClicked);
 
         _originalUsernameInputPosition = _usernameInput.transform.position;
         _originalPasswordInputPosition = _passwordInput.transform.position;
@@ -69,7 +75,29 @@ public class LoginUI : MonoBehaviour
         _signUpButton.onClick.RemoveListener(OnSignUpButtonClicked);
         _googleButton.onClick.RemoveListener(OnGoogleButtonClicked);
         _facebookButton.onClick.RemoveListener(OnFacebookButtonClicked);
+        _confirmButton.onClick.RemoveListener(OnConfirmButtonClicked);
     }
+
+    public void DisplayInputDisplaynamePanel()
+    { 
+        _displayNameInputPanel.SetActive(true);
+    }
+
+    public void OnConfirmButtonClicked()
+    {
+        AudioManager.Instance.PlaySFX(AudioManager.Instance.ButtonClick, true);
+
+        string displayName = _displayNameInput.text;
+        if (string.IsNullOrEmpty(displayName))
+        {
+            Debug.Log("Vui long khong de trong display name!");
+            return;
+        }
+
+        _displayNameInputPanel.SetActive(false);
+        PlayfabManager.Instance.UpdateDisplayName(displayName);
+        SceneTransitionManager.Instance.LoadSceneAsync("Menu");
+    }    
 
     public void OnLoginButtonClicked()
     {

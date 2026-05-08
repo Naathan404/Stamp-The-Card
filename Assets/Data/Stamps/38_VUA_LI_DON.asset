@@ -10,16 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3d1f71ba2781f8c43a163c2d67f9e888, type: 3}
-  m_Name: 37_DAO_NGUOC_CAN_CAN
+  m_Name: 38_VUA_LI_DON
   m_EditorClassIdentifier: Assembly-CSharp::BattleRuleStampData
-  _stampID: 37
+  _stampID: 38
   _stampRank: 3
-  _stampName: "\u0110\u1EA3o ng\u01B0\u1EE3c c\xE1n c\xE2n"
-  _stampEffect: "T\xEDnh ri\xEAng c\u1ED9t b\xE0i n\xE0y, ng\u01B0\u1EDDi ch\u01A1i
-    c\xF3 s\u1ED1 n\xFAt cao h\u01A1n s\u1EBD b\u1ECB tr\u1EEB s\u1ED1 m\xE1u b\u1EB1ng
-    s\u1ED1 n\xFAt ch\xEAnh l\u1EC7ch tr\xEAn c\u1ED9t"
+  _stampName: "Vua l\xEC \u0111\xF2n"
+  _stampEffect: "T\xEDnh ri\xEAng c\u1ED9t b\xE0i n\xE0y, n\u1EBFu ta thua th\xEC
+    s\xE1t th\u01B0\u01A1ng nh\u1EADn v\xE0o \u1EDF Calculate Phase b\u1EB1ng 0"
   targets: 
   _bloodCost: 1
   stampArt: {fileID: 0}
   isEnabled: 1
-  battleRuleType: 2
+  battleRuleType: 1

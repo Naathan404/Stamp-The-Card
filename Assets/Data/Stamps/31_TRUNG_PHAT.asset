@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8c61e349e93a7a94ca0abb017f814ee6, type: 3}
-  m_Name: 32_TRUNG_PHAT
+  m_Name: 31_TRUNG_PHAT
   m_EditorClassIdentifier: Assembly-CSharp::SimpleScoreModifierStampData
-  _stampID: 32
+  _stampID: 31
   _stampRank: 2
   _stampName: "Tr\u1EEBng ph\u1EA1t"
   _stampEffect: "Chia \u0111\xF4i s\u1ED1 n\xFAt l\xE1 b\xE0i \u0111\u1ED1i di\u1EC7n"
