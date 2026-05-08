@@ -1150,7 +1150,7 @@ GameObject:
   - component: {fileID: 673354763}
   - component: {fileID: 673354762}
   m_Layer: 5
-  m_Name: Character
+  m_Name: CharacterImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1188,7 +1188,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.19215687}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1295,7 +1295,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 828804161}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &828804161
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1425,7 +1437,7 @@ GameObject:
   - component: {fileID: 919538699}
   - component: {fileID: 919538698}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: Character Description
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1846,7 +1858,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1136210045}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1136210045
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3262,6 +3286,7 @@ GameObject:
   - component: {fileID: 2092296373}
   - component: {fileID: 2092296375}
   - component: {fileID: 2092296374}
+  - component: {fileID: 2092296376}
   m_Layer: 5
   m_Name: CharSelectionPanel
   m_TagString: Untagged
@@ -3330,6 +3355,27 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2092296372}
   m_CullTransparentMesh: 1
+--- !u!114 &2092296376
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2092296372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fea05e1819a13674d92295aef8fc7a22, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CharacterSelect
+  characterList:
+  - {fileID: 11400000, guid: 98bc2f585374733479f10872dc1dee27, type: 2}
+  - {fileID: 11400000, guid: 6812173a740c1ce4594491de700f3d52, type: 2}
+  - {fileID: 11400000, guid: f869345852710fb47931fa2d938ade13, type: 2}
+  - {fileID: 11400000, guid: 5dbffaa8b45746a4db222c9e2d55d632, type: 2}
+  backCharButton: {fileID: 1136210044}
+  nextCharButton: {fileID: 828804160}
+  characterImage: {fileID: 673354762}
+  characterDescription: {fileID: 919538698}
 --- !u!1 &2139580758
 GameObject:
   m_ObjectHideFlags: 0
