@@ -1,7 +1,6 @@
 using System.Collections;
 using DG.Tweening;
 using Fusion;
-using NUnit.Framework;
 using TMPro;
 using UnityEngine;
 
@@ -120,6 +119,13 @@ public class TableVisualManager : Singleton<TableVisualManager>
             {
                 BottomCardSprites[index].sprite = myCards[index].Artwork;
                 BottomCardTexts[index].text = myCards[index].BaseScore.ToString();
+
+                CardSlot slot = BottomCardSprites[index].GetComponent<CardSlot>();
+                if (slot != null) {
+                    slot.Data = myCards[index]; // Gán CardData
+                }
+
+
                 BottomCardSprites[index].transform.DOScale(_cardScale, 0.15f).SetEase(Ease.OutBack).OnComplete(() => 
                 {
                     // vẽ stamp lên card
@@ -127,10 +133,25 @@ public class TableVisualManager : Singleton<TableVisualManager>
                 });
             });
 
+            // TopCardSprites[index].transform.DOScaleX(0f, 0.15f).OnComplete(() => 
+            // {
+            //     TopCardSprites[index].sprite = oppCards[index].Artwork;
+            //     TopCardTexts[index].text = oppCards[index].BaseScore.ToString();
+
+            //     CardSlot slot = TopCardSprites[index].GetComponent<CardSlot>();
+            //     if (slot != null) {
+            //         slot.Data = myCards[index]; // Gán CardData
+            //     }
+
+            //     TopCardSprites[index].transform.DOScale(_cardScale, 0.15f).SetEase(Ease.OutBack);
+            // });
+
             TopCardSprites[index].transform.DOScaleX(0f, 0.15f).OnComplete(() => 
             {
-                TopCardSprites[index].sprite = oppCards[index].Artwork;
-                TopCardTexts[index].text = oppCards[index].BaseScore.ToString();
+                // KHÔNG đổi sprite sang Artwork, KHÔNG hiện Text điểm số
+                CardSlot slot = TopCardSprites[index].GetComponent<CardSlot>();
+                if (slot != null) slot.Data = oppCards[index]; // Vẫn âm thầm gán Data để lát tính điểm
+
                 TopCardSprites[index].transform.DOScale(_cardScale, 0.15f).SetEase(Ease.OutBack);
             });
 
@@ -150,31 +171,40 @@ public class TableVisualManager : Singleton<TableVisualManager>
         for (int slotIndex = 0; slotIndex < 3; slotIndex++)
         {
             int cardID = playerHand[slotIndex];
-
-            if (cardID == -1) continue; 
+            if (cardID == -1) continue;  
 
             CardSlot cardSlot = visualSlots[slotIndex].GetComponent<CardSlot>();
-            if (cardSlot == null) continue;
+            if(cardSlot == null) continue;
+
+            if (cardSlot.StampRenderers == null || cardSlot.StampRenderers.Count < 3)
+            {
+                Debug.LogWarning($"[TableVisualManager] CardSlot tại slot {slotIndex} thiếu StampRenderers! Hiện có: {cardSlot.StampRenderers?.Count ?? 0}/3");
+                continue;
+            }
 
             int startIndex = cardID * 3; 
 
             for (int i = 0; i < 3; i++)
             {
                 int stampID = allStamps[startIndex + i];
-                if (stampID != -1)
+                if (stampID == -1) continue;
+
+                if (stampID > 0)
                 {
-                    Debug.Log($"[Đồng Bộ] Vẽ vết mực Tem {stampID} lên lá bài {cardID} tại ô số {i}");
-                    if (stampID > 0)
+                    BaseStampData stampData = DataManager.Instance.GetStampDataByID(stampID);
+                    if (stampData == null)
                     {
-                        // Lấy hình ảnh từ DataManager và bật hiển thị lên
-                        cardSlot.StampRenderers[i].sprite = DataManager.Instance.GetStampDataByID(stampID).stampArt;
-                        cardSlot.StampRenderers[i].enabled = true;
+                        Debug.LogWarning($"[TableVisualManager] Không tìm thấy StampData cho ID: {stampID}");
+                        continue;
                     }
-                    else // NẾU TRỐNG
-                    {
-                        // Tắt hiển thị vết mực ở ô này đi
-                        cardSlot.StampRenderers[i].enabled = false;
-                    }
+                    // Lấy hình ảnh từ DataManager và bật hiển thị lên
+                    cardSlot.StampRenderers[i].sprite = DataManager.Instance.GetStampDataByID(stampID).stampArt;
+                    cardSlot.StampRenderers[i].enabled = true;
+                }
+                else // NẾU TRỐNG
+                {
+                    // Tắt hiển thị vết mực ở ô này đi
+                    cardSlot.StampRenderers[i].enabled = false;
                 }
             }
         }
@@ -287,19 +317,53 @@ public class TableVisualManager : Singleton<TableVisualManager>
     {
         for (int i = 0; i < 3; i++)
         {
-            // Kiểm tra nếu không phải là stamp đang dùng
             if (StampSprites[i].gameObject != usedStampGO && StampSprites[i].gameObject.activeSelf)
             {
-                // Khóa ngay script kéo thả lại để người chơi không lỡ tay chụp được nó lúc nó đang mờ đi
                 var dragger = StampSprites[i].GetComponent<StampDragger>();
                 if (dragger != null) dragger.isUsed = true;
 
-                // hiệu ứng giật lùi rùi tàng hình
-                StampSprites[i].transform.DOScale(Vector3.zero, 0.3f).SetEase(Ease.InBack).OnComplete(() =>
-                {
-                    StampSprites[i].gameObject.SetActive(false);
-                });
+                int capturedIndex = i; // ✅ chốt giá trị i lại
+                StampSprites[capturedIndex].transform.DOScale(Vector3.zero, 0.3f)
+                    .SetEase(Ease.InBack)
+                    .OnComplete(() =>
+                    {
+                        StampSprites[capturedIndex].gameObject.SetActive(false); // ✅ dùng capturedIndex
+                    });
             }
         }
+    }
+
+    public void UpdateBoardScores(CardSlot[] hostSlots, CardSlot[] clientSlots)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            // Host Score UI
+            BottomCardTexts[i].text = hostSlots[i].Score.ToString();
+            BottomCardTexts[i].transform.DOPunchScale(Vector3.one * 0.2f, 0.2f); // Nảy số
+
+            // Client Score UI
+            TopCardTexts[i].text = clientSlots[i].Score.ToString();
+            TopCardTexts[i].transform.DOPunchScale(Vector3.one * 0.2f, 0.2f);
+        }
+    }
+
+    public CardSlot[] GetBottomCardSlots()
+    {
+        CardSlot[] res = new CardSlot[3];
+        for(int i = 0; i < 3; i++)
+        {
+            res[i] = BottomCardSprites[i].gameObject.GetComponent<CardSlot>();
+        }
+        return res;
+    }
+
+    public CardSlot[] GetTopCardSlots()
+    {
+        CardSlot[] res = new CardSlot[3];
+        for(int i = 0; i < 3; i++)
+        {
+            res[i] = TopCardSprites[i].gameObject.GetComponent<CardSlot>();
+        }
+        return res;
     }
 }

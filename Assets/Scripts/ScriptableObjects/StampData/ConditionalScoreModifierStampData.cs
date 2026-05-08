@@ -43,16 +43,9 @@ public class ConditionalScoreModifierStampData : SimpleScoreModifierStampData
                 return targetToCheck.Data.BaseScore % 2 != 0;
 
             case Condition.IS_STAMPED:
-                if (targetToCheck.Stamps.Count > 0)
-                {
-                    amountToChange = -3;
-                    return true;
-                }
-                else
-                {
-                    amountToChange = -1;
-                    return false;
-                }
+                bool isStamped = targetToCheck.Stamps.Count > 0;
+                amountToChange = isStamped ? -1 : -3;
+                return true;
 
             case Condition.IS_NOT_HIGHER_THAN_5:
 

@@ -16,6 +16,15 @@ public enum Target
     ALL_ENEMY_CARDS,
 }
 
+public enum ExecutionTier
+{
+    Tier0_RuleSetting,     // Thiết lập luật chơi
+    Tier1_ConditionCheck,  // Kiểm tra điều kiện & Thay đổi base score
+    Tier2_MathModifier,    // Cộng/Trừ/Nhân điểm bình thường
+    Tier3_Transfer,        // Hút máu, chuyển điểm 
+    Tier4_FinalAdjustment  // Các luật quyết định kết quả cuối
+}
+
 public abstract class BaseStampData : ScriptableObject
 {
     [Header("Stamp Info")]
@@ -26,6 +35,8 @@ public abstract class BaseStampData : ScriptableObject
     [SerializeField] private string _stampEffect;
     [SerializeField] protected Target[] targets;
     [SerializeField] private int _bloodCost;
+
+    public ExecutionTier ExeTier = ExecutionTier.Tier2_MathModifier; 
 
     public Sprite stampArt;
     public int stampID => _stampID;

@@ -1,3 +1,4 @@
+using System.Buffers.Text;
 using System.Linq;
 using System.Net.Security;
 using DG.Tweening;
@@ -8,6 +9,8 @@ using UnityEngine;
 
 public class GameStateManager : NetworkSingleton<GameStateManager>
 {
+
+    
     #region Game Phase Enum
     public enum GamePhase
     {
@@ -23,6 +26,7 @@ public class GameStateManager : NetworkSingleton<GameStateManager>
 
 
     [Networked] public GamePhase CurrentGameState { get; set; }
+    [Networked] public int CurrentTurn { get; set;}
     [Networked] public bool IsHostPriority { get; set; } = true;
     [Networked] private NetworkBool HasStartedFirstTurn { get; set; }
     [Networked] private TickTimer _startDelayTimer { get; set; }
@@ -41,7 +45,9 @@ public class GameStateManager : NetworkSingleton<GameStateManager>
         _changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
         if (HasStateAuthority)
         {
+         
             CurrentGameState = GamePhase.Waiting;
+            CurrentTurn = 1;
             HasStartedFirstTurn = false;
         }
     }
