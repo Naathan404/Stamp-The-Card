@@ -34,7 +34,7 @@ public class StampDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _originalPosition = transform.position;
-        //_originalScale = transform.localScale;
+        _originalScale = transform.localScale;
         _originalSortingOrder = _spriteRenderer.sortingOrder;
 
         _stampToolInstance = Instantiate(stampToolPrefab, Vector2.zero, Quaternion.identity);
@@ -143,5 +143,18 @@ public class StampDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
             gameObject.SetActive(false);
         });
+    }
+
+    public void ResetForNewTurn(int newStampID, Sprite newSprite)
+    {
+        stampID = newStampID;
+        isUsed = false;
+        _spriteRenderer.enabled = true;
+        _spriteRenderer.sprite = newSprite;
+        _spriteRenderer.DOFade(1f, 0f);
+
+        transform.DOKill();
+        transform.position = _originalPosition;
+        transform.localScale = _originalScale;
     }
 }

@@ -223,11 +223,14 @@ public class TableVisualManager : Singleton<TableVisualManager>
                     dragger.stampID = sID;
                     dragger.isUsed = false;
                 }
+                var sr = StampSprites[i].GetComponent<SpriteRenderer>();
+                sr.enabled = true;
+                sr.DOFade(1f, 0f);
 
                 StampSprites[i].sprite = DataManager.Instance.GetStampDataByID(sID).stampArt;
-
-                StampSprites[i].transform.position   = _originalStampPosition[i];
-                StampSprites[i].transform.localScale  = _originalStampScale[i];
+                StampSprites[i].transform.DOKill();
+                StampSprites[i].transform.position = _originalStampPosition[i];
+                StampSprites[i].transform.localScale = _originalStampScale[i];
                 StampSprites[i].gameObject.SetActive(true);
 
                 StampSprites[i].transform
