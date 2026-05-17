@@ -73,20 +73,20 @@ public class GameManager : NetworkSingleton<GameManager>
         if (HasStateAuthority) // Chỉ Host mới được quyền set up bàn chơi
         {
             Debug.Log("Dang set up du liue");
-            // 1. NẠP ĐẠN CHO MAIN DECK (Từ 0 đến 25)
+            // NẠP MAIN DECK (Từ 0 đến 25)
             for (int i = 0; i < GameConstants.MAINDECK_SIZE; i++)
             {
                 MainDeck[i] = i; 
             }
 
-            // 2. NẠP ĐẠN CHO STAMP DECK (Tránh việc toàn số 0)
+            // NẠP STAMP DECK (Tránh việc toàn số 0)
             for (int i = 0; i < GameConstants.MAX_STAMP_CAPACITY; i++)
             {
                 HostStampDeck[i] = i + 1; 
-                ClientStampDeck[i] = i + 1; // Cố tình cho Client tem khác Host để dễ test
+                ClientStampDeck[i] = i + 1;
             }
 
-            // 3. SET BÀI TRÊN TAY LÀ -1 (Để lát nữa chia bài nó mới nhận diện là "Có thay đổi")
+            // SET BÀI TRÊN TAY LÀ -1 
             for(int i = 0; i < GameConstants.PLAYER_HAND_SIZE; i++)
             {
                 HostHand.Set(i, -1);

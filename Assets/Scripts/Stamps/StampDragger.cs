@@ -96,59 +96,51 @@ public class StampDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         TableVisualManager.Instance.HideUnusedStamps(this.gameObject);
         int slotIndex = targetCard.GetComponent<CardSlot>().Index;
 
-        // ANIMATION
-        transform.SetParent(targetCard.transform);
-        transform.position = targetCard.transform.position; // Đặt đúng tâm lá bài
-        _spriteRenderer.enabled = false; // Tàng hình stamp
+        _spriteRenderer.enabled = false;
 
-        // spawn stamp tool 
+        // Spawn stamp tool animation
         Vector3 spawnPos = targetCard.transform.position + Vector3.up * _stampStartPosition;
         _stampToolInstance.SetActive(true);
         _stampToolInstance.transform.position = spawnPos;
-        _stampToolInstance.GetComponent<SpriteRenderer>().sortingOrder = 200; 
+        _stampToolInstance.GetComponent<SpriteRenderer>().sortingOrder = 200;
 
-        
+        // Reset fade phòng trường hợp lượt trước bị dở
+        _stampToolInstance.GetComponent<SpriteRenderer>().DOFade(1f, 0f);
 
-        /// DOTWEEN 
         Sequence seq = DOTween.Sequence();
 
-        // stamp bool fall down 
-        seq.Append(_stampToolInstance.transform.DOMove(targetCard.transform.position, _stampImpactDuration).SetEase(Ease.InExpo));
-        // impact, effect, bla bla bla
-        seq.AppendCallback(() => 
+        seq.Append(_stampToolInstance.transform
+            .DOMove(targetCard.transform.position, _stampImpactDuration)
+            .SetEase(Ease.InExpo));
+
+        seq.AppendCallback(() =>
         {
-            _spriteRenderer.enabled = true;
-
-            // punch scale target card
             targetCard.transform.DOPunchScale(new Vector3(0.15f, -0.15f, 0), _shakeDuration, 10, 1f);
-
-            // shake camera
             Camera.main.transform.DOShakePosition(_shakeDuration, _shakeAmplitude, 20, 90f);
 
-            // blood impact particle
             if (_bloodImpactParticle != null)
             {
                 _bloodImpactParticle.transform.position = targetCard.transform.position;
                 _bloodImpactParticle.gameObject.SetActive(true);
                 _bloodImpactParticle.Play();
             }
-
-            // sound effect
-            // AudioManager.Instance.PlaySFX("HeavyThud");
         });
 
-        // stamp tool fly up and fade out
-        seq.Append(_stampToolInstance.transform.DOMove(targetCard.transform.position + Vector3.up * 2f, _stampImpactDuration).SetEase(Ease.OutQuad));
-        seq.Join(_stampToolInstance.GetComponent<SpriteRenderer>().DOFade(0, _stampImpactDuration).SetEase(Ease.OutQuad));
+        seq.Append(_stampToolInstance.transform
+            .DOMove(targetCard.transform.position + Vector3.up * 2f, _stampImpactDuration)
+            .SetEase(Ease.OutQuad));
+        seq.Join(_stampToolInstance.GetComponent<SpriteRenderer>()
+            .DOFade(0, _stampImpactDuration)
+            .SetEase(Ease.OutQuad));
 
-        seq.OnComplete(() => 
+        seq.OnComplete(() =>
         {
             _stampToolInstance.SetActive(false);
             isUsed = true;
 
-            // call RPC to sync the stamp effect across all clients
             bool amIHost = GameManager.Instance.Runner.IsServer;
             GameManager.Instance.RPC_PlayStamp(slotIndex, stampID, amIHost);
+
             gameObject.SetActive(false);
         });
     }

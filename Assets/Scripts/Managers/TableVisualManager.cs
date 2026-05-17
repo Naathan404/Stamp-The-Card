@@ -3,6 +3,7 @@ using DG.Tweening;
 using Fusion;
 using TMPro;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 public class TableVisualManager : Singleton<TableVisualManager>
 {
@@ -16,6 +17,8 @@ public class TableVisualManager : Singleton<TableVisualManager>
 
     [Header("Stamps")]
     public SpriteRenderer[] StampSprites = new SpriteRenderer[3];
+    private Vector2[] _originalStampPosition = new Vector2[3];
+    private Vector2[] _originalStampScale = new Vector2[3];
 
     [Header("Center Deck")]
     [SerializeField] private Transform _mainDeckTransform;
@@ -45,6 +48,9 @@ public class TableVisualManager : Singleton<TableVisualManager>
             BottomCardSprites[i].gameObject.SetActive(false);
             TopCardSprites[i].gameObject.SetActive(false);
             StampSprites[i].gameObject.SetActive(false);
+
+            _originalStampPosition[i] = StampSprites[i].transform.position;
+            _originalStampScale[i] = StampSprites[i].transform.localScale;
         }
     }
 
@@ -158,39 +164,41 @@ public class TableVisualManager : Singleton<TableVisualManager>
         for (int slotIndex = 0; slotIndex < 3; slotIndex++)
         {
             int cardID = playerHand[slotIndex];
-            if (cardID == -1) continue;  
+            if (cardID == -1) continue;
 
             CardSlot cardSlot = visualSlots[slotIndex].GetComponent<CardSlot>();
-            if(cardSlot == null) continue;
+            if (cardSlot == null) continue;
 
             if (cardSlot.StampRenderers == null || cardSlot.StampRenderers.Count < 3)
             {
-                Debug.LogWarning($"[TableVisualManager] CardSlot tại slot {slotIndex} thiếu StampRenderers! Hiện có: {cardSlot.StampRenderers?.Count ?? 0}/3");
+                Debug.LogWarning($"[TableVisualManager] CardSlot tại slot {slotIndex} thiếu StampRenderers!");
                 continue;
             }
 
-            int startIndex = cardID * 3; 
+            int stampCount = GameConstants.IsJokerStamp(cardID) ? 1 : 3;
+            int startIndex = cardID * 3;
 
             for (int i = 0; i < 3; i++)
             {
+                // Ô này nằm ngoài giới hạn stamp của lá bài như lá Joker thì tắt renderer
+                if (i >= stampCount)
+                {
+                    cardSlot.StampRenderers[i].enabled = false;
+                    continue;
+                }
+
                 int stampID = allStamps[startIndex + i];
-                if (stampID == -1) continue;
 
                 if (stampID > 0)
                 {
                     BaseStampData stampData = DataManager.Instance.GetStampDataByID(stampID);
-                    if (stampData == null)
-                    {
-                        Debug.LogWarning($"[TableVisualManager] Không tìm thấy StampData cho ID: {stampID}");
-                        continue;
-                    }
-                    // Lấy hình ảnh từ DataManager và bật hiển thị lên
-                    cardSlot.StampRenderers[i].sprite = DataManager.Instance.GetStampDataByID(stampID).stampArt;
+                    if (stampData == null) continue;
+
+                    cardSlot.StampRenderers[i].sprite = stampData.stampArt;
                     cardSlot.StampRenderers[i].enabled = true;
                 }
-                else // NẾU TRỐNG
+                else
                 {
-                    // Tắt hiển thị vết mực ở ô này đi
                     cardSlot.StampRenderers[i].enabled = false;
                 }
             }
@@ -200,29 +208,34 @@ public class TableVisualManager : Singleton<TableVisualManager>
     public void SpawnStampChoices(NetworkArray<int> stampIDs, bool isHostChoice)
     {
         bool amIHost = GameManager.Instance.Runner.IsServer;
-        if (isHostChoice != amIHost) return; 
+        if (isHostChoice != amIHost) return;
 
         for (int i = 0; i < 3; i++)
         {
             int sID = stampIDs[i];
-            if (sID > 0) 
+            StampSprites[i].transform.DOKill();
+
+            if (sID > 0)
             {
-                StampSprites[i].gameObject.SetActive(true);
-                
-                // Lấy Data từ kho và vẽ lên mặt Stamp
-                StampSprites[i].sprite = DataManager.Instance.GetStampDataByID(sID).stampArt;
-                // Gắn cái ID đó vào con chíp vật lý để kéo thả cho đúng
                 var dragger = StampSprites[i].GetComponent<StampDragger>();
                 if (dragger != null)
                 {
-                    dragger.stampID = sID; 
-                    dragger.isUsed = false; 
-
-                    StampSprites[i].transform.localScale = Vector3.zero;
-                    StampSprites[i].transform.DOScale(dragger.OriginalScale, 0.4f).SetEase(Ease.OutBack).SetDelay(i * 0.1f);
+                    dragger.stampID = sID;
+                    dragger.isUsed = false;
                 }
+
+                StampSprites[i].sprite = DataManager.Instance.GetStampDataByID(sID).stampArt;
+
+                StampSprites[i].transform.position   = _originalStampPosition[i];
+                StampSprites[i].transform.localScale  = _originalStampScale[i];
+                StampSprites[i].gameObject.SetActive(true);
+
+                StampSprites[i].transform
+                    .DOScale(dragger.OriginalScale, 0.4f)
+                    .SetEase(Ease.OutBack)
+                    .SetDelay(i * 0.1f);
             }
-            else 
+            else
             {
                 StampSprites[i].gameObject.SetActive(false);
             }
@@ -232,14 +245,14 @@ public class TableVisualManager : Singleton<TableVisualManager>
     public void RenderStampsOnBoard(NetworkArray<int> allStamps)
     {
         bool amIHost = GameManager.Instance.Runner.IsServer;
-
-        //  Vẽ 3 lá bài của Host 
-        SpriteRenderer[] hostVisualSlots = amIHost ? BottomCardSprites : TopCardSprites;
-        DrawStampsForPlayer(GameManager.Instance.HostHand, hostVisualSlots, allStamps);
-
-        // Vẽ 3 lá bài của Client 
-        SpriteRenderer[] clientVisualSlots = amIHost ? TopCardSprites : BottomCardSprites;
-        DrawStampsForPlayer(GameManager.Instance.ClientHand, clientVisualSlots, allStamps);
+        if (amIHost)
+        {
+            DrawStampsForPlayer(GameManager.Instance.HostHand, BottomCardSprites, allStamps);
+        }
+        else
+        {
+            DrawStampsForPlayer(GameManager.Instance.ClientHand, BottomCardSprites, allStamps);
+        }
     }
 
 
@@ -323,7 +336,7 @@ public class TableVisualManager : Singleton<TableVisualManager>
             cardSlot.Stamps.Clear();
 
             // Joker chỉ có 1 ô stamp
-            int stampCount = (cardID == 0) ? 1 : 3;
+            int stampCount = GameConstants.IsJokerStamp(cardID) ? 1 : 3;
             int startIndex = cardID * 3;
 
             for (int i = 0; i < stampCount; i++)

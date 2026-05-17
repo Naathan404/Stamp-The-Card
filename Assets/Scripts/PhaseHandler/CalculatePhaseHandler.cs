@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class CalculatePhaseHandler : PhaseHandler
 {
+    private CalculationSystem _calculationSystem = new CalculationSystem();
     public CalculatePhaseHandler(GameManager gameManager) : base(gameManager)
     {
     }
@@ -17,6 +18,12 @@ public class CalculatePhaseHandler : PhaseHandler
         // reset tất cả card và clear flags
         ResetAllCard(hostSlots);
         ResetAllCard(clientSlots);
+
+        _calculationSystem.Run(hostSlots, clientSlots, GameStateManager.Instance.CurrentTurn);
+
+        TableVisualManager.Instance.UpdateBoardScores(hostSlots, clientSlots);
+
+        GameStateManager.Instance.ChangePhase(GameStateManager.GamePhase.EndPhase);
     }
 
 
