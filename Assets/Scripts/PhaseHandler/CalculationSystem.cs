@@ -1,58 +1,67 @@
-using System.Collections.Generic;
-using UnityEngine;
-
-public class CalculationSystem : MonoBehaviour
+public class CalculationSystem
 {
-    public void RunCalculationPhase(CardSlot[] hostSlots, CardSlot[] clientSlots, int[] hostCards, int[] clientCards, int[] attachedStamps)
+    /// <summary>
+    /// Entry để gọi từ CalculatePhaseHandler.
+    /// </summary>
+    public void Run(CardSlot[] hostSlots, CardSlot[] clientSlots, int currentTurn)
     {
-        List<StampAction> allStamps = new List<StampAction>();
+        bool hostFirst = (currentTurn % 2 == 1);
 
-        // napj toàn bộ stamp vào list allStamps
-        allStamps.AddRange(CollectStamps(hostCards, attachedStamps, true));
-        allStamps.AddRange(CollectStamps(clientCards, attachedStamps, false));
+        // thực hiện PreResolve -> chạy các stampe Tier0
+        // set flags (IsIgnored, StampsDisabled, v.v.) trước khi tính điểm
+        if (hostFirst)
+        {
+            ApplyTier(ExecutionTier.Tier0_RuleSetting, hostSlots, clientSlots);
+            ApplyTier(ExecutionTier.Tier0_RuleSetting, clientSlots, hostSlots);
+        }
+        else
+        {
+            ApplyTier(ExecutionTier.Tier0_RuleSetting, clientSlots, hostSlots);
+            ApplyTier(ExecutionTier.Tier0_RuleSetting, hostSlots, clientSlots);
+        }
+
+        //  Main Resolve -> chạy Tier1 đến Tier4 theo thứ tự turn
+        if (hostFirst)
+        {
+            ResolveMainStamps(hostSlots, clientSlots);
+            ResolveMainStamps(clientSlots, hostSlots);
+        }
+        else
+        {
+            ResolveMainStamps(clientSlots, hostSlots);
+            ResolveMainStamps(hostSlots, clientSlots);
+        }
     }
 
-
-    private List<StampAction> CollectStamps(int[] hand, int[] attachedStamps, bool isHost)
+    /// Chạy tất cả stamp thuộc 1 tier cụ thể của 1 bên
+    private void ApplyTier(ExecutionTier tier, CardSlot[] mySlots, CardSlot[] enemySlots)
     {
-        List<StampAction> actions = new List<StampAction>();
-        for (int slot = 0; slot < 3; slot++)
+        for (int i = 0; i < 3; i++)
         {
-            int cardID = hand[slot];
-            if (cardID == -1) continue;
+            if (mySlots[i].IsIgnored || mySlots[i].StampsDisabled) continue;
 
-            int startIndex = cardID * 3;
-            for (int s = 0; s < 3; s++)
+            foreach (var stamp in mySlots[i].Stamps)
             {
-                int stampID = attachedStamps[startIndex + s];
-                if (stampID > 0)
-                {
-                    BaseStampData data = DataManager.Instance.GetStampDataByID(stampID);
-                    if (data != null)
-                    {
-                        // Luôn reset tem về trạng thái bật trước mỗi pha tính toán
-                        data.isEnabled = true; 
-                        actions.Add(new StampAction(data, slot, isHost));
-                    }
-                }
+                if (stamp.ExeTier == tier && stamp.isEnabled)
+                    stamp.ApplyEffect(mySlots, enemySlots, i);
             }
         }
-        return actions;
     }
 
-}
-
-
-public class StampAction
-{
-    public BaseStampData StampData;
-    public int SlotIndex;
-    public bool IsHostOwned;
-
-    public StampAction(BaseStampData data, int slot, bool isHost)
+    /// Chạy stamp Tier1–4 theo đúng thứ tự slot trên mỗi lá bài
+    private void ResolveMainStamps(CardSlot[] mySlots, CardSlot[] enemySlots)
     {
-        StampData = data;
-        SlotIndex = slot;
-        IsHostOwned = isHost;
+        for (int i = 0; i < 3; i++)
+        {
+            if (mySlots[i].IsIgnored || mySlots[i].StampsDisabled) continue;
+
+            foreach (var stamp in mySlots[i].Stamps)
+            {
+                if (stamp.ExeTier == ExecutionTier.Tier0_RuleSetting) continue; // đã xử lý ở PreResolve
+                if (!stamp.isEnabled) continue;
+
+                stamp.ApplyEffect(mySlots, enemySlots, i);
+            }
+        }
     }
 }

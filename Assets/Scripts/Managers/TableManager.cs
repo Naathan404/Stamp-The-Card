@@ -35,8 +35,8 @@ public class TableManager : Singleton<TableManager>
     {
         // cập nhật tên cho bản thân
         if(isYourSelf)
-            bottomNameUI.text = playerData.Username.ToString();
+            bottomNameUI.text = playerData.DisplayName.ToString();
         else    // cập nhật tên cho đối thủ
-            topNameUI.text = playerData.Username.ToString();
+            topNameUI.text = playerData.DisplayName.ToString();
     }
 }

@@ -120,19 +120,23 @@ public class GameStateManager : NetworkSingleton<GameStateManager>
         switch (newPhase)
         {
             case GamePhase.DrawPhase:
+                Debug.Log("Bắt đầu Draw Phase");
                 GameManager.Instance.ExecuteDrawPhase();
                 break;
 
             case GamePhase.MainPhase:
+                Debug.Log("Bắt đầu Main Phase");
                 _mainPhaseTimer = TickTimer.CreateFromSeconds(Runner, 60f);
                 GameManager.Instance.ExecuteMainPhase();
                 break;
 
             case GamePhase.CalculatePhase:
+                Debug.Log("Bắt đầu Calculate Phase");
                 GameManager.Instance.ExecuteCalcutePhase();
                 break;
 
             case GamePhase.EndPhase:
+                Debug.Log("Bắt đầu End Phase");
                 GameManager.Instance.ExecuteEndPhase();
                 break;
             

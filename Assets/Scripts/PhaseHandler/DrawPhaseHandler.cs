@@ -14,7 +14,7 @@ public class DrawPhaseHandler : PhaseHandler
         DealCards();
     }
 
-        #region DRAW PHASE
+    #region DRAW PHASE
     /// <summary>
     /// Shuffle the main dekc
     /// </summary>

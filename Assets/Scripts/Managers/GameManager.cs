@@ -42,6 +42,10 @@ public class GameManager : NetworkSingleton<GameManager>
     [Networked] public NetworkBool IsHostDone { get; set; }
     [Networked] public NetworkBool IsClientDone { get; set; }
 
+    [Header("PLAYER HP")]
+    [Networked] public int HostHP { get; set; }
+    [Networked] public int ClientHP { get; set; }
+
     /// <summary>
     /// ================ HANDLERS ========================
     /// </summary>
@@ -60,14 +64,10 @@ public class GameManager : NetworkSingleton<GameManager>
     public override void Spawned()
     {
         _changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
-        // if (HasStateAuthority)
-        // {
-        //     /// set ô stamp tất cả bài đều trống
-        //     for (int i = 0; i < GameConstants.MAINDECK_SIZE * 3; i++)
-        //     {
-        //         CardAttachedStamps.Set(i, -1);
-        //     }
-        // }
+        
+        /// Init data cho bàn chơi
+        HostHP = GameConstants.PLAYER_STARTING_HP;
+        ClientHP = GameConstants.PLAYER_STARTING_HP;
         
         Debug.Log("chuan bi set up du lieu");
         if (HasStateAuthority) // Chỉ Host mới được quyền set up bàn chơi
