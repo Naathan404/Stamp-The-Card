@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 853a32c92dad51542bd74fa12883d26d, type: 3}
+  m_Name: TrueSightChar
+  m_EditorClassIdentifier: Assembly-CSharp::TrueSightChar
+  _characterName: True Sight
+  _characterDescription: 13
+  charImage: {fileID: 7482667652216324306, guid: 0c99a264a6de7f24892afb4874eb8965, type: 3}
+  health: 15
+  skillChecked: 0
+  isDead: 0
+  canActivateSkill: 1
