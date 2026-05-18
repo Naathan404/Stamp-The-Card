@@ -4,15 +4,27 @@ using UnityEngine;
 
 public class CardSlot : MonoBehaviour
 {
+    [Header("Card Data")]
+    public int Index;
     public CardData Data;
     public int Score;
     public List<BaseStampData> Stamps = new List<BaseStampData>();
-    public List<SpriteRenderer> StampRenderers = new List<SpriteRenderer>(); 
-    public bool IsImmuneLowerScore = false;             //Kiem tra xem co mien nhiem viec tru so nut --> Dung cho stamp "Ao Choang"
-    public int LastRandomValue = 0;                     //Luu gia tri random nhan tu Network --> Dung cho stamp "An May"
-    public bool IsIgnored = false;                      //La bai bi vo hieu --> Dung cho stamp "Hoa thieu"
-    public int Index;
 
+    [Header("Components")]
+    public List<SpriteRenderer> StampRenderers = new List<SpriteRenderer>(); 
+
+    [Header("Flags")]
+    public bool IsIgnored = false;              // Hỏa Thiêu: lá bài bị loại khỏi trận lượt này
+    public bool StampsDisabled = false;         // Thẩm Phán: toàn bộ stamp trên lá bị vô hiệu
+    public bool IsImmuneLowerScore = false;     // Áo Choàng: miễn nhiễm hiệu ứng trừ điểm
+    public bool IsReverseBalance = false;       // Đảo Ngược Cán Cân: bên cao hơn bị trừ máu
+    public bool IsKingOfToughness = false;      // Vua Lì Đòn: sát thương nhận vào = 0 nếu thua cột này
+    public bool HasPeaceAmulet = false;         // Bùa Bình An: nếu máu về 0 thì kích hoạt
+
+    [Header("Networked Values")]
+    public int LastRandomValue = 0;             // Ăn May: nhận từ Host, tránh desync
+
+ 
     //Ham cap nhat so nut cua la bai
     public void UpdateUI()
     {
@@ -34,5 +46,17 @@ public class CardSlot : MonoBehaviour
     {
         Stamps.Add(stamp);
         UpdateUI();
+    }
+
+    public void Reset()
+    {
+        Score = Data.BaseScore;
+        IsIgnored = false;              
+        StampsDisabled = false;        
+        IsImmuneLowerScore = false;     
+        IsReverseBalance = false;       
+        IsKingOfToughness = false;      
+        HasPeaceAmulet = false;   
+        LastRandomValue = 0;
     }
 }

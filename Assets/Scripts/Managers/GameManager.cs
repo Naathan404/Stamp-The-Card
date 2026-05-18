@@ -28,10 +28,10 @@ public class GameManager : NetworkSingleton<GameManager>
     [Header("PLAYER STAMPS")]
     // stamp cua hosst
     [Networked, Capacity(3)]
-    private NetworkArray<int> HostStampChoices => default;
+    [HideInInspector] public NetworkArray<int> HostStampChoices => default;
     // stamp cua client
     [Networked, Capacity(3)] 
-    private NetworkArray<int> ClientStampChoices => default; 
+    [HideInInspector] public NetworkArray<int> ClientStampChoices => default; 
 
     [Header("STAMPS ON CARRDS")]
     //// lá bài 0 (idx 0, 1, 2) và tương tự với lá bài 1, 2,...
@@ -42,6 +42,21 @@ public class GameManager : NetworkSingleton<GameManager>
     [Networked] public NetworkBool IsHostDone { get; set; }
     [Networked] public NetworkBool IsClientDone { get; set; }
 
+    [Header("PLAYER HP")]
+    [Networked] public int HostHP { get; set; }
+    [Networked] public int ClientHP { get; set; }
+
+    /// <summary>
+    /// ================ HANDLERS ========================
+    /// </summary>
+    private DrawPhaseHandler _drawHandler;
+    private MainPhaseHandler _mainHandler;
+    private CalculatePhaseHandler _calculateHandler;
+    private EndPhaseHandler _endHandler;
+    /// <summary>
+    ///  ================================================
+    /// </summary>
+
 
     [Header("Change Detector")]
     private ChangeDetector _changeDetector;
@@ -49,33 +64,29 @@ public class GameManager : NetworkSingleton<GameManager>
     public override void Spawned()
     {
         _changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
-        // if (HasStateAuthority)
-        // {
-        //     /// set ô stamp tất cả bài đều trống
-        //     for (int i = 0; i < GameConstants.MAINDECK_SIZE * 3; i++)
-        //     {
-        //         CardAttachedStamps.Set(i, -1);
-        //     }
-        // }
+        
+        /// Init data cho bàn chơi
+        HostHP = GameConstants.PLAYER_STARTING_HP;
+        ClientHP = GameConstants.PLAYER_STARTING_HP;
         
         Debug.Log("chuan bi set up du lieu");
         if (HasStateAuthority) // Chỉ Host mới được quyền set up bàn chơi
         {
             Debug.Log("Dang set up du liue");
-            // 1. NẠP ĐẠN CHO MAIN DECK (Từ 0 đến 25)
+            // NẠP MAIN DECK (Từ 0 đến 25)
             for (int i = 0; i < GameConstants.MAINDECK_SIZE; i++)
             {
                 MainDeck[i] = i; 
             }
 
-            // 2. NẠP ĐẠN CHO STAMP DECK (Tránh việc toàn số 0)
+            // NẠP STAMP DECK (Tránh việc toàn số 0)
             for (int i = 0; i < GameConstants.MAX_STAMP_CAPACITY; i++)
             {
                 HostStampDeck[i] = i + 1; 
-                ClientStampDeck[i] = i + 1; // Cố tình cho Client tem khác Host để dễ test
+                ClientStampDeck[i] = i + 1;
             }
 
-            // 3. SET BÀI TRÊN TAY LÀ -1 (Để lát nữa chia bài nó mới nhận diện là "Có thay đổi")
+            // SET BÀI TRÊN TAY LÀ -1 
             for(int i = 0; i < GameConstants.PLAYER_HAND_SIZE; i++)
             {
                 HostHand.Set(i, -1);
@@ -90,63 +101,38 @@ public class GameManager : NetworkSingleton<GameManager>
                 CardAttachedStamps.Set(i, -1);
             }
         }
+
+        _drawHandler = new DrawPhaseHandler(this);
+        _mainHandler = new MainPhaseHandler(this);
+        _calculateHandler = new CalculatePhaseHandler(this);
+        _endHandler = new EndPhaseHandler(this);
+
     }
 
     #region EXECUTING
     public void ExecuteDrawPhase()
     {
         Debug.Log("thực thi draw phase");
-
-        // gọi hàm trộn bộ bài chung
-        ShuffleMainDeck();
-        ShuffleStampDeck();
-        DealCards();
+        _drawHandler.Execute();
         DebugPlayerHand();
     }
 
     public void ExecuteMainPhase()
     {
-        IsHostDone = IsClientDone = false;
         Debug.Log("thực thi main phase");
-
-        // Rút stamp cho host
-        for(int i = 0; i < 3; i++)
-        {
-            if(HostCurrentStampIndex < GameConstants.MAX_STAMP_CAPACITY)
-            {
-                HostStampChoices.Set(i, HostStampDeck[HostCurrentStampIndex]);
-                HostCurrentStampIndex++;
-            }
-            else
-            {
-                HostStampChoices.Set(i, -1);
-            }
-        }
-
-        // Rút 3 Stamp cho Client
-        for (int i = 0; i < 3; i++)
-        {
-            if (ClientCurrentStampIndex < GameConstants.MAX_STAMP_CAPACITY)
-            {
-                ClientStampChoices.Set(i, ClientStampDeck[ClientCurrentStampIndex]);
-                ClientCurrentStampIndex++;
-            }
-            else
-            {
-                ClientStampChoices.Set(i, -1); // Hết tem
-            }
-        }
+        _mainHandler.Execute();
     }
 
     public void ExecuteCalcutePhase()
     {
         Debug.Log("thực thi calculate phase");
-        
+        _calculateHandler.Execute();
     }
 
     public void ExecuteEndPhase()
     {
         Debug.Log("thực thi endphase");
+        _endHandler.Execute();
     }
 
 #region RENDER
@@ -201,73 +187,7 @@ public class GameManager : NetworkSingleton<GameManager>
     }
     #endregion
 
-    #region DRAW PHASE
-    /// <summary>
-    /// Shuffle the main dekc
-    /// </summary>
-    /// <param name="MainDeck"></param>
-    /// <param name="n"></param>
-    public void ShuffleMainDeck()
-    {
-        Debug.Log("Trộn bài");
-        for(int i = GameConstants.MAINDECK_SIZE - 1; i > 0; i--)
-        {
-            int j = Random.Range(0, i + 1);
-            
-            // swap
-            int a = MainDeck[i];
-            MainDeck[i] = MainDeck[j];
-            MainDeck[j] = a;
-        }
 
-        // in thử bộ bài sau khi trộn
-        foreach(var i in MainDeck)
-        {
-            Debug.Log($"card: => {i}");
-        }
-
-        CurrentCardIndexFromMainDeck = 0;
-    }
-
-    public void ShuffleStampDeck()
-    {
-        Debug.Log("Trộn stamps");
-        for(int i = GameConstants.MAX_STAMP_CAPACITY - 1; i >  0; i--)
-        {
-            int j = Random.Range(0, i + 1);
-            int k = Random.Range(0, i + 1);
-            // swap host
-            int a = HostStampDeck[i];
-            HostStampDeck[i] = HostStampDeck[j];
-            HostStampDeck[j] = a;
-            // swap client
-            int b = ClientStampDeck[i];
-            ClientStampDeck[i] = ClientStampDeck[k];
-            ClientStampDeck[k] = b;
-        }
-    }
-
-
-    /// <summary>
-    /// deal 3 cards for each player
-    /// </summary>
-    public void DealCards()
-    {
-        Debug.Log("Chia bài");
-
-        for (int i = 0; i < GameConstants.PLAYER_HAND_SIZE; i++)
-        {
-            HostHand.Set(i, MainDeck[CurrentCardIndexFromMainDeck]);
-            CurrentCardIndexFromMainDeck++;
-        }
-
-        for (int i = 0; i < GameConstants.PLAYER_HAND_SIZE; i++)
-        {
-            ClientHand.Set(i, MainDeck[CurrentCardIndexFromMainDeck]);
-            CurrentCardIndexFromMainDeck++;
-        }
-    }
-    #endregion
 
     #region MAIN PHASE
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]

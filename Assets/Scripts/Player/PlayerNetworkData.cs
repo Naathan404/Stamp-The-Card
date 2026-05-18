@@ -7,7 +7,7 @@ using UnityEngine.UIElements;
 public class PlayerNetworkData : NetworkBehaviour
 {
     [Networked] 
-    public NetworkString<_32> Username { get; set; }
+    public NetworkString<_32> DisplayName { get; set; }
 
     private ChangeDetector _changeDetector;
 
@@ -18,8 +18,8 @@ public class PlayerNetworkData : NetworkBehaviour
 
         if (isMe) 
         {
-            string savedName = LocalPlayerData.Username; 
-            if (HasStateAuthority) Username = savedName; 
+            string savedName = LocalPlayerData.DisplayName; 
+            if (HasStateAuthority) DisplayName = savedName; 
             else RPC_SetUsername(savedName); 
         }
 
@@ -41,7 +41,7 @@ public class PlayerNetworkData : NetworkBehaviour
         {
             table.SetSeatPosition(this, isMe);
 
-            if (!string.IsNullOrEmpty(Username.ToString()))
+            if (!string.IsNullOrEmpty(DisplayName.ToString()))
             {
                 table.UpdateNameUI(this, isMe);
             }
@@ -55,7 +55,7 @@ public class PlayerNetworkData : NetworkBehaviour
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
     public void RPC_SetUsername(string name)
     {
-        Username = name; 
+        DisplayName = name; 
     }
 
     public override void Render()
@@ -64,7 +64,7 @@ public class PlayerNetworkData : NetworkBehaviour
         {
             switch (change)
             {
-                case nameof(Username):
+                case nameof(DisplayName):
                     // Chỉ cập nhật UI nếu bàn đã tồn tại
                     if (TableManager.Instance != null)
                     {

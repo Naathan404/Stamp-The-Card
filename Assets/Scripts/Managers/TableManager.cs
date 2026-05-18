@@ -8,8 +8,11 @@ public class TableManager : Singleton<TableManager>
     [Header("Seat UI")]
     public Transform BottomSeatTransform;
     public Transform TopSeatTransform;
-    public TextMeshProUGUI bottomNameUI;
-    public TextMeshProUGUI topNameUI;
+    public TextMeshProUGUI BottomNameUI;
+    public TextMeshProUGUI TopNameUI;
+
+    public TextMeshProUGUI BottomHP;
+    public TextMeshProUGUI TopHP;
 
     public void Start()
     {
@@ -35,8 +38,22 @@ public class TableManager : Singleton<TableManager>
     {
         // cập nhật tên cho bản thân
         if(isYourSelf)
-            bottomNameUI.text = playerData.Username.ToString();
+            BottomNameUI.text = playerData.DisplayName.ToString();
         else    // cập nhật tên cho đối thủ
-            topNameUI.text = playerData.Username.ToString();
+            TopNameUI.text = playerData.DisplayName.ToString();
+    }
+
+    public void UpdateGameplayUI(bool amIHost)
+    {
+        if(amIHost)
+        {
+            BottomHP.text = $"HP: {GameManager.Instance.HostHP}";
+            TopHP.text = $"HP: {GameManager.Instance.ClientHP}";
+        }
+        else
+        {
+            BottomHP.text = $"HP: {GameManager.Instance.ClientHP}";
+            TopHP.text = $"HP: {GameManager.Instance.HostHP}";
+        }
     }
 }
