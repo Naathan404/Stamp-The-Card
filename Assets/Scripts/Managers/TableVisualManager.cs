@@ -3,7 +3,6 @@ using DG.Tweening;
 using Fusion;
 using TMPro;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 
 public class TableVisualManager : Singleton<TableVisualManager>
 {
