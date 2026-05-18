@@ -9,6 +9,10 @@ public class DrawPhaseHandler : PhaseHandler
 
     public override void Execute()
     {
+        bool isHost = gameManager.Runner.IsServer;
+        /// Update HP cho người chơi
+        TableManager.Instance.UpdateGameplayUI(isHost);
+        
         ShuffleMainDeck();
         ShuffleStampDeck();
         DealCards();

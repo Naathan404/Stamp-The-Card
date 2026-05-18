@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2852001711843894191}
   - component: {fileID: 8038129455409192912}
   m_Layer: 0
-  m_Name: StampSlot_2
+  m_Name: StampSlot_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -197,7 +197,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 2
+  m_text: 10
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -241,7 +241,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_TextWrappingMode: 1
+  m_TextWrappingMode: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -283,7 +283,7 @@ GameObject:
   - component: {fileID: 2734019477253818960}
   - component: {fileID: 5924519643974544164}
   m_Layer: 0
-  m_Name: StampSlot_1
+  m_Name: StampSlot_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -374,7 +374,7 @@ GameObject:
   - component: {fileID: 3598765524664553884}
   - component: {fileID: 2319255141086673430}
   m_Layer: 0
-  m_Name: StampSlot_3
+  m_Name: StampSlot_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -609,6 +609,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b195325a918645a48a48149a8f3f2d4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardSlot
+  Index: 0
   Data: {fileID: 0}
   Score: 0
   Stamps: []
@@ -616,6 +617,10 @@ MonoBehaviour:
   - {fileID: 5924519643974544164}
   - {fileID: 8038129455409192912}
   - {fileID: 2319255141086673430}
-  IsImmuneLowerScore: 0
-  LastRandomValue: 0
   IsIgnored: 0
+  StampsDisabled: 0
+  IsImmuneLowerScore: 0
+  IsReverseBalance: 0
+  IsKingOfToughness: 0
+  HasPeaceAmulet: 0
+  LastRandomValue: 0

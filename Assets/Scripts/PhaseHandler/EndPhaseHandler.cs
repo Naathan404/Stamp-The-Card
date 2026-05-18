@@ -68,6 +68,11 @@ public class EndPhaseHandler : PhaseHandler
         {
             Debug.Log("[EndPhase] Hòa — không ai bị trừ máu");
         }
+
+
+        bool isHost = gameManager.Runner.IsServer;
+        /// Update HP cho người chơi
+        TableManager.Instance.UpdateGameplayUI(isHost);
     }
 
     private void ApplyDamageToHost(int damage, CardSlot[] cardSlots)
@@ -86,6 +91,8 @@ public class EndPhaseHandler : PhaseHandler
                 }
             }
         }
+
+        GameManager.Instance.HostHP -= damage;
     }
 
     private void ApplyDamageToClient(int damage, CardSlot[] cardSlots)
@@ -104,6 +111,8 @@ public class EndPhaseHandler : PhaseHandler
                 }
             }
         }
+
+        GameManager.Instance.ClientHP -= damage;
     }
 
     private void TriggerPeaceAmulet(bool isHost)
