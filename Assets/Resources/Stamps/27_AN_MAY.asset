@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cdb312c59beb5548818c3bd7907a573, type: 3}
+  m_Name: 27_AN_MAY
+  m_EditorClassIdentifier: Assembly-CSharp::SpecialEffectStampData
+  _stampID: 27
+  _stampRank: 1
+  _stampName: "\u0102n may"
+  _stampEffect: "C\u1ED9ng t\u1EEB 1 \u0111\u1EBFn 3 n\xFAt v\xE0o s\u1ED1 n\xFAt
+    tr\xEAn l\xE1 b\xE0i \u0111\u01B0\u1EE3c \u0111\xF3ng d\u1EA5u"
+  targets: 00000000
+  _bloodCost: 0
+  stampArt: {fileID: 0}
+  isEnabled: 1
+  effectType: 4
