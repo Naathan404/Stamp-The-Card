@@ -1,8 +1,13 @@
+using TMPro;
 using UnityEngine;
 
 public class MenuController : MonoBehaviour
 {
     public static MenuController Instance;
+
+    [Header("Menu UI")]
+    [SerializeField] private TextMeshProUGUI _soulQuantityTMP;
+
     private void Awake()
     {
         if(Instance != null && Instance != this)
@@ -13,6 +18,11 @@ public class MenuController : MonoBehaviour
         {
             Instance = this;
         }
+    }
+
+    private void Start()
+    {
+        UpdateMenuUI();
     }
 
     public void LoadScene(string sceneName)
@@ -28,5 +38,10 @@ public class MenuController : MonoBehaviour
         #else
             Application.Quit();
         #endif
-    }    
+    }
+
+    private void UpdateMenuUI()
+    {
+        _soulQuantityTMP.text = LocalPlayerData.Souls.ToString();
+    }
 }
