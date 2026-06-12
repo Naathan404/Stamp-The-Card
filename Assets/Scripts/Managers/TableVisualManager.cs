@@ -157,52 +157,40 @@ public class TableVisualManager : Singleton<TableVisualManager>
         }
     }
 
-    // vẽ stamp lên màn hình
     private void DrawStampsForPlayer(NetworkArray<int> playerHand, SpriteRenderer[] visualSlots, NetworkArray<int> allStamps)
     {
         for (int slotIndex = 0; slotIndex < 3; slotIndex++)
         {
             int cardID = playerHand[slotIndex];
-            if (cardID == -1) continue;
+            if (cardID == -1) continue; 
 
             CardSlot cardSlot = visualSlots[slotIndex].GetComponent<CardSlot>();
             if (cardSlot == null) continue;
 
-            if (cardSlot.StampRenderers == null || cardSlot.StampRenderers.Count < 3)
+            bool isJoker = GameConstants.IsJokerStamp(cardID);
+            int dataLimit = isJoker ? 1 : 3;
+            int startIndex = cardID * 3; 
+
+            for (int j = 0; j < 3; j++) 
             {
-                Debug.LogWarning($"[TableVisualManager] CardSlot tại slot {slotIndex} thiếu StampRenderers!");
-                continue;
+                cardSlot.StampRenderers[j].enabled = false;
             }
 
-            int stampCount = GameConstants.IsJokerStamp(cardID) ? 1 : 3;
-            int startIndex = cardID * 3;
-
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < dataLimit; i++)
             {
-                // Ô này nằm ngoài giới hạn stamp của lá bài như lá Joker thì tắt renderer
-                if (i >= stampCount)
-                {
-                    cardSlot.StampRenderers[i].enabled = false;
-                    continue;
-                }
-
                 int stampID = allStamps[startIndex + i];
-
-                if (stampID > 0)
+                
+                if (stampID > 0) 
                 {
-                    BaseStampData stampData = DataManager.Instance.GetStampDataByID(stampID);
-                    if (stampData == null) continue;
+                    int visualIndex = isJoker ? 1 : i;
 
-                    cardSlot.StampRenderers[i].sprite = stampData.stampArt;
-                    cardSlot.StampRenderers[i].enabled = true;
-                }
-                else
-                {
-                    cardSlot.StampRenderers[i].enabled = false;
+                    cardSlot.StampRenderers[visualIndex].sprite = DataManager.Instance.GetStampDataByID(stampID).stampArt;
+                    cardSlot.StampRenderers[visualIndex].enabled = true;
                 }
             }
         }
     }
+
 
     public void SpawnStampChoices(NetworkArray<int> stampIDs, bool isHostChoice)
     {
@@ -279,79 +267,33 @@ public class TableVisualManager : Singleton<TableVisualManager>
         }
     }
 
-    public void UpdateBoardScores(CardSlot[] hostSlots, CardSlot[] clientSlots)
+    // public void UpdateBoardScores(CardSlot[] hostSlots, CardSlot[] clientSlots)
+    // {
+    //     for (int i = 0; i < 3; i++)
+    //     {
+    //         // Host Score UI
+    //         BottomCardTexts[i].text = hostSlots[i].Score.ToString();
+    //         BottomCardTexts[i].transform.DOPunchScale(Vector3.one * 0.2f, 0.2f); // Nảy số
+
+    //         // Client Score UI
+    //         TopCardTexts[i].text = clientSlots[i].Score.ToString();
+    //         TopCardTexts[i].transform.DOPunchScale(Vector3.one * 0.2f, 0.2f);
+    //     }
+    // }
+
+    public void UpdateBoardScores()
     {
         for (int i = 0; i < 3; i++)
         {
-            // Host Score UI
-            BottomCardTexts[i].text = hostSlots[i].Score.ToString();
-            BottomCardTexts[i].transform.DOPunchScale(Vector3.one * 0.2f, 0.2f); // Nảy số
-
-            // Client Score UI
-            TopCardTexts[i].text = clientSlots[i].Score.ToString();
-            TopCardTexts[i].transform.DOPunchScale(Vector3.one * 0.2f, 0.2f);
-        }
-    }
-
-    // public CardSlot[] GetBottomCardSlots()
-    // {
-    //     CardSlot[] res = new CardSlot[3];
-    //     for(int i = 0; i < 3; i++)
-    //     {
-    //         res[i] = BottomCardSprites[i].gameObject.GetComponent<CardSlot>();
-    //     }
-    //     return res;
-    // }
-
-    // public CardSlot[] GetTopCardSlots()
-    // {
-    //     CardSlot[] res = new CardSlot[3];
-    //     for(int i = 0; i < 3; i++)
-    //     {
-    //         res[i] = TopCardSprites[i].gameObject.GetComponent<CardSlot>();
-    //     }
-    //     return res;
-    // }
-
-    public void SyncStampsToCardSlots()
-    {
-        bool amIHost = GameManager.Instance.Runner.IsServer;
-        NetworkArray<int> allStamps = GameManager.Instance.CardAttachedStamps;
-
-        SpriteRenderer[] hostVisualSlots = amIHost ? BottomCardSprites : TopCardSprites;
-        SpriteRenderer[] clientVisualSlots = amIHost ? TopCardSprites : BottomCardSprites;
-
-        PopulateStampsForPlayer(GameManager.Instance.HostHand,   hostVisualSlots,   allStamps);
-        PopulateStampsForPlayer(GameManager.Instance.ClientHand, clientVisualSlots, allStamps);
-    }
-
-    private void PopulateStampsForPlayer(NetworkArray<int> playerHand, SpriteRenderer[] visualSlots, NetworkArray<int> allStamps)
-    {
-        for(int slotIndex = 0; slotIndex < 3; slotIndex++)
-        {
-            int cardID = playerHand[slotIndex];
-            if (cardID == -1) continue;
-
-            CardSlot cardSlot = visualSlots[slotIndex].GetComponent<CardSlot>();
-            if (cardSlot == null) continue;
-
-            cardSlot.Stamps.Clear();
-
-            // Joker chỉ có 1 ô stamp
-            int stampCount = GameConstants.IsJokerStamp(cardID) ? 1 : 3;
-            int startIndex = cardID * 3;
-
-            for (int i = 0; i < stampCount; i++)
+            CardSlot bottomSlot = BottomCardSprites[i].GetComponent<CardSlot>();
+            if (bottomSlot != null) 
             {
-                int stampID = allStamps[startIndex + i];
-                if (stampID <= 0) continue;
-
-                BaseStampData stampData = DataManager.Instance.GetStampDataByID(stampID);
-                if (stampData != null)
-                {
-                    stampData.isEnabled = true; // reset trước khi resolve
-                    cardSlot.Stamps.Add(stampData);
-                }
+                BottomCardTexts[i].text = bottomSlot.Score.ToString();
+            }
+            CardSlot topSlot = TopCardSprites[i].GetComponent<CardSlot>();
+            if (topSlot != null) 
+            {
+                TopCardTexts[i].text = topSlot.Score.ToString();
             }
         }
     }

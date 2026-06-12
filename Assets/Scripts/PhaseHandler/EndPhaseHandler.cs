@@ -1,12 +1,15 @@
+using System;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class EndPhaseHandler : PhaseHandler
 {
+    public static event Action<bool> OnPlayerHPModified;
     public EndPhaseHandler(GameManager gameManager) : base(gameManager)
     {
     }
 
-    public override void Execute()
+    public async override void Execute()
     {
         if(!gameManager.Runner.IsServer) return;
 
@@ -16,7 +19,8 @@ public class EndPhaseHandler : PhaseHandler
         CalculateAndApplyDamage(hostSlots, clientSlots);
 
         ClearJokerStamps();
-
+        
+        await Task.Delay(5000);
         if(CheckWinCondition()) return;
 
         PrepareNextTurn();
@@ -47,8 +51,8 @@ public class EndPhaseHandler : PhaseHandler
             }
         }
 
-        int hostFinal = hostTotal % 9;
-        int clientFinal = clientTotal % 9;
+        int hostFinal = hostTotal % 10;
+        int clientFinal = clientTotal % 10;
 
         Debug.Log($"[EndPhase] Host: {hostTotal} → {hostFinal} | Client: {clientTotal} → {clientFinal}");
 
@@ -68,11 +72,6 @@ public class EndPhaseHandler : PhaseHandler
         {
             Debug.Log("[EndPhase] Hòa — không ai bị trừ máu");
         }
-
-
-        bool isHost = gameManager.Runner.IsServer;
-        /// Update HP cho người chơi
-        TableManager.Instance.UpdateGameplayUI(isHost);
     }
 
     private void ApplyDamageToHost(int damage, CardSlot[] cardSlots)

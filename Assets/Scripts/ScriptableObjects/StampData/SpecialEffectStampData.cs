@@ -32,15 +32,28 @@ public class SpecialEffectStampData : BaseStampData
                 break;
 
             case EffectType.COPY:
-                List<BaseStampData> targetStampList = enemyCards[2 - currentCardIndex].Stamps;      //Lay danh sach stamp dong tren card doi dien
-                BaseStampData targetToCopy = targetStampList[targetStampList.Count - 1];
+                CardSlot oppositeCard = enemyCards[2 - currentCardIndex];
+                int startIndex = oppositeCard.Data.CardID * 3;
+                BaseStampData targetToCopy = null;
+                
+                // Quét ngược từ ô số 2 về ô số 0 để lấy con tem cuối cùng được đóng
+                for (int i = 2; i >= 0; i--)
+                {
+                    int sID = GameManager.Instance.CardAttachedStamps[startIndex + i];
+                    if (sID > 0)
+                    {
+                        targetToCopy = DataManager.Instance.GetStampDataByID(sID);
+                        break;
+                    }
+                }
+
                 if (targetToCopy != null && targetToCopy.stampName != this.stampName)
                 {
                     targetToCopy.ApplyEffect(myCards, enemyCards, currentCardIndex);
                 }
                 break;
 
-            case EffectType. IMMUNITY:
+            case EffectType.IMMUNITY:
                 myCards[currentCardIndex].IsImmuneLowerScore = true;
                 break;
 
@@ -66,12 +79,18 @@ public class SpecialEffectStampData : BaseStampData
 
     private void NullifyStampEffect(CardSlot currentCard)
     {
-        var stampList = currentCard.Stamps;
-
-        foreach (var stamp in stampList)
+        int startIndex = currentCard.Data.CardID * 3;
+        for (int i = 0; i < 3; i++)
         {
-            if (stamp != this)                  //Dam bao khong tu vo hieu hoa ban than
-                stamp.isEnabled = false;
+            int stampID = GameManager.Instance.CardAttachedStamps[startIndex + i];
+            if (stampID > 0)
+            {
+                BaseStampData stampData = DataManager.Instance.GetStampDataByID(stampID);
+                if (stampData != null && stampData != this)
+                {
+                    stampData.isEnabled = false;
+                }
+            }
         }
     }
 

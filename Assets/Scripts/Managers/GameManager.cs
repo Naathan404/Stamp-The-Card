@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using Fusion;
@@ -12,8 +14,10 @@ public class GameManager : NetworkSingleton<GameManager>
     public int CurrentCardIndexFromMainDeck = 0;
 
     [Header("STAMP DECK")]
-    [HideInInspector] public int[] HostStampDeck = new int[GameConstants.MAX_STAMP_CAPACITY];
-    [HideInInspector] public int[] ClientStampDeck = new int[GameConstants.MAX_STAMP_CAPACITY];
+    [HideInInspector] public List<int> HostStampDeck = new List<int>(GameConstants.MAX_STAMP_CAPACITY);
+    [HideInInspector] public List<int> ClientStampDeck = new List<int>(GameConstants.MAX_STAMP_CAPACITY);
+    [Networked] public int NetworkedHostStampCount { get; set; }
+    [Networked] public int NetworkedClientStampCount { get; set; }
     public int HostCurrentStampIndex = 0;
     public int ClientCurrentStampIndex = 0;
 
@@ -33,7 +37,7 @@ public class GameManager : NetworkSingleton<GameManager>
     [Networked, Capacity(3)] 
     [HideInInspector] public NetworkArray<int> ClientStampChoices => default; 
 
-    [Header("STAMPS ON CARRDS")]
+    [Header("STAMPS ON CARDS")]
     //// lá bài 0 (idx 0, 1, 2) và tương tự với lá bài 1, 2,...
     [Networked, Capacity(GameConstants.MAINDECK_SIZE * 3)] 
     [HideInInspector] public NetworkArray<int> CardAttachedStamps => default;
@@ -56,6 +60,12 @@ public class GameManager : NetworkSingleton<GameManager>
     /// <summary>
     ///  ================================================
     /// </summary>
+    
+
+    public static event Action OnDrawPhaseEntered;
+    public static event Action OnMainPhaseEntered;
+    public static event Action OnCalculatePhaseEntered;
+    public static event Action OnEndPhaseEntered;
 
 
     [Header("Change Detector")]
@@ -68,6 +78,7 @@ public class GameManager : NetworkSingleton<GameManager>
         /// Init data cho bàn chơi
         HostHP = GameConstants.PLAYER_STARTING_HP;
         ClientHP = GameConstants.PLAYER_STARTING_HP;
+        UIManager.Instance.UpdateHpTexts(Runner.IsServer);
         
         Debug.Log("chuan bi set up du lieu");
         if (HasStateAuthority) // Chỉ Host mới được quyền set up bàn chơi
@@ -112,6 +123,7 @@ public class GameManager : NetworkSingleton<GameManager>
     #region EXECUTING
     public void ExecuteDrawPhase()
     {
+        OnDrawPhaseEntered?.Invoke();
         Debug.Log("thực thi draw phase");
         _drawHandler.Execute();
         DebugPlayerHand();
@@ -119,18 +131,21 @@ public class GameManager : NetworkSingleton<GameManager>
 
     public void ExecuteMainPhase()
     {
+        OnMainPhaseEntered?.Invoke();
         Debug.Log("thực thi main phase");
         _mainHandler.Execute();
     }
 
     public void ExecuteCalcutePhase()
     {
+        OnCalculatePhaseEntered?.Invoke();
         Debug.Log("thực thi calculate phase");
         _calculateHandler.Execute();
     }
 
     public void ExecuteEndPhase()
     {
+        OnEndPhaseEntered?.Invoke();
         Debug.Log("thực thi endphase");
         _endHandler.Execute();
     }
@@ -160,6 +175,19 @@ public class GameManager : NetworkSingleton<GameManager>
 
                 case nameof(CardAttachedStamps):
                     TableVisualManager.Instance.RenderStampsOnBoard(CardAttachedStamps);
+                    break;
+
+                case nameof(HostHP):
+                case nameof(ClientHP):
+                    UIManager.Instance.UpdateHpTexts(Runner.IsServer);
+                    break;
+                
+                case nameof(NetworkedHostStampCount):
+                case nameof(NetworkedClientStampCount):
+                    if (UIManager.Instance != null)
+                    {
+                        UIManager.Instance.UpdateStampCount(Runner.IsServer);
+                    }
                     break;
             }
         }
@@ -225,6 +253,24 @@ public class GameManager : NetworkSingleton<GameManager>
         // - kiểm tra slotIndex đã đầy stamp chưa
         // - lưu stampId vào mảng stamp của slot index
         // - cập nhật hình ảnh stamp vào slot index
+        if (isHostAction) HostStampDeck.Remove(stampID);
+        else ClientStampDeck.Remove(stampID);
+        NetworkedHostStampCount = HostStampDeck.Count;
+        NetworkedClientStampCount = ClientStampDeck.Count;
+        
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    public void RPC_SyncAndShowScores(int h0, int h1, int h2, int c0, int c1, int c2)
+    {
+        CardSlot[] hSlots = TableVisualManager.Instance.GetHostCardSlots();
+        CardSlot[] cSlots = TableVisualManager.Instance.GetClientCardSlots();
+
+        hSlots[0].Score = h0; hSlots[1].Score = h1; hSlots[2].Score = h2;
+        cSlots[0].Score = c0; cSlots[1].Score = c1; cSlots[2].Score = c2;
+
+        TableVisualManager.Instance.UpdateBoardScores();
+        Debug.Log("[Client/Host] Đã nhận và cập nhật điểm số lên màn hình!");
     }
 
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]

@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 public class CalculationSystem
 {
     /// <summary>
@@ -40,10 +42,19 @@ public class CalculationSystem
         {
             if (mySlots[i].IsIgnored || mySlots[i].StampsDisabled) continue;
 
-            foreach (var stamp in mySlots[i].Stamps)
+            int cardID = mySlots[i].Data.CardID;
+            int startIndex = cardID * 3;
+            for(int s = 0; s < 3; s++)
             {
-                if (stamp.ExeTier == tier && stamp.isEnabled)
-                    stamp.ApplyEffect(mySlots, enemySlots, i);
+                int stampID = GameManager.Instance.CardAttachedStamps[startIndex + s];
+                if(stampID > 0)
+                {
+                    BaseStampData stampData = DataManager.Instance.GetStampDataByID(stampID);
+                    if(stampData != null && stampData.ExeTier == tier && stampData.isEnabled)
+                    {
+                        stampData.ApplyEffect(mySlots, enemySlots, i);
+                    }
+                }
             }
         }
     }
@@ -55,12 +66,19 @@ public class CalculationSystem
         {
             if (mySlots[i].IsIgnored || mySlots[i].StampsDisabled) continue;
 
-            foreach (var stamp in mySlots[i].Stamps)
+            int cardID = mySlots[i].Data.CardID;
+            int startIndex = cardID * 3;
+            for(int s = 0; s < 3; s++)
             {
-                if (stamp.ExeTier == ExecutionTier.Tier0_RuleSetting) continue; // đã xử lý ở PreResolve
-                if (!stamp.isEnabled) continue;
-
-                stamp.ApplyEffect(mySlots, enemySlots, i);
+                int stampID = GameManager.Instance.CardAttachedStamps[startIndex + s];
+                if(stampID > 0)
+                {
+                    BaseStampData stampData = DataManager.Instance.GetStampDataByID(stampID);
+                    if(stampData != null && stampData.ExeTier != ExecutionTier.Tier0_RuleSetting && stampData.isEnabled)
+                    {
+                        stampData.ApplyEffect(mySlots, enemySlots, i);
+                    }
+                }
             }
         }
     }
