@@ -45,21 +45,15 @@ public class BattleRuleStampData : BaseStampData
         }
     }
 
-    /// Thẩm Phán: vô hiệu toàn bộ stamp cả 2 lá trên cột này -> về so sánh điểm gốc
+/// Thẩm Phán: vô hiệu toàn bộ stamp cả 2 lá trên cột này -> về so sánh điểm gốc
     private void ApplyJudge(CardSlot[] myCards, CardSlot[] enemyCards, int currentCardIndex)
     {
         CardSlot mySlot    = myCards[currentCardIndex];
         CardSlot enemySlot = enemyCards[2 - currentCardIndex];
 
-        // Vô hiệu tất cả stamp trên cả 2 lá (trừ chính stamp Thẩm Phán này)
-        foreach (var stamp in mySlot.Stamps)
-        {
-            if (stamp != this) stamp.isEnabled = false;
-        }
-        foreach (var stamp in enemySlot.Stamps)
-        {
-            stamp.isEnabled = false;
-        }
+        // Tra cứu Sổ Cái và vô hiệu hóa (trừ chính cái tem Thẩm Phán này)
+        NullifyStampsOnCard(mySlot, this);
+        NullifyStampsOnCard(enemySlot, null);
 
         // Reset điểm về gốc
         mySlot.Score = mySlot.Data.BaseScore;
@@ -73,32 +67,38 @@ public class BattleRuleStampData : BaseStampData
     }
 
     /// Hỏa Thiêu: chọn 1 lá random của đối thủ → đánh dấu IsIgnored lượt này
-    /// Lượt sau lá đó và lá bài này vẫn chiếm slot nhưng không tác dụng
     private void ApplyCremation(CardSlot[] enemyCards, int currentCardIndex)
     {
-        // Lọc những lá chưa bị Ignored
         System.Collections.Generic.List<int> validTargets = new System.Collections.Generic.List<int>();
         for (int i = 0; i < 3; i++)
         {
-            if (!enemyCards[i].IsIgnored)
-                validTargets.Add(i);
+            if (!enemyCards[i].IsIgnored) validTargets.Add(i);
         }
 
-        if (validTargets.Count == 0)
-        {
-            Debug.Log("[Hỏa Thiêu] Không còn lá nào để đốt");
-            return;
-        }
+        if (validTargets.Count == 0) return;
 
         int randomIndex = validTargets[Random.Range(0, validTargets.Count)];
         enemyCards[randomIndex].IsIgnored = true;
 
-        // Vô hiệu toàn bộ stamp trên lá bị đốt
-        foreach (var stamp in enemyCards[randomIndex].Stamps)
-        {
-            stamp.isEnabled = false;
-        }
+        NullifyStampsOnCard(enemyCards[randomIndex], null);
 
         Debug.Log($"[Hỏa Thiêu] Đốt lá {randomIndex} của đối thủ");
+    }
+
+    private void NullifyStampsOnCard(CardSlot cardSlot, BaseStampData exceptionStamp)
+    {
+        int startIndex = cardSlot.Data.CardID * 3;
+        for (int i = 0; i < 3; i++)
+        {
+            int stampID = GameManager.Instance.CardAttachedStamps[startIndex + i];
+            if (stampID > 0)
+            {
+                BaseStampData stampData = DataManager.Instance.GetStampDataByID(stampID);
+                if (stampData != null && stampData != exceptionStamp)
+                {
+                    stampData.isEnabled = false;
+                }
+            }
+        }
     }
 }

@@ -28,22 +28,22 @@ public class PlayerNetworkData : NetworkBehaviour
 
     private IEnumerator WaitAndAssignSeat(bool isMe)
     {
-        TableManager table = null;
+        UIManager ui = null;
 
-        while (table == null)
+        while (ui == null)
         {
-            table = TableManager.Instance;
-            if (table == null) table = FindAnyObjectByType<TableManager>();
-            if (table == null) yield return null; 
+            ui = UIManager.Instance;
+            if (ui == null) ui = FindAnyObjectByType<UIManager>();
+            if (ui == null) yield return null; 
         }
         
         try 
         {
-            table.SetSeatPosition(this, isMe);
+            UIManager.Instance.SetSeatPosition(this, isMe);
 
             if (!string.IsNullOrEmpty(DisplayName.ToString()))
             {
-                table.UpdateNameUI(this, isMe);
+                UIManager.Instance.UpdateNameUI(this, isMe);
             }
         }
         catch (System.Exception e)
@@ -66,9 +66,9 @@ public class PlayerNetworkData : NetworkBehaviour
             {
                 case nameof(DisplayName):
                     // Chỉ cập nhật UI nếu bàn đã tồn tại
-                    if (TableManager.Instance != null)
+                    if (UIManager.Instance != null)
                     {
-                        TableManager.Instance.UpdateNameUI(this, Object.HasInputAuthority); 
+                        UIManager.Instance.UpdateNameUI(this, Object.HasInputAuthority); 
                     }
                     break;
             }

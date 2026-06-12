@@ -199,6 +199,11 @@ public class GameStateManager : NetworkSingleton<GameStateManager>
                             _timer.text = "0";
                             _timerZone.gameObject.SetActive(false); 
                         });
+
+                        _endPhaseButton.transform.DOScaleY(0f, 0.4f).OnComplete(() => 
+                        {
+                            _endPhaseButton.SetActive(false);
+                        });
                     }
                     // call UI, sound, bla bla, etc
                     break;

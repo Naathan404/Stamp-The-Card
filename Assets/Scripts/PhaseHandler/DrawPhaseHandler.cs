@@ -11,10 +11,9 @@ public class DrawPhaseHandler : PhaseHandler
     {
         bool isHost = gameManager.Runner.IsServer;
         /// Update HP cho người chơi
-        TableManager.Instance.UpdateGameplayUI(isHost);
+        UIManager.Instance.UpdateHpTexts(isHost);
         
         ShuffleMainDeck();
-        ShuffleStampDeck();
         DealCards();
     }
 
@@ -38,32 +37,13 @@ public class DrawPhaseHandler : PhaseHandler
         }
 
         // in thử bộ bài sau khi trộn
-        foreach(var i in gameManager.MainDeck)
-        {
-            Debug.Log($"card: => {i}");
-        }
+        // foreach(var i in gameManager.MainDeck)
+        // {
+        //     Debug.Log($"card: => {i}");
+        // }
 
         gameManager.CurrentCardIndexFromMainDeck = 0;
     }
-
-    private void ShuffleStampDeck()
-    {
-        Debug.Log("Trộn stamps");
-        for(int i = GameConstants.MAX_STAMP_CAPACITY - 1; i >  0; i--)
-        {
-            int j = Random.Range(0, i + 1);
-            int k = Random.Range(0, i + 1);
-            // swap host
-            int a = gameManager.HostStampDeck[i];
-            gameManager.HostStampDeck[i] = gameManager.HostStampDeck[j];
-            gameManager.HostStampDeck[j] = a;
-            // swap client
-            int b = gameManager.ClientStampDeck[i];
-            gameManager.ClientStampDeck[i] = gameManager.ClientStampDeck[k];
-            gameManager.ClientStampDeck[k] = b;
-        }
-    }
-
 
     /// <summary>
     /// deal 3 cards for each player

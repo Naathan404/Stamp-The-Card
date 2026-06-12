@@ -4,7 +4,7 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class SceneTransitionManager : Singleton<SceneTransitionManager>
+public class SceneTransitionManager : MonoBehaviour
 {
     [Header("Transition Settings")]
     [SerializeField] private float _duration = 0.5f;
@@ -17,6 +17,20 @@ public class SceneTransitionManager : Singleton<SceneTransitionManager>
     [SerializeField] private CanvasGroup _canvasGroup;
 
     private bool _isTransitioning = false;
+
+    public static SceneTransitionManager Instance;
+    private void Awake()
+    {
+        if(Instance != null  && Instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+            DontDestroyOnLoad(this.gameObject);
+        }
+    }
 
     private void Start()
     {

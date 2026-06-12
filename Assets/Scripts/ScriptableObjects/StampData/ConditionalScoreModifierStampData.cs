@@ -14,7 +14,6 @@ public enum Condition
 }
 
 [CreateAssetMenu(fileName = "New Stamp", menuName = "Stamp The Card/Stamp Data/ConditionalScoreModifierStamp")]
-
 public class ConditionalScoreModifierStampData : SimpleScoreModifierStampData
 {
     [Header("Condition to trigger stamp effect")]
@@ -43,14 +42,12 @@ public class ConditionalScoreModifierStampData : SimpleScoreModifierStampData
                 return targetToCheck.Data.BaseScore % 2 != 0;
 
             case Condition.IS_STAMPED:
-                bool isStamped = targetToCheck.Stamps.Count > 0;
+                bool isStamped = GetStampCount(targetToCheck) > 0;
                 amountToChange = isStamped ? -1 : -3;
                 return true;
 
             case Condition.IS_NOT_HIGHER_THAN_5:
-
                  return targetToCheck.Data.BaseScore <= 5;
-
 
              case Condition.IS_CENTERED:
                  return currentCardIndex == 1;
@@ -68,17 +65,38 @@ public class ConditionalScoreModifierStampData : SimpleScoreModifierStampData
                  return myScore < enemyScore;
 
              case Condition.DISABLE_OTHER_STAMPS:
-                  foreach (var stamp in targetToCheck.Stamps)
+                  // Sửa lỗi: Dò Server để vô hiệu hóa tem
+                  int startIndex = targetToCheck.Data.CardID * 3;
+                  for (int i = 0; i < 3; i++)
                   {
-                       if (stamp.stampName != this.stampName)
-                       {
-                            stamp.isEnabled = false;
-                       }
+                      int stampID = GameManager.Instance.CardAttachedStamps[startIndex + i];
+                      if (stampID > 0)
+                      {
+                          BaseStampData stampData = DataManager.Instance.GetStampDataByID(stampID);
+                          if (stampData != null && stampData.stampName != this.stampName)
+                          {
+                              stampData.isEnabled = false;
+                          }
+                      }
                   }
                   return true;
 
              default:
                   return false;
              }
+    }
+
+    private int GetStampCount(CardSlot currentCard)
+    {
+        int count = 0;
+        int startIndex = currentCard.Data.CardID * 3;
+        for(int i = 0; i < 3; i++)
+        {
+            if(GameManager.Instance.CardAttachedStamps[startIndex + i] > 0)
+            {
+                count++;
+            }
+        }
+        return count;
     }
 }
