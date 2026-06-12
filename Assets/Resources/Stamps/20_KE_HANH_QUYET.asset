@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 988b1876846c8ca4198a3b959634181b, type: 3}
+  m_Name: 20_KE_HANH_QUYET
+  m_EditorClassIdentifier: Assembly-CSharp::ConditionalScoreModifierStampData
+  _stampID: 20
+  _stampRank: 1
+  _stampName: "K\u1EBB h\xE0nh quy\u1EBFt"
+  _stampEffect: "-3 n\xFAt l\xE1 \u0111\u1ED1i di\u1EC7n n\u1EBFu s\u1ED1 n\xFAt
+    m\u1EB7c \u0111\u1ECBnh c\u1EE7a l\xE1 \u0111\xF3 l\xE0 l\u1EBB"
+  targets: 03000000
+  _bloodCost: 0
+  stampArt: {fileID: 0}
+  isEnabled: 1
+  amountToChange: -3
+  scoreOperator: 0
+  Condition: 1
