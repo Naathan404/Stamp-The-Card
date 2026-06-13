@@ -9,44 +9,56 @@ public class EndPhaseHandler : PhaseHandler
     {
     }
 
-    public async override void Execute()
+public async override void Execute()
     {
         if(!gameManager.Runner.IsServer) return;
 
         CardSlot[] hostSlots = TableVisualManager.Instance.GetHostCardSlots();
         CardSlot[] clientSlots = TableVisualManager.Instance.GetClientCardSlots();
 
-        CalculateAndApplyDamage(hostSlots, clientSlots);
-        
-        await Task.Delay(5000);
-        if(CheckWinCondition()) return;
+        int tempHostTotal = 0;
+        int tempClientTotal = 0;
+        for(int i = 0; i < 3; i++)
+        {
+            if (hostSlots[i].IsReverseBalance || clientSlots[i].IsReverseBalance || 
+                hostSlots[i].IsKingOfToughness || clientSlots[i].IsKingOfToughness) 
+                continue;
 
+            tempHostTotal += hostSlots[i].Score;
+            tempClientTotal += clientSlots[i].Score;
+        }
+
+        gameManager.RPC_PlayEndPhaseCinematic(tempHostTotal, tempClientTotal);
+
+        await Task.Delay(7000);
+        CalculateAndApplyDamage(hostSlots, clientSlots);
+
+        await Task.Delay(1500);
+        if(CheckWinCondition()) return;
         PrepareNextTurn();
     }
 
-    private void CalculateAndApplyDamage(CardSlot[] hostSlots, CardSlot[] clientSlots)
+    private (int, int) CalculateAndApplyDamage(CardSlot[] hostSlots, CardSlot[] clientSlots)
     {
         int hostTotal = 0;
         int clientTotal = 0;
 
         for(int i = 0; i < 3; i++)
         {
-            hostTotal += hostSlots[i].Score;
-            clientTotal += clientSlots[i].Score;
-
-            // Cột có Đảo Ngược Cán Cân -> tính riêng, không cộng vào tổng chung
             if (hostSlots[i].IsReverseBalance || clientSlots[i].IsReverseBalance)
             {
                 ApplyReverseBalanceDamage(hostSlots[i], clientSlots[i]);
-                continue;
+                continue; // Bỏ qua, KHÔNG cộng vào tổng
             }
 
-            // Cột có Vua Lì Đòn -> tính riêng, không cộng vào tổng chung
             if (hostSlots[i].IsKingOfToughness || clientSlots[i].IsKingOfToughness)
             {
                 ApplyKingOfToughnessDamage(hostSlots[i], clientSlots[i]);
-                continue;
+                continue; // Bỏ qua, KHÔNG cộng vào tổng
             }
+
+            hostTotal += hostSlots[i].Score;
+            clientTotal += clientSlots[i].Score;
         }
 
         int hostFinal = hostTotal % 10;
@@ -70,6 +82,8 @@ public class EndPhaseHandler : PhaseHandler
         {
             Debug.Log("[EndPhase] Hòa — không ai bị trừ máu");
         }
+
+        return (hostTotal, clientTotal);
     }
 
     private void ApplyDamageToHost(int damage, CardSlot[] cardSlots)

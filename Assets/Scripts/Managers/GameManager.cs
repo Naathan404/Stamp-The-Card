@@ -287,6 +287,13 @@ public class GameManager : NetworkSingleton<GameManager>
             Debug.Log("Client bấm end phase");
         }
     }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    public void RPC_PlayEndPhaseCinematic(int hostTotalScore, int clientTotalScore)
+    {
+        Debug.Log("[RPC] Tất cả client bắt đầu chạy Cinematic End Phase!");
+        UIManager.Instance.StartCoroutine(UIManager.Instance.CinematicEndPhaseRoutine(hostTotalScore, clientTotalScore));
+    }
     
     #endregion
 

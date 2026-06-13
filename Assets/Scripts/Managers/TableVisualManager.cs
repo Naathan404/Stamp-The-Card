@@ -1,10 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using DG.Tweening;
 using Fusion;
-using JetBrains.Annotations;
-using Mono.Cecil.Cil;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -39,6 +36,14 @@ public class TableVisualManager : Singleton<TableVisualManager>
 
     [Header("Animation Settings")]
     [SerializeField] private float _animCardSlideDuration = 0.4f;
+
+    [Header("End Phase Cinematic UI")]
+    public TextMeshProUGUI PlayerCenterText;
+    public TextMeshProUGUI OppCenterText;
+    public TextMeshProUGUI FinalDamageText;
+    public Transform PlayerAvatarTransform; // Vị trí bay vào nếu mình thua
+    public Transform OppAvatarTransform;    // Vị trí bay vào nếu địch thua
+
 
     [Header("Prefabs")]
     [SerializeField] private TextMeshPro _floatingTextPrefab;
@@ -700,7 +705,7 @@ private IEnumerator VisualResolveTierRoutine(ExecutionTier tier, CardSlot[] host
     //     yield return new WaitForSeconds(0.3f);
     // }
 
-private IEnumerator AnimateStampTrigger(CardSlot slot, int stampIndex, BaseStampData stampData)
+    private IEnumerator AnimateStampTrigger(CardSlot slot, int stampIndex, BaseStampData stampData)
     {
         int cardID = slot.Data.CardID;
         bool isJoker = GameConstants.IsJokerStamp(cardID);
@@ -710,20 +715,18 @@ private IEnumerator AnimateStampTrigger(CardSlot slot, int stampIndex, BaseStamp
 
         if (visual != null && visual.gameObject.activeSelf)
         {
-            // 1. TEM GỐC NẢY VÀ CHỚP SÁNG
+            // chớp sáng stamp goocs
             visual.transform.DOKill();
             visual.transform.DOPunchScale(Vector3.one * 0.6f, 0.4f, vibrato: 10);
             visual.color = new Color(2f, 2f, 2f); 
             visual.DOColor(Color.white, 0.4f);
 
-            // 2. GỌI BÓNG MA (HOLOGRAM) TỪ PREFAB
+            // gọi hologram
             if (_stampHologramPrefab != null)
             {
-                // Đẻ Prefab ra, kéo Z = -2f để nổi lên trên tất cả
                 Vector3 spawnPos = visual.transform.position + new Vector3(0, 0.5f, -2f);
                 SpriteRenderer holo = Instantiate(_stampHologramPrefab, spawnPos, Quaternion.identity);
                 
-                // Thay hình tem và copy Material cho giống tem gốc
                 holo.sprite = stampData.stampArt;
                 holo.material = visual.material;
 
@@ -732,24 +735,25 @@ private IEnumerator AnimateStampTrigger(CardSlot slot, int stampIndex, BaseStamp
                 
                 // Hoạt ảnh: Bung từ số 0, bay lên cao và mờ dần
                 holo.transform.localScale = Vector3.zero;
-                holo.transform.DOScale(baseScale * 2.5f, 0.3f).SetEase(Ease.OutBack); 
-                holo.transform.DOMoveY(holo.transform.position.y + 1.5f, 0.5f).SetEase(Ease.OutQuad);
+                // holo.transform.DOScale(baseScale * 2.5f, 0.3f).SetEase(Ease.OutBack); 
+                holo.transform.DOScale(new Vector3(baseScale.x * 2f, baseScale.y * 3f, 1f), 0.15f)
+                    .OnComplete(() => {
+                        holo.transform.DOScale(baseScale * 3.6f, 0.2f).SetEase(Ease.OutBack);
+                    });
+                holo.transform.DOMoveY(holo.transform.position.y + 2f, 0.5f).SetEase(Ease.OutQuad);
                 
-                holo.DOFade(0f, 0.4f).SetDelay(0.2f).OnComplete(() => Destroy(holo.gameObject));
+                holo.DOFade(0f, 0.5f).SetDelay(0.3f).OnComplete(() => Destroy(holo.gameObject));
             }
         }
 
-        // 3. CAMERA GIẬT NHẸ ĐỂ TẠO LỰC (IMPACT)
+        // shake cam
         if (Camera.main != null) 
         {
             Camera.main.transform.DOComplete();
             Camera.main.transform.DOShakePosition(0.2f, strength: 0.1f, vibrato: 10);
         }
 
-        // Chờ bóng ma diễn xong hoạt ảnh rồi mới để hệ thống cộng trừ điểm
-        yield return new WaitForSeconds(0.4f); 
+        yield return new WaitForSeconds(0.5f); 
     }
     #endregion
-
-
 }
