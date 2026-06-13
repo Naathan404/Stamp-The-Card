@@ -78,7 +78,7 @@ public class GameManager : NetworkSingleton<GameManager>
         /// Init data cho bàn chơi
         HostHP = GameConstants.PLAYER_STARTING_HP;
         ClientHP = GameConstants.PLAYER_STARTING_HP;
-        UIManager.Instance.UpdateHpTexts(Runner.IsServer);
+        //UIManager.Instance.UpdateHpTexts(Runner.IsServer);
         
         Debug.Log("chuan bi set up du lieu");
         if (HasStateAuthority) // Chỉ Host mới được quyền set up bàn chơi

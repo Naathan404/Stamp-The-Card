@@ -17,8 +17,6 @@ public class EndPhaseHandler : PhaseHandler
         CardSlot[] clientSlots = TableVisualManager.Instance.GetClientCardSlots();
 
         CalculateAndApplyDamage(hostSlots, clientSlots);
-
-        ClearJokerStamps();
         
         await Task.Delay(5000);
         if(CheckWinCondition()) return;
@@ -91,7 +89,7 @@ public class EndPhaseHandler : PhaseHandler
             }
         }
 
-        GameManager.Instance.HostHP -= damage;
+        GameManager.Instance.HostHP = Math.Clamp(GameManager.Instance.HostHP - damage, 0, GameConstants.PLAYER_STARTING_HP);
     }
 
     private void ApplyDamageToClient(int damage, CardSlot[] cardSlots)
@@ -111,7 +109,7 @@ public class EndPhaseHandler : PhaseHandler
             }
         }
 
-        GameManager.Instance.ClientHP -= damage;
+        GameManager.Instance.ClientHP = Math.Clamp(GameManager.Instance.ClientHP - damage, 0, GameConstants.PLAYER_STARTING_HP);
     }
 
     private void TriggerPeaceAmulet(bool isHost)
@@ -121,20 +119,6 @@ public class EndPhaseHandler : PhaseHandler
         // → lượt này an toàn, không bị trừ máu    
         Debug.Log($"[Bùa Bình An] {"Host hoặc Client"} an toàn lượt này, stamps vô hiệu từ đây");
     }                      
-
-    // ===================== HELPERS =====================
-
-    private void ClearJokerStamps()
-    {
-        foreach (int jokerID in GameConstants.JOKER_STAMP_IDS)
-        {
-            int startIndex = jokerID * 3;
-            for (int i = 0; i < 3; i++)
-                gameManager.CardAttachedStamps.Set(startIndex + i, -1);
-        }
-
-        Debug.Log("[EndPhase] Đã xóa stamp của các lá Joker");
-    }
 
     private void PrepareNextTurn()
     {

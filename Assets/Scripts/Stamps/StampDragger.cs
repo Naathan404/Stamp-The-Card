@@ -11,7 +11,7 @@ public class StampDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
     public bool isUsed = false;
 
     [Header("Game Juice Settings")]
-    [SerializeField] private float _pickUpScale = 1.2f;
+    [SerializeField] private float _pickUpScale = 1.5f;
     [SerializeField] private ParticleSystem _bloodImpactParticle;
     [SerializeField] private float _shakeAmplitude = 0.2f;
     [SerializeField] private float _shakeDuration = 0.2f;
@@ -97,6 +97,7 @@ public class StampDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         int slotIndex = targetCard.GetComponent<CardSlot>().Index;
 
         _spriteRenderer.enabled = false;
+        isUsed = true;
 
         // Spawn stamp tool animation
         Vector3 spawnPos = targetCard.transform.position + Vector3.up * _stampStartPosition;
@@ -136,7 +137,6 @@ public class StampDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         seq.OnComplete(() =>
         {
             _stampToolInstance.SetActive(false);
-            isUsed = true;
 
             bool amIHost = GameManager.Instance.Runner.IsServer;
             GameManager.Instance.RPC_PlayStamp(slotIndex, stampID, amIHost);

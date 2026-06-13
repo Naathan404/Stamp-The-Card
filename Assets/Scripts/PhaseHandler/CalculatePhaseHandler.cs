@@ -26,15 +26,15 @@ public class CalculatePhaseHandler : PhaseHandler
         ResetAllCard(clientSlots);
 
         Debug.Log("[CAL PHASE HANDLER] Gọi Calculate System để tính toán");
-        _calculationSystem.Run(hostSlots, clientSlots, GameStateManager.Instance.CurrentTurn);
+        //_calculationSystem.Run(hostSlots, clientSlots, GameStateManager.Instance.CurrentTurn);
 
-        gameManager.RPC_SyncAndShowScores(
-            hostSlots[0].Score, hostSlots[1].Score, hostSlots[2].Score,
-            clientSlots[0].Score, clientSlots[1].Score, clientSlots[2].Score
-        );
+        // gameManager.RPC_SyncAndShowScores(
+        //     hostSlots[0].Score, hostSlots[1].Score, hostSlots[2].Score,
+        //     clientSlots[0].Score, clientSlots[1].Score, clientSlots[2].Score
+        // );
         
-        await Task.Delay(5000);
-        GameStateManager.Instance.ChangePhase(GameStateManager.GamePhase.EndPhase);
+        // await Task.Delay(5000);
+        // GameStateManager.Instance.ChangePhase(GameStateManager.GamePhase.EndPhase);
     }
 
 
