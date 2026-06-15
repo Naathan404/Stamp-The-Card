@@ -16,6 +16,7 @@ public class Launcher : MonoBehaviour, INetworkRunnerCallbacks
 
     public async void StartGame(GameMode mode, string roomName)
     {
+        _spawnedCharacterDic.Clear();
         _runner = GetComponent<NetworkRunner>();
         // Create the Fusion runner and let it know that we will be providing user input
         _runner.ProvideInput = true;
@@ -93,26 +94,23 @@ public class Launcher : MonoBehaviour, INetworkRunnerCallbacks
         // nếu máy đang chạy là server
         if(runner.IsServer)
         {
-            // NetworkObject networkPlayerObject = runner.Spawn(_playerPrefab, Vector2.zero, Quaternion.identity, player);
-            // _spawnedCharacterDic.Add(player, networkPlayerObject);
-            // if(runner.ActivePlayers.Count() == 2)
-            // {
-            //     runner.LoadScene(SceneRef.FromIndex(1), LoadSceneMode.Single);
-            // }
             if (SceneManager.GetActiveScene().buildIndex == 0)
             {
-                // KHÔNG Spawn ở đây. Chỉ đếm xem đủ 2 người chưa để chuyển Scene
                 if(runner.ActivePlayers.Count() == 2)
                 {
                     Debug.Log("Đã đủ 2 người! Đang tải Scene GamePlay...");
                     runner.LoadScene(SceneRef.FromIndex(1), LoadSceneMode.Single);
                 }
             }
-            // Nếu người chơi bị rớt mạng và vào lại khi game đang diễn ra (Scene 1)
             else if (SceneManager.GetActiveScene().buildIndex == 1)
             {
-                NetworkObject networkPlayerObject = runner.Spawn(_playerPrefab, Vector2.zero, Quaternion.identity, player);
-                _spawnedCharacterDic.Add(player, networkPlayerObject);
+                // NetworkObject networkPlayerObject = runner.Spawn(_playerPrefab, Vector2.zero, Quaternion.identity, player);
+                // _spawnedCharacterDic.Add(player, networkPlayerObject);
+                if (!_spawnedCharacterDic.ContainsKey(player))
+                {
+                    NetworkObject networkPlayerObject = runner.Spawn(_playerPrefab, Vector2.zero, Quaternion.identity, player);
+                    _spawnedCharacterDic.Add(player, networkPlayerObject);
+                }
             }            
         }
     }
@@ -147,8 +145,13 @@ public class Launcher : MonoBehaviour, INetworkRunnerCallbacks
                 // Duyệt qua tất cả những người đang có trong phòng và Spawn nhân vật cho họ
                 foreach (var p in runner.ActivePlayers)
                 {
-                    NetworkObject networkPlayerObject = runner.Spawn(_playerPrefab, Vector2.zero, Quaternion.identity, p);
-                    _spawnedCharacterDic.Add(p, networkPlayerObject);
+                    // NetworkObject networkPlayerObject = runner.Spawn(_playerPrefab, Vector2.zero, Quaternion.identity, p);
+                    // _spawnedCharacterDic.Add(p, networkPlayerObject);
+                    if (!_spawnedCharacterDic.ContainsKey(p))
+                    {
+                        NetworkObject networkPlayerObject = runner.Spawn(_playerPrefab, Vector2.zero, Quaternion.identity, p);
+                        _spawnedCharacterDic.Add(p, networkPlayerObject);
+                    }
                 }
             }
         }        
@@ -164,6 +167,7 @@ public class Launcher : MonoBehaviour, INetworkRunnerCallbacks
 
     void INetworkRunnerCallbacks.OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
     {
+        _spawnedCharacterDic.Clear();
     }
 
     void INetworkRunnerCallbacks.OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message)

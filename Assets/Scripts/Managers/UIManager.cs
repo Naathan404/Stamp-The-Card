@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using DG.Tweening;
 using ExitGames.Client.Photon.StructWrapping;
+using Fusion;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
@@ -80,6 +82,14 @@ public class UIManager : MonoBehaviour
         {
             Instance = this;
             //DontDestroyOnLoad(this.gameObject);
+        }
+    }
+
+    protected virtual void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
         }
     }
 
@@ -508,6 +518,41 @@ public class UIManager : MonoBehaviour
     }
 
 
+    public void ShowCustomGameOver(string title, string message)
+    {
+        GameOverPanel.gameObject.SetActive(true);
+        ResultText.text = title;
+        MessageText.text = message;
+
+                GameOverPanel.gameObject.SetActive(true);
+        MenuButton.transform.localScale = Vector2.zero;
+        MenuButton.GetComponent<Button>().enabled = false;
+        ResultText.text = title;
+        MessageText.text = message;
+
+        TableVisualManager.Instance.StopAllCoroutines();
+        FilterManager.Instance.SetDramaticFilter(true);
+
+        GameOverPanel.alpha = 0f;
+        ResultText.transform.localScale = Vector3.zero;
+        MessageText.transform.localScale = Vector3.zero;
+
+        Sequence gameOverSeq = DOTween.Sequence();
+        gameOverSeq.Append(GameOverPanel.DOFade(1f, 0.5f));
+        gameOverSeq.Join(ResultText.transform.DOScale(Vector3.one, 0.8f).SetEase(Ease.OutBack));
+        gameOverSeq.Join(MessageText.transform.DOScale(Vector3.one, 0.8f).SetEase(Ease.OutBack));
+        gameOverSeq.Join(Camera.main.transform.DOShakePosition(0.5f, 0.5f, 20));
+
+        gameOverSeq.AppendInterval(1.5f);
+
+        MenuButton.gameObject.SetActive(true);
+        gameOverSeq.Append(MenuButton.transform.DOScale(Vector3.one, 0.5f)).SetEase(Ease.OutBack)
+            .OnComplete(() =>
+            {
+                MenuButton.GetComponent<Button>().enabled = true;
+            });
+    }
+
     public void ShowGameOverUI(bool isHostWinner)
     {
         bool amIHost = GameManager.Instance.Runner.IsServer;
@@ -555,8 +600,17 @@ public class UIManager : MonoBehaviour
             });
     }
 
-    public void OnMenuButtonClicked()
+
+    public async void OnMenuButtonClickedAsync()
     {
+        MenuButton.GetComponent<Button>().interactable = false;
+        NetworkRunner runner = FindAnyObjectByType<NetworkRunner>();
+        if (runner != null && !runner.IsShutdown)
+        {
+            //await runner.Shutdown();
+            //Destroy(runner.gameObject);
+            await runner.Shutdown(destroyGameObject: true);
+        }
         SceneTransitionManager.Instance.LoadSceneAsync(GameConstants.SCENE_LOBBY);
     }
 }
