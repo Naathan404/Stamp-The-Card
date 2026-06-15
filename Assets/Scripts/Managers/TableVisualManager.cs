@@ -173,6 +173,11 @@ public class TableVisualManager : Singleton<TableVisualManager>
 
         for (int i = 0; i < 3; i++)
         {
+            if (GameManager.Instance == null || this == null) 
+            {
+                yield break;
+            }
+            
             // set up 
             BottomCardSprites[i].gameObject.SetActive(true);
             BottomCardTexts[i].gameObject.SetActive(true);
