@@ -16,39 +16,49 @@ public class EndPhaseHandler : PhaseHandler
         CardSlot[] hostSlots = TableVisualManager.Instance.GetHostCardSlots();
         CardSlot[] clientSlots = TableVisualManager.Instance.GetClientCardSlots();
 
+        int tempHostTotal = 0;
+        int tempClientTotal = 0;
+        for(int i = 0; i < 3; i++)
+        {
+            if (hostSlots[i].IsReverseBalance || clientSlots[i].IsReverseBalance || 
+                hostSlots[i].IsKingOfToughness || clientSlots[i].IsKingOfToughness) 
+                continue;
+
+            tempHostTotal += hostSlots[i].Score;
+            tempClientTotal += clientSlots[i].Score;
+        }
+
+        gameManager.RPC_PlayEndPhaseCinematic(tempHostTotal, tempClientTotal);
+
+        await Task.Delay(7000);
         CalculateAndApplyDamage(hostSlots, clientSlots);
 
-        ClearJokerStamps();
-        
-        await Task.Delay(5000);
+        await Task.Delay(1500);
         if(CheckWinCondition()) return;
-
         PrepareNextTurn();
     }
 
-    private void CalculateAndApplyDamage(CardSlot[] hostSlots, CardSlot[] clientSlots)
+    private (int, int) CalculateAndApplyDamage(CardSlot[] hostSlots, CardSlot[] clientSlots)
     {
         int hostTotal = 0;
         int clientTotal = 0;
 
         for(int i = 0; i < 3; i++)
         {
-            hostTotal += hostSlots[i].Score;
-            clientTotal += clientSlots[i].Score;
-
-            // Cột có Đảo Ngược Cán Cân -> tính riêng, không cộng vào tổng chung
             if (hostSlots[i].IsReverseBalance || clientSlots[i].IsReverseBalance)
             {
                 ApplyReverseBalanceDamage(hostSlots[i], clientSlots[i]);
-                continue;
+                continue; // Bỏ qua, KHÔNG cộng vào tổng
             }
 
-            // Cột có Vua Lì Đòn -> tính riêng, không cộng vào tổng chung
             if (hostSlots[i].IsKingOfToughness || clientSlots[i].IsKingOfToughness)
             {
                 ApplyKingOfToughnessDamage(hostSlots[i], clientSlots[i]);
-                continue;
+                continue; // Bỏ qua, KHÔNG cộng vào tổng
             }
+
+            hostTotal += hostSlots[i].Score;
+            clientTotal += clientSlots[i].Score;
         }
 
         int hostFinal = hostTotal % 10;
@@ -72,6 +82,8 @@ public class EndPhaseHandler : PhaseHandler
         {
             Debug.Log("[EndPhase] Hòa — không ai bị trừ máu");
         }
+
+        return (hostTotal, clientTotal);
     }
 
     private void ApplyDamageToHost(int damage, CardSlot[] cardSlots)
@@ -91,7 +103,7 @@ public class EndPhaseHandler : PhaseHandler
             }
         }
 
-        GameManager.Instance.HostHP -= damage;
+        GameManager.Instance.HostHP = Math.Clamp(GameManager.Instance.HostHP - damage, 0, GameConstants.PLAYER_STARTING_HP);
     }
 
     private void ApplyDamageToClient(int damage, CardSlot[] cardSlots)
@@ -111,7 +123,7 @@ public class EndPhaseHandler : PhaseHandler
             }
         }
 
-        GameManager.Instance.ClientHP -= damage;
+        GameManager.Instance.ClientHP = Math.Clamp(GameManager.Instance.ClientHP - damage, 0, GameConstants.PLAYER_STARTING_HP);
     }
 
     private void TriggerPeaceAmulet(bool isHost)
@@ -121,20 +133,6 @@ public class EndPhaseHandler : PhaseHandler
         // → lượt này an toàn, không bị trừ máu    
         Debug.Log($"[Bùa Bình An] {"Host hoặc Client"} an toàn lượt này, stamps vô hiệu từ đây");
     }                      
-
-    // ===================== HELPERS =====================
-
-    private void ClearJokerStamps()
-    {
-        foreach (int jokerID in GameConstants.JOKER_STAMP_IDS)
-        {
-            int startIndex = jokerID * 3;
-            for (int i = 0; i < 3; i++)
-                gameManager.CardAttachedStamps.Set(startIndex + i, -1);
-        }
-
-        Debug.Log("[EndPhase] Đã xóa stamp của các lá Joker");
-    }
 
     private void PrepareNextTurn()
     {
@@ -151,12 +149,14 @@ public class EndPhaseHandler : PhaseHandler
         if (gameManager.HostHP <= 0)
         {
             Debug.Log("[GameOver] Client thắng!");
+            gameManager.RPC_ShowGameOverUI(false);
             GameStateManager.Instance.ChangePhase(GameStateManager.GamePhase.GameOver);
             return true;
         }
         if (gameManager.ClientHP <= 0)
         {
             Debug.Log("[GameOver] Host thắng!");
+            gameManager.RPC_ShowGameOverUI(true);
             GameStateManager.Instance.ChangePhase(GameStateManager.GamePhase.GameOver);
             return true;
         }

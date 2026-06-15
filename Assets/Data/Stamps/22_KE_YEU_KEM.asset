@@ -14,11 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ConditionalScoreModifierStampData
   _stampID: 22
   _stampRank: 1
-  _stampName: "K\u1EBB y\u1EBFu k\xE9m"
-  _stampEffect: "+4 n\u1EBFu s\u1ED1 n\xFAt g\u1ED1c <= 5"
+  _stampName: Underdog
+  _stampEffect: "+4 Pts if Base Pts \u2264 5."
   targets: 00000000
   _bloodCost: 0
-  stampArt: {fileID: 0}
+  ExeTier: 1
+  stampArt: {fileID: -6485864029042679149, guid: 278b079e9b753d54395296a3b432fb68, type: 3}
   isEnabled: 1
   amountToChange: 4
   scoreOperator: 0

@@ -24,40 +24,6 @@ public class CardSlot : MonoBehaviour
     [Header("Networked Values")]
     public int LastRandomValue = 0;             // Ăn May: nhận từ Host, tránh desync
 
- 
-    //Ham cap nhat so nut cua la bai
-    // public void UpdateUI()
-    // {
-    //     if(IsBottom)
-    //     {
-    //         if (Data.CardType == CardType.CARD_JOKER)
-    //         {
-    //             StampRenderers[1].sprite = Stamps[0].stampArt;
-    //         }
-    //         else
-    //         {
-    //             for (int i = 0; i < StampRenderers.Count; i++)
-    //             {
-    //                 if (i < Stamps.Count)
-    //                 {
-    //                     StampRenderers[i].sprite = Stamps[i].stampArt;
-    //                     StampRenderers[i].enabled = true;
-    //                 }
-    //                 else
-    //                 {
-    //                     StampRenderers[i].enabled = false;
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
-
-    // public void ApplyStamp(BaseStampData stamp)
-    // {
-    //     Stamps.Add(stamp);
-    //     UpdateUI();
-    // }
-
     public void Reset()
     {
         Score = Data.BaseScore;

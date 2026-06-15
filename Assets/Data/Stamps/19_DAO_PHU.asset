@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ConditionalScoreModifierStampData
   _stampID: 19
   _stampRank: 1
-  _stampName: "\u0110ao ph\u1EE7"
-  _stampEffect: "+3 n\xFAt n\u1EBFu s\u1ED1 n\xFAt m\u1EB7c \u0111\u1ECBnh l\xE0
-    ch\u1EB5n"
+  _stampName: Headsman
+  _stampEffect: +3 if Base Pts are even.
   targets: 00000000
   _bloodCost: 0
-  stampArt: {fileID: 0}
+  ExeTier: 1
+  stampArt: {fileID: 1525652802, guid: 8622760dfd3cf324eb70c7211a5b1443, type: 3}
   isEnabled: 1
   amountToChange: 3
   scoreOperator: 0

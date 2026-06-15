@@ -9,7 +9,9 @@ public class DrawPhaseHandler : PhaseHandler
 
     public override void Execute()
     {
+        ClearJokerStamps();
         bool isHost = gameManager.Runner.IsServer;
+        
         /// Update HP cho người chơi
         UIManager.Instance.UpdateHpTexts(isHost);
         
@@ -65,4 +67,19 @@ public class DrawPhaseHandler : PhaseHandler
         }
     }
     #endregion
+
+    
+        // ===================== HELPERS =====================
+
+    private void ClearJokerStamps()
+    {
+        foreach (int jokerID in GameConstants.JOKER_STAMP_IDS)
+        {
+            int startIndex = jokerID * 3;
+            for (int i = 0; i < 3; i++)
+                gameManager.CardAttachedStamps.Set(startIndex + i, -1);
+        }
+
+        Debug.Log("[EndPhase] Đã xóa stamp của các lá Joker");
+    }
 }

@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ConditionalScoreModifierStampData
   _stampID: 24
   _stampRank: 1
-  _stampName: "Tr\u1EA5n th\u1EE7"
-  _stampEffect: "+3 n\xFAt n\u1EBFu l\xE1 b\xE0i \u0111\u01B0\u1EE3c \u0111\xF3ng
-    d\u1EA5u \u1EDF v\u1ECB tr\xED 2"
+  _stampName: Sentinel
+  _stampEffect: +3 Pts if in Slot 2.
   targets: 00000000
   _bloodCost: 0
-  stampArt: {fileID: 0}
+  ExeTier: 1
+  stampArt: {fileID: 4572713766378163436, guid: 278b079e9b753d54395296a3b432fb68, type: 3}
   isEnabled: 1
   amountToChange: 3
   scoreOperator: 0
