@@ -172,9 +172,9 @@ MeshRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 1440246475
-  m_SortingLayer: 3
-  m_SortingOrder: 0
+  m_SortingLayerID: -502724649
+  m_SortingLayer: 2
+  m_SortingOrder: 6
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &7122127230224487169
@@ -197,7 +197,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 10
+  m_text: 99
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -609,9 +609,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b195325a918645a48a48149a8f3f2d4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardSlot
-  Index: 0
+  Index: 1
   Data: {fileID: 0}
   Score: 0
+  IsBottom: 1
   Stamps: []
   StampRenderers:
   - {fileID: 5924519643974544164}

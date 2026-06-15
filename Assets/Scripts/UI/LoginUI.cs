@@ -68,7 +68,6 @@ public class LoginUI : MonoBehaviour
     }
 
 
-
     private void OnDestroy()
     {
         _loginButton.onClick.RemoveListener(OnLoginButtonClicked);
@@ -95,8 +94,14 @@ public class LoginUI : MonoBehaviour
         }
 
         _displayNameInputPanel.SetActive(false);
-        PlayfabManager.Instance.UpdateDisplayName(displayName);
-        SceneTransitionManager.Instance.LoadSceneAsync("Menu");
+
+        PlayfabManager.Instance.UpdateDisplayName(displayName, 
+            onSuccess: () => {
+                PlayfabManager.Instance.GrantStamp();                       // Cap phat stamp co ban cho new player
+                SceneTransitionManager.Instance.LoadSceneAsync("Menu"); 
+            },
+            onError: () => { return; });
+        
     }    
 
     public void OnLoginButtonClicked()

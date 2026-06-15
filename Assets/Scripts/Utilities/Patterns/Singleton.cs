@@ -12,6 +12,6 @@ public class Singleton<T> : MonoBehaviour where T : class
            return; 
         }
         Instance = this as T;
-        DontDestroyOnLoad(this.gameObject);
+        //DontDestroyOnLoad(this.gameObject);
     }
 }

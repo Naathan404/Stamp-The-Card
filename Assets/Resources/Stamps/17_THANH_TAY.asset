@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cdb312c59beb5548818c3bd7907a573, type: 3}
+  m_Name: 17_THANH_TAY
+  m_EditorClassIdentifier: Assembly-CSharp::SpecialEffectStampData
+  _stampID: 17
+  _stampRank: 1
+  _stampName: "Thanh t\u1EA9y"
+  _stampEffect: "\u0110\u01B0a s\u1ED1 n\xFAt quay v\u1EC1 s\u1ED1 n\xFAt g\u1ED1c"
+  targets: 00000000
+  _bloodCost: 0
+  stampArt: {fileID: 0}
+  isEnabled: 1
+  effectType: 3

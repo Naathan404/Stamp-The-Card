@@ -5,10 +5,10 @@ using UnityEngine;
 public class CardSlot : MonoBehaviour
 {
     [Header("Card Data")]
-    public int Index;
-    public CardData Data;
-    public int Score;
-    public List<BaseStampData> Stamps = new List<BaseStampData>();
+    public int Index = 0;
+    public CardData Data = null;
+    public int Score = 0;
+    public bool IsBottom = true;
 
     [Header("Components")]
     public List<SpriteRenderer> StampRenderers = new List<SpriteRenderer>(); 
@@ -23,30 +23,6 @@ public class CardSlot : MonoBehaviour
 
     [Header("Networked Values")]
     public int LastRandomValue = 0;             // Ăn May: nhận từ Host, tránh desync
-
- 
-    //Ham cap nhat so nut cua la bai
-    public void UpdateUI()
-    {
-        for (int i = 0; i < StampRenderers.Count; i++)
-        {
-            if (i < Stamps.Count)
-            {
-                StampRenderers[i].sprite = Stamps[i].stampArt;
-                StampRenderers[i].enabled = true;
-            }
-            else
-            {
-                StampRenderers[i].enabled = false;
-            }
-        }
-    }
-
-    public void ApplyStamp(BaseStampData stamp)
-    {
-        Stamps.Add(stamp);
-        UpdateUI();
-    }
 
     public void Reset()
     {

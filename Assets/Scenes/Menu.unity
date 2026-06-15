@@ -2651,6 +2651,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9129b6a30604bd409ab6b72ee2c5970, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MenuController
+  _soulQuantityTMP: {fileID: 1343747241}
 --- !u!1 &2055843366
 GameObject:
   m_ObjectHideFlags: 0

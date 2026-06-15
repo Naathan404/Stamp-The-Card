@@ -14,12 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpecialEffectStampData
   _stampID: 25
   _stampRank: 1
-  _stampName: "C\xE1n c\xE2n c\xF4ng b\u1EB1ng"
-  _stampEffect: "Khi\u1EBFn s\u1ED1 n\xFAt c\u1EE7a l\xE1 b\xE0i \u0111\u01B0\u1EE3c
-    \u0111\xF3ng d\u1EA5u b\u1EB1ng s\u1ED1 n\xFAt g\u1ED1c c\u1EE7a l\xE1 b\xE0i
-    \u0111\u1ED1i di\u1EC7n"
+  _stampName: Equilibrium
+  _stampEffect: Pts become Foe's Base Pts.
   targets: 00000000
   _bloodCost: 0
-  stampArt: {fileID: 0}
+  ExeTier: 1
+  stampArt: {fileID: 7782569148081603784, guid: 278b079e9b753d54395296a3b432fb68, type: 3}
   isEnabled: 1
   effectType: 5

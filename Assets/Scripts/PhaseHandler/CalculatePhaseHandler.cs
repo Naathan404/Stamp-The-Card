@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class CalculatePhaseHandler : PhaseHandler
@@ -7,10 +8,15 @@ public class CalculatePhaseHandler : PhaseHandler
     {
     }
 
-    public override void Execute()
+    public async override void Execute()
     {
+        
         if (!gameManager.Runner.IsServer) return;
-        TableVisualManager.Instance.SyncStampsToCardSlots();
+
+        gameManager.NetworkedHostStampCount = gameManager.HostStampDeck.Count;
+        gameManager.NetworkedClientStampCount = gameManager.ClientStampDeck.Count;
+        
+        // TableVisualManager.Instance.SyncStampsToCardSlots();
 
         CardSlot[] hostSlots = TableVisualManager.Instance.GetHostCardSlots();
         CardSlot[] clientSlots = TableVisualManager.Instance.GetClientCardSlots();
@@ -19,11 +25,16 @@ public class CalculatePhaseHandler : PhaseHandler
         ResetAllCard(hostSlots);
         ResetAllCard(clientSlots);
 
-        _calculationSystem.Run(hostSlots, clientSlots, GameStateManager.Instance.CurrentTurn);
+        Debug.Log("[CAL PHASE HANDLER] Gọi Calculate System để tính toán");
+        //_calculationSystem.Run(hostSlots, clientSlots, GameStateManager.Instance.CurrentTurn);
 
-        TableVisualManager.Instance.UpdateBoardScores(hostSlots, clientSlots);
-
-        GameStateManager.Instance.ChangePhase(GameStateManager.GamePhase.EndPhase);
+        // gameManager.RPC_SyncAndShowScores(
+        //     hostSlots[0].Score, hostSlots[1].Score, hostSlots[2].Score,
+        //     clientSlots[0].Score, clientSlots[1].Score, clientSlots[2].Score
+        // );
+        
+        // await Task.Delay(5000);
+        // GameStateManager.Instance.ChangePhase(GameStateManager.GamePhase.EndPhase);
     }
 
 

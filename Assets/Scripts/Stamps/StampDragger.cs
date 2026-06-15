@@ -3,7 +3,7 @@ using UnityEngine.EventSystems; // Bắt buộc phải có
 using DG.Tweening;
 
 [RequireComponent(typeof(BoxCollider2D), typeof(SpriteRenderer))]
-public class StampDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class StampDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
 {
     [Header("References")]
     public GameObject stampToolPrefab;
@@ -11,7 +11,7 @@ public class StampDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
     public bool isUsed = false;
 
     [Header("Game Juice Settings")]
-    [SerializeField] private float _pickUpScale = 1.2f;
+    [SerializeField] private float _pickUpScale = 1.5f;
     [SerializeField] private ParticleSystem _bloodImpactParticle;
     [SerializeField] private float _shakeAmplitude = 0.2f;
     [SerializeField] private float _shakeDuration = 0.2f;
@@ -27,6 +27,9 @@ public class StampDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
     public Vector2 _originalScale = Vector2.one;
     private int _originalSortingOrder;
 
+    private bool _isDragging = false;
+    private bool _isReturning = false;
+
     private GameObject _stampToolInstance;
 
     public Vector2 OriginalScale => _originalScale;
@@ -39,17 +42,17 @@ public class StampDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
         _stampToolInstance = Instantiate(stampToolPrefab, Vector2.zero, Quaternion.identity);
         _stampToolInstance.SetActive(false); // Ẩn nó đi trước khi dùng
+
     }
 
-    // 1. KHI VỪA NẮM CHUỘT KÉO ĐI
     public void OnBeginDrag(PointerEventData eventData)
     {
         if(isUsed) return;
+        _isDragging = true;
         _spriteRenderer.sortingOrder = 100; // Đưa lên trên cùng
         transform.DOScale(_originalScale * _pickUpScale, 0.1f).SetEase(Ease.OutBack);
     }
 
-    // 2. KHI ĐANG RÊ CHUỘT
     public void OnDrag(PointerEventData eventData)
     {
         if(isUsed) return;
@@ -69,6 +72,7 @@ public class StampDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         Collider2D[] hits = Physics2D.OverlapPointAll(dropPoint);
 
         bool hasFoundCard = false;
+        _isDragging = false;
         foreach (Collider2D hit in hits)
         {
             if (hit.CompareTag("MyCard"))
@@ -87,8 +91,14 @@ public class StampDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
     private void ReturnToStart()
     {
+        _isReturning = true; 
+
+        transform.DOKill(); 
         transform.DOScale(_originalScale, 0.1f).SetEase(Ease.OutBack);
-        transform.DOMove(_originalPosition, 0.3f).SetEase(Ease.OutBack);
+        transform.DOMove(_originalPosition, 0.3f).SetEase(Ease.OutBack).OnComplete(() => 
+        {
+            _isReturning = false; 
+        });
     }
 
     private void StampOnCard(GameObject targetCard)
@@ -97,6 +107,7 @@ public class StampDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         int slotIndex = targetCard.GetComponent<CardSlot>().Index;
 
         _spriteRenderer.enabled = false;
+        isUsed = true;
 
         // Spawn stamp tool animation
         Vector3 spawnPos = targetCard.transform.position + Vector3.up * _stampStartPosition;
@@ -136,7 +147,6 @@ public class StampDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         seq.OnComplete(() =>
         {
             _stampToolInstance.SetActive(false);
-            isUsed = true;
 
             bool amIHost = GameManager.Instance.Runner.IsServer;
             GameManager.Instance.RPC_PlayStamp(slotIndex, stampID, amIHost);
@@ -156,5 +166,35 @@ public class StampDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         transform.DOKill();
         transform.position = _originalPosition;
         transform.localScale = _originalScale;
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if(_isDragging || _isReturning) return;
+        BaseStampData stampData = DataManager.Instance.GetStampDataByID(stampID);
+
+        if (stampData != null)
+        {
+            TooltipManager.Instance.ShowTooltip(stampData.stampName, stampData.stampEffect);
+            
+            transform.DOKill();
+            transform.DOScale(_originalScale * 1.2f, 0.15f).SetEase(Ease.OutBack);
+        }
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        if(_isDragging || _isReturning) return;
+
+        TooltipManager.Instance.HideTooltip();
+        transform.DOKill();
+        transform.DOScale(_originalScale, 0.15f).SetEase(Ease.InQuad);
+    }
+
+    void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
+    {
+        if (_isReturning) return;
+        _isDragging = true;
+        TooltipManager.Instance.HideTooltip();
     }
 }

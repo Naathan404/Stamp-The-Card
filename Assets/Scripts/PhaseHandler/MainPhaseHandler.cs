@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using Fusion;
 using UnityEngine;
 
 public class MainPhaseHandler : PhaseHandler
@@ -17,29 +19,31 @@ public class MainPhaseHandler : PhaseHandler
 
     private void StampChoices()
     {
-        for(int i = 0; i < 3; i++)
-        {
-            /// Pick stamps for host
-            if(gameManager.HostCurrentStampIndex < GameConstants.MAX_STAMP_CAPACITY)
-            {
-                gameManager.HostStampChoices.Set(i, gameManager.HostStampDeck[gameManager.HostCurrentStampIndex]);
-                gameManager.HostCurrentStampIndex++;
-            }
-            else
-            {
-                gameManager.HostStampChoices.Set(i, -1);
-            }
+        PickRandomStamps(
+            gameManager.HostStampDeck,
+            gameManager.HostStampChoices
+        );
+        PickRandomStamps(
+            gameManager.ClientStampDeck,
+            gameManager.ClientStampChoices
+        );
+    }
 
-            // Pick stamps for client   
-            if(gameManager.ClientCurrentStampIndex < GameConstants.MAX_STAMP_CAPACITY)
-            {
-                gameManager.ClientStampChoices.Set(i, gameManager.ClientStampDeck[gameManager.ClientCurrentStampIndex]);
-                gameManager.ClientCurrentStampIndex++;
-            }
-            else
-            {
-                gameManager.ClientStampChoices.Set(i, -1);
-            }
+    private void PickRandomStamps(List<int> deck, NetworkArray<int> choices)
+    {
+        List<int> available = new List<int>(deck);
+
+        for (int i = available.Count - 1; i >= 1; i--)
+        {
+            int rnd = Random.Range(0, i + 1);
+            int temp = available[rnd];
+            available[rnd] = available[i];
+            available[i] = temp;
+        }
+
+        for (int i = 0; i < 3; i++)
+        {
+            choices.Set(i, i < available.Count ? available[i] : -1); 
         }
     }
 }

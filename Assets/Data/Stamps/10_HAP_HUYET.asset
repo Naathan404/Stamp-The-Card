@@ -14,10 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ScoreTransferStampData
   _stampID: 10
   _stampRank: 0
-  _stampName: "H\u1EA5p huy\u1EBFt"
-  _stampEffect: "C\u01B0\u1EDBp 1 n\xFAt t\u1EEB l\xE1 b\xE0i \u0111\u1ED1i di\u1EC7n"
+  _stampName: Lifesteal
+  _stampEffect: Drain 1 Pts from Foe.
   targets: 0000000003000000
   _bloodCost: 0
+  ExeTier: 3
   stampArt: {fileID: -476335471, guid: ce657d230f49d7643a5bd9c607a8c31b, type: 3}
   isEnabled: 1
   amountToTransfer: 1

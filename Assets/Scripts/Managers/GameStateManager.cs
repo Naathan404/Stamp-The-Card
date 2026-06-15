@@ -1,10 +1,7 @@
-using System.Buffers.Text;
 using System.Linq;
-using System.Net.Security;
 using DG.Tweening;
 using Fusion;
 using TMPro;
-using Unity.Mathematics.Geometry;
 using UnityEngine;
 
 public class GameStateManager : NetworkSingleton<GameStateManager>
@@ -31,6 +28,8 @@ public class GameStateManager : NetworkSingleton<GameStateManager>
     [Networked] private NetworkBool HasStartedFirstTurn { get; set; }
     [Networked] private TickTimer _startDelayTimer { get; set; }
     [Networked] private TickTimer _mainPhaseTimer { get; set; }
+    [Networked] private TickTimer _transitionDelayTimer { get; set; }
+    [Networked] private NetworkBool IsWaitingToTransition { get; set; }
     
     [Header("UI")]
     [SerializeField] private GameObject _timerZone;
@@ -85,7 +84,7 @@ public class GameStateManager : NetworkSingleton<GameStateManager>
             if (HasStartedFirstTurn) return;
             if (Runner.ActivePlayers.Count() == 2 && !_startDelayTimer.IsRunning)
             {
-                _startDelayTimer = TickTimer.CreateFromSeconds(Runner, 1.5f);
+                _startDelayTimer = TickTimer.CreateFromSeconds(Runner, 3f);
             }
 
             if (_startDelayTimer.Expired(Runner))
@@ -97,11 +96,26 @@ public class GameStateManager : NetworkSingleton<GameStateManager>
         }
         else if(CurrentGameState == GamePhase.MainPhase)
         {
-            bool isBothPlayerDone = GameManager.Instance.IsHostDone && GameManager.Instance.IsClientDone;
-            if(_mainPhaseTimer.Expired(Runner) || isBothPlayerDone)
+            if (!IsWaitingToTransition)
             {
-                _mainPhaseTimer = TickTimer.None;
-                ChangePhase(GamePhase.CalculatePhase);
+                bool isBothPlayerDone = GameManager.Instance.IsHostDone && GameManager.Instance.IsClientDone;
+                
+                if(_mainPhaseTimer.Expired(Runner) || isBothPlayerDone)
+                {
+                    _mainPhaseTimer = TickTimer.None; 
+                    IsWaitingToTransition = true;     
+                    
+                    _transitionDelayTimer = TickTimer.CreateFromSeconds(Runner, 3f); 
+                    Debug.Log("[GameState] Cả 2 đã sẵn sàng. Dừng 1.5s lấy đà trước khi tính toán...");
+                }
+            }
+            else 
+            {
+                if (_transitionDelayTimer.Expired(Runner))
+                {
+                    _transitionDelayTimer = TickTimer.None;
+                    ChangePhase(GamePhase.CalculatePhase);
+                }
             }
         }
 
@@ -127,6 +141,7 @@ public class GameStateManager : NetworkSingleton<GameStateManager>
             case GamePhase.MainPhase:
                 Debug.Log("Bắt đầu Main Phase");
                 _mainPhaseTimer = TickTimer.CreateFromSeconds(Runner, 60f);
+                IsWaitingToTransition = false;
                 GameManager.Instance.ExecuteMainPhase();
                 break;
 
@@ -146,9 +161,19 @@ public class GameStateManager : NetworkSingleton<GameStateManager>
         }
     }
 
+    public void HideEndPhaseButton()
+    {
+        if(CurrentGameState != GamePhase.MainPhase) return;
+        _endPhaseButton.transform.DOScaleY(0f, 0.4f).SetEase(Ease.OutQuad).OnComplete(() =>
+        {
+           _endPhaseButton.SetActive(false); 
+        });
+    }
+
     public void OnEndPhase()
     {
         if(CurrentGameState != GamePhase.MainPhase) return;
+        TableVisualManager.Instance.HideAllStamps();
         _endPhaseButton.transform.DOScaleY(0f, 0.4f).SetEase(Ease.OutQuad).OnComplete(() =>
         {
            _endPhaseButton.SetActive(false); 
@@ -179,7 +204,8 @@ public class GameStateManager : NetworkSingleton<GameStateManager>
                             _timer.text = "0";
                             _timerZone.gameObject.SetActive(false); 
                         });
-                        _endPhaseButton.SetActive(false);                        
+                        _endPhaseButton.SetActive(false);       
+                        UIManager.Instance.ShowTurnAnnouncement(CurrentTurn);                 
                     }
                     else if(CurrentGameState == GamePhase.MainPhase)
                     {
@@ -193,19 +219,38 @@ public class GameStateManager : NetworkSingleton<GameStateManager>
                     }
                     else if(CurrentGameState == GamePhase.CalculatePhase)
                     {
-                        // ẩn đồng hồ bấm giờ
+                        TableVisualManager.Instance.StartCalculatePhaseVisuals();
+                    }
+                    // call UI, sound, bla bla, etc
+                    break;
+
+                case nameof(IsWaitingToTransition):
+                    if (IsWaitingToTransition)
+                    {
+                        Debug.Log("[UI] Bắt đầu thời gian chờ, ẩn UI Main Phase đi!");
+                        
+                        _timerZone.transform.DOKill();
                         _timerZone.transform.DOScaleY(0f, 0.4f).OnComplete(() =>
                         {
                             _timer.text = "0";
                             _timerZone.gameObject.SetActive(false); 
                         });
+
+                        _endPhaseButton.transform.DOKill();
+                        _endPhaseButton.transform.DOScaleY(0f, 0.4f).OnComplete(() => 
+                        {
+                            _endPhaseButton.SetActive(false);
+                        });
+
+                        UIManager.Instance.ShowBattleStartAnnouncement();
                     }
-                    // call UI, sound, bla bla, etc
                     break;
             }
         }
+        
         if (!Object.IsValid) return;
-        if (CurrentGameState == GamePhase.MainPhase)
+        
+        if (CurrentGameState == GamePhase.MainPhase && !IsWaitingToTransition)
         {
             if (_mainPhaseTimer.IsRunning)
             {
