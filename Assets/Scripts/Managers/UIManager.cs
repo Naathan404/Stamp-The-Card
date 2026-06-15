@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
-using NUnit.Framework.Constraints;
+using ExitGames.Client.Photon.StructWrapping;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
@@ -14,6 +16,15 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _topNameText;
     [SerializeField] private TextMeshPro _bottomStampCount;
     [SerializeField] private TextMeshPro _topStampCount;
+
+    [Header("GameOver UI")]
+    public CanvasGroup GameOverPanel;
+    public TextMeshProUGUI ResultText;
+    public TextMeshProUGUI MessageText;
+    public RectTransform MenuButton;
+    private List<string> _loseMessages = new List<string>();
+    private List<string> _winMessages = new List<string>();
+
     [Header("Seat Transforms")]
     [SerializeField] private Transform _bottomSeatTransform;
     [SerializeField] private Transform _topSeatTransform;
@@ -22,6 +33,7 @@ public class UIManager : MonoBehaviour
     public CanvasGroup BlackScreenCurtain;
     public CanvasGroup BattleStartPanelGroup; 
     public RectTransform BattleStartTextRect;
+    public TextMeshProUGUI BattleStartTMP;
     public RectTransform TurnAnnouncementRect; 
     public TextMeshProUGUI TurnAnnouncementTMP; 
     public CanvasGroup TurnAnnouncementCanvasGroup;
@@ -55,6 +67,8 @@ public class UIManager : MonoBehaviour
     private Vector3 _originalOppCenterTextPosition;
     private Vector3 _originalFinalDamageTextPosition;
 
+
+
     public static UIManager Instance;
     private void Awake()
     {
@@ -65,7 +79,7 @@ public class UIManager : MonoBehaviour
         else
         {
             Instance = this;
-            DontDestroyOnLoad(this.gameObject);
+            //DontDestroyOnLoad(this.gameObject);
         }
     }
 
@@ -82,12 +96,23 @@ public class UIManager : MonoBehaviour
         _originalOppCenterTextPosition = OppCenterText.transform.position;
         _originalFinalDamageTextPosition = FinalDamageText.transform.position;
 
+        GameOverPanel.gameObject.SetActive(false);
+
         _drawLines.Add("SAFE... FOR NOW");
         _drawLines.Add("NO ONE DIES THIS TURN");
         _drawLines.Add("STILL BREATHING");
         _drawLines.Add("DEATH IS DELAYED");
         _drawLines.Add("A HOLLOW DRAW");
         _drawLines.Add("NO VICTORY, NO VICTIM");
+
+        _winMessages.Add("This soul belongs to me!");
+        _winMessages.Add("Thanks for the soul!");
+        _winMessages.Add("Another soul sealed!");
+
+        _loseMessages.Add("You have forfeited your right to exist!");
+        _loseMessages.Add("The price of your gamble is your soul!");
+        _loseMessages.Add("Paid for with your life!");
+        _loseMessages.Add("The defeated have no voice");
     }
 
     public void UpdateHpTexts(bool amIHost)
@@ -143,12 +168,17 @@ public class UIManager : MonoBehaviour
                 // Đổi màu cam rực (Critical)
                 FilterManager.Instance.FlashScreen(_flashColor);
                 hpText.color = _hazardColor; 
-                
                 // Phình to hơn bình thường nhưng không rung Camera
                 hpText.transform.DOPunchScale(Vector3.one * 0.8f, 0.4f, vibrato: 15);
-                
-                // Lắc ngả nghiêng Text thay vì lắc vị trí (Tạo cảm giác bị gõ trúng đầu)
+                // Lắc ngả nghiêng Text thay vì lắc vị trí 
                 hpText.transform.DOShakeRotation(0.4f, strength: new Vector3(0, 0, 20f), vibrato: 15);
+
+                // Rung cả Camera để thấy chấn động
+                if (Camera.main != null) 
+                {
+                    Camera.main.transform.DOComplete(); 
+                    Camera.main.transform.DOShakePosition(0.4f, strength: 0.2f, vibrato: 15);
+                }
             }
 
             // Trả về màu trắng sau khi giật xong
@@ -220,6 +250,22 @@ public class UIManager : MonoBehaviour
         BattleStartTextRect.localScale = Vector3.one;
         BattleStartTextRect.anchoredPosition = new Vector2(-1500f, 0f);
 
+        if (GameManager.Instance.Runner.IsServer)
+        {
+            if (GameStateManager.Instance.CurrentTurn % 2 == 1)
+                BattleStartTMP.text = "YOU GO FIRST!";
+            else
+                BattleStartTMP.text = "YOU GO SECOND!";
+        }
+        else
+        {
+            if (GameStateManager.Instance.CurrentTurn % 2 == 1)
+                BattleStartTMP.text = "YOU GO SECOND!";
+            else
+                BattleStartTMP.text = "YOU GO FIRST!";
+        }
+
+
         Sequence seq = DOTween.Sequence();
         seq.AppendInterval(0.5f);
         seq.Append(BattleStartPanelGroup.DOFade(1f, 0.5f));
@@ -260,7 +306,7 @@ public class UIManager : MonoBehaviour
 
         if(turnNumber == 1)
         {
-            TurnAnnouncementTMP.text = $"MATCH FOUND"; 
+            TurnAnnouncementTMP.text = $"SOUL LINKED"; 
             TurnAnnouncementRect.localScale = Vector3.one * 1.5f;
             TurnAnnouncementCanvasGroup.alpha = 0f; 
              // canvas mờ hiện leennn và text xuất hiện
@@ -272,13 +318,13 @@ public class UIManager : MonoBehaviour
 
             seq.AppendCallback(() =>
             {
-               TurnAnnouncementTMP.text = $"TURN {turnNumber}";
+               TurnAnnouncementTMP.text = $"DRAW {turnNumber}";
                TurnAnnouncementRect.localScale = Vector3.one * 3f; 
             });
         }
         else
         {
-            TurnAnnouncementTMP.text = $"TURN {turnNumber}";
+            TurnAnnouncementTMP.text = $"DRAW {turnNumber}";
             TurnAnnouncementRect.localScale = Vector3.one * 3f;
             TurnAnnouncementCanvasGroup.alpha = 0f;
         }
@@ -400,13 +446,13 @@ public class UIManager : MonoBehaviour
         {
             FinalDamageText.text = _drawLines[Random.Range(0, _drawLines.Count)];
             FinalDamageText.color = Color.white;
-            FinalDamageText.fontSize = 150;
+            FinalDamageText.fontSize = 70;
         }
         else
         {
             FinalDamageText.text = damage.ToString();
             FinalDamageText.color = iTakeDamage ? _hazardColor : _advantageColor; 
-            FinalDamageText.fontSize = 200;
+            FinalDamageText.fontSize = 150;
         }
         
         FinalDamageText.transform.localScale = Vector3.zero;
@@ -459,5 +505,58 @@ public class UIManager : MonoBehaviour
         }
 
         //UpdateHpTexts(amIHost);
+    }
+
+
+    public void ShowGameOverUI(bool isHostWinner)
+    {
+        bool amIHost = GameManager.Instance.Runner.IsServer;
+        bool didIWin = (amIHost && isHostWinner) || (!amIHost && !isHostWinner);
+        string resultMessage = "";
+        string message = "";
+
+        if (didIWin)
+        {
+            resultMessage = "YOU WON";
+            message = _winMessages[Random.Range(0, _winMessages.Count)];
+        }
+        else
+        {
+            resultMessage = "YOU LOSE";
+            message = _loseMessages[Random.Range(0, _loseMessages.Count)];
+        }
+
+        GameOverPanel.gameObject.SetActive(true);
+        MenuButton.transform.localScale = Vector2.zero;
+        MenuButton.GetComponent<Button>().enabled = false;
+        ResultText.text = resultMessage;
+        MessageText.text = message;
+
+        TableVisualManager.Instance.StopAllCoroutines();
+        FilterManager.Instance.SetDramaticFilter(true);
+
+        GameOverPanel.alpha = 0f;
+        ResultText.transform.localScale = Vector3.zero;
+        MessageText.transform.localScale = Vector3.zero;
+
+        Sequence gameOverSeq = DOTween.Sequence();
+        gameOverSeq.Append(GameOverPanel.DOFade(1f, 0.5f));
+        gameOverSeq.Join(ResultText.transform.DOScale(Vector3.one, 0.8f).SetEase(Ease.OutBack));
+        gameOverSeq.Join(MessageText.transform.DOScale(Vector3.one, 0.8f).SetEase(Ease.OutBack));
+        gameOverSeq.Join(Camera.main.transform.DOShakePosition(0.5f, 0.5f, 20));
+
+        gameOverSeq.AppendInterval(1.5f);
+
+        MenuButton.gameObject.SetActive(true);
+        gameOverSeq.Append(MenuButton.transform.DOScale(Vector3.one, 0.5f)).SetEase(Ease.OutBack)
+            .OnComplete(() =>
+            {
+                MenuButton.GetComponent<Button>().enabled = true;
+            });
+    }
+
+    public void OnMenuButtonClicked()
+    {
+        SceneTransitionManager.Instance.LoadSceneAsync(GameConstants.SCENE_LOBBY);
     }
 }

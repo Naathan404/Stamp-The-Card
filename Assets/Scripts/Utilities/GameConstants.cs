@@ -7,6 +7,8 @@ public static class GameConstants
     public const int PLAYER_HAND_SIZE = 3;
     public const int PLAYER_STARTING_HP = 15;
 
+    public const string SCENE_LOBBY = "Lobby";
+
     public static readonly int[] JOKER_STAMP_IDS = { 10, 23 };
 
     public static bool IsJokerStamp(int stampId)

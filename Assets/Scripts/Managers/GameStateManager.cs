@@ -1,10 +1,7 @@
-using System.Buffers.Text;
 using System.Linq;
-using System.Net.Security;
 using DG.Tweening;
 using Fusion;
 using TMPro;
-using Unity.Mathematics.Geometry;
 using UnityEngine;
 
 public class GameStateManager : NetworkSingleton<GameStateManager>
@@ -164,9 +161,19 @@ public class GameStateManager : NetworkSingleton<GameStateManager>
         }
     }
 
+    public void HideEndPhaseButton()
+    {
+        if(CurrentGameState != GamePhase.MainPhase) return;
+        _endPhaseButton.transform.DOScaleY(0f, 0.4f).SetEase(Ease.OutQuad).OnComplete(() =>
+        {
+           _endPhaseButton.SetActive(false); 
+        });
+    }
+
     public void OnEndPhase()
     {
         if(CurrentGameState != GamePhase.MainPhase) return;
+        TableVisualManager.Instance.HideAllStamps();
         _endPhaseButton.transform.DOScaleY(0f, 0.4f).SetEase(Ease.OutQuad).OnComplete(() =>
         {
            _endPhaseButton.SetActive(false); 

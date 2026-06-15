@@ -9,6 +9,9 @@ using UnityEngine.SocialPlatforms.GameCenter;
 
 public class GameManager : NetworkSingleton<GameManager>
 {
+    [Header("DEBUG")]
+    public int StampNum = 20;
+
     [Header("MAIN DECK")]
     public int[] MainDeck = new int[GameConstants.MAINDECK_SIZE];
     public int CurrentCardIndexFromMainDeck = 0;
@@ -91,11 +94,20 @@ public class GameManager : NetworkSingleton<GameManager>
             }
 
             // NẠP STAMP DECK (Tránh việc toàn số 0)
-            for (int i = 0; i < GameConstants.MAX_STAMP_CAPACITY; i++)
-            {
-                HostStampDeck[i] = i + 1; 
-                ClientStampDeck[i] = i + 1;
-            }
+            HostStampDeck.Clear();
+            ClientStampDeck.Clear();
+            var hostRandomStamps = Enumerable.Range(1, StampNum)
+                                             .OrderBy(x => Guid.NewGuid())
+                                             .Take(GameConstants.MAX_STAMP_CAPACITY)
+                                             .ToList();
+
+            var clientRandomStamps = Enumerable.Range(1, StampNum)
+                                               .OrderBy(x => Guid.NewGuid())
+                                               .Take(GameConstants.MAX_STAMP_CAPACITY)
+                                               .ToList();
+
+            HostStampDeck.AddRange(hostRandomStamps);
+            ClientStampDeck.AddRange(clientRandomStamps);
 
             // SET BÀI TRÊN TAY LÀ -1 
             for(int i = 0; i < GameConstants.PLAYER_HAND_SIZE; i++)
@@ -293,6 +305,12 @@ public class GameManager : NetworkSingleton<GameManager>
     {
         Debug.Log("[RPC] Tất cả client bắt đầu chạy Cinematic End Phase!");
         UIManager.Instance.StartCoroutine(UIManager.Instance.CinematicEndPhaseRoutine(hostTotalScore, clientTotalScore));
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    public void RPC_ShowGameOverUI(bool isHostWinner)
+    {
+        UIManager.Instance.ShowGameOverUI(isHostWinner);
     }
     
     #endregion

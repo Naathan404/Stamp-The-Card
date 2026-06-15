@@ -14,10 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ConditionalScoreModifierStampData
   _stampID: 26
   _stampRank: 1
-  _stampName: "Hi\u1EC7p s\u0129"
-  _stampEffect: "+3 n\xFAt n\u1EBFu t\u1ED5ng n\xFAt ta < t\u1ED5ng n\xFAt \u0111\u1ECBch"
+  _stampName: Knight
+  _stampEffect: 3 Pts if total Allied Pts < total Enemy Pts.
   targets: 00000000
   _bloodCost: 0
+  ExeTier: 1
   stampArt: {fileID: 0}
   isEnabled: 1
   amountToChange: 3

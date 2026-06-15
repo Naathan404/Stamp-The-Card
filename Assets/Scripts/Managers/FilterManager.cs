@@ -15,6 +15,8 @@ public class FilterManager : Singleton<FilterManager>
         if(_globalVolume != null && _globalVolume.profile.TryGet(out _colorAdjustments))
         {
             _colorAdjustments.colorFilter.value = Color.white;
+            _colorAdjustments.saturation.value = 0f;
+            _colorAdjustments.contrast.value = 0f;
         }
         else
         {
@@ -33,7 +35,6 @@ public class FilterManager : Singleton<FilterManager>
         if(_colorAdjustments == null) return;
 
         DOTween.Kill(_colorAdjustments);
-
         _colorAdjustments.colorFilter.value = targetColor;
 
         DOTween.To(
@@ -44,5 +45,21 @@ public class FilterManager : Singleton<FilterManager>
         )
         .SetEase(Ease.OutQuad)
         .SetTarget(_colorAdjustments);
+    }
+
+    public void SetDramaticFilter(bool isBlackAndWhite = true)
+    {
+        if(_colorAdjustments == null) return;
+
+        _colorAdjustments.saturation.value = 0f;
+        _colorAdjustments.contrast.value = 0f;
+        DOTween.Kill(_colorAdjustments);
+        
+        float targetSat = isBlackAndWhite ? -100f : 0f;
+        float targetContrast = isBlackAndWhite ? 20f : 0f;
+
+        DOTween.To(() => _colorAdjustments.saturation.value, x => _colorAdjustments.saturation.value = x, targetSat, 1f);
+
+        DOTween.To(() => _colorAdjustments.contrast.value, x => _colorAdjustments.contrast.value = x, targetContrast, 1f);
     }
 }

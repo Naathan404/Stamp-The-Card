@@ -303,6 +303,7 @@ public class TableVisualManager : Singleton<TableVisualManager>
                         stampRenderer.sprite = DataManager.Instance.GetStampDataByID(stampID).stampArt;
 
                         Transform stampTransform = stampRenderer.transform;
+                        stampTransform.rotation = Quaternion.identity;
                         stampTransform.DOKill();
                         
                         stampTransform.localScale = Vector3.one;
@@ -378,6 +379,24 @@ public class TableVisualManager : Singleton<TableVisualManager>
         }
     }
 
+    public void HideAllStamps()
+    {
+        for(int i = 0; i < 3; i++)
+        {
+            if(StampSprites[i] != null && StampSprites[i].gameObject.activeSelf)
+            {
+                var dragger = StampSprites[i].GetComponent<StampDragger>();
+
+                int capturedIndex = i; 
+                StampSprites[capturedIndex].transform.DOScale(Vector3.zero, 0.3f)
+                    .SetEase(Ease.InBack)
+                    .OnComplete(() =>
+                    {
+                        StampSprites[capturedIndex].gameObject.SetActive(false);
+                    });
+            }
+        }
+    }
 
     /// Hàm chạy hiệu ứng ẩn stamps
     public void HideUnusedStamps(GameObject usedStampGO)
@@ -387,7 +406,6 @@ public class TableVisualManager : Singleton<TableVisualManager>
             if (StampSprites[i].gameObject != usedStampGO && StampSprites[i].gameObject.activeSelf)
             {
                 var dragger = StampSprites[i].GetComponent<StampDragger>();
-                if (dragger != null) dragger.isUsed = true;
 
                 int capturedIndex = i; 
                 StampSprites[capturedIndex].transform.DOScale(Vector3.zero, 0.3f)
@@ -482,7 +500,7 @@ public class TableVisualManager : Singleton<TableVisualManager>
         }, targetScore, 0.5f).SetEase(Ease.OutQuad);
     }
 
-private void SpawnFloatingText(TextMeshPro referenceText, int diff)
+    private void SpawnFloatingText(TextMeshPro referenceText, int diff)
     {
         if (_floatingTextPrefab == null) return;
 
@@ -499,7 +517,7 @@ private void SpawnFloatingText(TextMeshPro referenceText, int diff)
 
         tmp.transform.DOKill(); 
         
-        Vector3 spawnPos = referenceText.transform.position + new Vector3(0, -0.5f, 0f);
+        Vector3 spawnPos = referenceText.transform.position + new Vector3(0, -1.5f, 0f);
         tmp.transform.position = spawnPos;
 
         tmp.text = diff > 0 ? $"+{diff}" : $"{diff}"; 
@@ -508,9 +526,9 @@ private void SpawnFloatingText(TextMeshPro referenceText, int diff)
         
         tmp.sortingOrder = 30000; 
 
-        tmp.transform.DOMoveY(spawnPos.y + 2f, 1f).SetEase(Ease.OutCirc);
+        tmp.transform.DOMoveY(spawnPos.y + 3f, 1.5f).SetEase(Ease.OutCirc);
         
-        tmp.DOFade(0f, 0.5f).SetDelay(0.5f).OnComplete(() => 
+        tmp.DOFade(0f, 1f).SetDelay(1f).OnComplete(() => 
         {
             tmp.gameObject.SetActive(false);     
             _floatingTextPool.Enqueue(tmp);     
