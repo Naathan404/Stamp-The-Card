@@ -234,4 +234,84 @@ public class PlayfabManager : MonoBehaviour
             }
         );
     }
+
+    //Ham luu stamp player da chon de battle
+    public void SaveSelectedStamps(Action onComplete = null)
+    {
+        //Lay ra selected stamp ID de gui len Playfab
+        List<string> selectedStampIDs = new List<string>();
+        if (LocalPlayerData.SelectedStamps != null)
+        {
+            foreach (var stamp in LocalPlayerData.SelectedStamps)
+            {
+                selectedStampIDs.Add(stamp.stampInstanceID);
+            }
+        }
+
+        //Dong goi du lieu thanh file Json
+        string saveSelectedStampsData = PlayFab.Json.PlayFabSimpleJson.SerializeObject(selectedStampIDs);
+
+        var request = new UpdateUserDataRequest
+        {
+            Data = new Dictionary<string, string>
+            {
+                {"SelectedStamps", saveSelectedStampsData}
+            },
+            Permission = UserDataPermission.Private
+        };
+
+        PlayFabClientAPI.UpdateUserData(request,
+            result => 
+            {
+                Debug.Log("Luu selected stamp thanh cong!");
+                onComplete?.Invoke();
+            },
+            error =>
+            {
+                Debug.LogError(error.GenerateErrorReport());
+                onComplete?.Invoke();
+            }
+        );
+    }
+
+    //Ham load stamp da chon khi dang nhap
+    public void LoadSelectedStamps()
+    {
+        var request = new GetUserDataRequest();
+
+        PlayFabClientAPI.GetUserData(
+            request,
+            result =>
+            {
+                if (result.Data != null && result.Data.ContainsKey("SelectedStamps"))
+                {
+                    string jsonString = result.Data["SelectedStamps"].Value;
+
+                    List<string> selectedStampIDs = PlayFab.Json.PlayFabSimpleJson.DeserializeObject<List<string>>(jsonString);
+                    foreach (string ID in selectedStampIDs)
+                    {
+                        foreach (var s in LocalPlayerData.StampInInventory)
+                        {
+                            string inventoryInstanceID = s.stampInstanceID;
+
+                            if (inventoryInstanceID == ID)
+                            {
+                                LocalPlayerData.SelectedStamps.Add(s);
+                                break;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    Debug.Log("Player chua co du lieu selected stamp!");
+                }
+            },
+
+            error =>
+            {
+                Debug.LogError(error.GenerateErrorReport());
+            }
+        );
+    }
 }

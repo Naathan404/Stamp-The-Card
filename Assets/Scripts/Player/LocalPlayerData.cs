@@ -6,6 +6,10 @@ public static class LocalPlayerData
     //Danh sach tat ca stamp data trong game hien tai
     public static List<BaseStampData> AllStampsDatabase;
 
+    //Thong tin leaderboard
+    public static List<LeaderboardData> leaderboardDatas = new List<LeaderboardData>();
+
+    //Thong tin co ban cua Player
     public static string Username = "Player";
     public static string DisplayName;
 
@@ -17,6 +21,9 @@ public static class LocalPlayerData
 
     //Danh sach stamp player dang so huu
     public static List<StampInstance> StampInInventory = new List<StampInstance>();
+
+    //Danh sach stamp player dang chon de vao tran dau
+    public static List<StampInstance> SelectedStamps = new List<StampInstance>();
 
     static LocalPlayerData()
     {
@@ -35,6 +42,7 @@ public static class LocalPlayerData
         TotalLoses = 0;
         RankPoints = 0;
         StampInInventory.Clear();
+        SelectedStamps.Clear();
     }
 
 }
