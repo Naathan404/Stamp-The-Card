@@ -27,7 +27,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1771731899171715997}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -35,10 +35,10 @@ RectTransform:
   - {fileID: 160869490650449982}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -248, y: 49}
-  m_SizeDelta: {x: 49.6823, y: 49.6823}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 139.5526, y: 139.5526}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8093394180341778916
 CanvasRenderer:
@@ -91,6 +91,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StampSlotUI
   _stampImage: {fileID: 8409323622120564503}
+  stampInstance: {fileID: 0}
 --- !u!114 &1449933775771882623
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -138,8 +139,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.0000066757, y: 0.0000066757}
-  m_SizeDelta: {x: 30.8115, y: 30.8112}
+  m_AnchoredPosition: {x: 1.0769, y: 0.6613}
+  m_SizeDelta: {x: 103.0634, y: 100.6597}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &735291151883036646
 CanvasRenderer:

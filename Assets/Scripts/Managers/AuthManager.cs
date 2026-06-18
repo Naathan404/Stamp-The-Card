@@ -97,7 +97,7 @@ public class AuthManager : Singleton<AuthManager>
                     LocalPlayerData.RankPoints = stat.Value; break;
             }
         }
-        PlayFabInventoryManager.Instance.GetPlayerInventory();                     //Luu du lieu stamp trong inventory cua player
+        PlayFabInventoryManager.Instance.GetPlayerInventory();                      //Luu du lieu stamp trong inventory cua player
 
         //Kiem tra co phai dang nhap lan dau khong
         string displayName = payload.AccountInfo.TitleInfo.DisplayName;

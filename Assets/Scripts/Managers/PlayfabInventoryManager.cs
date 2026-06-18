@@ -46,6 +46,8 @@ public class PlayFabInventoryManager : MonoBehaviour
 
             OnInventoryChanged?.Invoke();
         }
+
+        PlayfabManager.Instance.LoadSelectedStamps();
     }
 
     private void OnGetInventoryFailed(PlayFabError error)
