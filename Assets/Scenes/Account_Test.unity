@@ -132,7 +132,7 @@ GameObject:
   - component: {fileID: 74621904}
   - component: {fileID: 74621903}
   m_Layer: 5
-  m_Name: OkEditButton
+  m_Name: OkChangePassButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -201,7 +201,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 74621904}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 284597968}
+        m_TargetAssemblyTypeName: AccountUIController, Assembly-CSharp
+        m_MethodName: OkChangePassButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &74621904
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1100,7 +1112,7 @@ GameObject:
   - component: {fileID: 268946265}
   - component: {fileID: 268946264}
   m_Layer: 5
-  m_Name: CancelEditButton
+  m_Name: CancelChangePassButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1169,7 +1181,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 268946265}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 284597968}
+        m_TargetAssemblyTypeName: AccountUIController, Assembly-CSharp
+        m_MethodName: CancelChangePassButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &268946265
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1332,13 +1356,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AccountUIController
   _usernameText: {fileID: 1785721912}
-  _usernameInputField: {fileID: 1062276436}
   _displaynameText: {fileID: 369724168}
-  _displaynameInputField: {fileID: 447106276}
   _soulAmountText: {fileID: 1069030578}
   _rankPointsText: {fileID: 701876692}
   _totalWinsText: {fileID: 98090467}
   _totalLosesText: {fileID: 186086123}
+  _editPanel: {fileID: 1913546585}
+  _usernameTextbox: {fileID: 387064545}
+  _displaynameTextbox: {fileID: 1860350632}
+  _confirmPasswordEditTextbox: {fileID: 0}
+  _changePasswordPanel: {fileID: 969099980}
+  _currentPasswordTextbox: {fileID: 791628970}
+  _newPasswordTextbox: {fileID: 1358493003}
+  _confirmNewPasswordTextbox: {fileID: 1898731973}
 --- !u!1 &294996927
 GameObject:
   m_ObjectHideFlags: 0
@@ -1899,7 +1929,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 377380863}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 284597968}
+        m_TargetAssemblyTypeName: AccountUIController, Assembly-CSharp
+        m_MethodName: CancelEditButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &377380863
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2567,7 +2609,7 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_characterHorizontalScale: 1
@@ -2694,7 +2736,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 621423592}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 284597968}
+        m_TargetAssemblyTypeName: AccountUIController, Assembly-CSharp
+        m_MethodName: OkEditButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &621423592
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3141,7 +3195,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 37.19153, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -3189,8 +3243,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 626.66, y: 77.405}
-  m_SizeDelta: {x: 370, y: 550}
+  m_AnchoredPosition: {x: 626.66, y: -47}
+  m_SizeDelta: {x: 370, y: 798.81}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &764225839
 MonoBehaviour:
@@ -3516,7 +3570,7 @@ GameObject:
   - component: {fileID: 791628971}
   - component: {fileID: 791628970}
   m_Layer: 5
-  m_Name: EditNewUsernameTextBox
+  m_Name: CurrentPasswordTextBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3952,7 +4006,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.392}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.5882353}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -4208,7 +4262,7 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_characterHorizontalScale: 1
@@ -4376,7 +4430,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 28.57669, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -4833,7 +4887,7 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_characterHorizontalScale: 1
@@ -5964,13 +6018,13 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 284597963}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: 
+      - m_Target: {fileID: 284597968}
+        m_TargetAssemblyTypeName: AccountUIController, Assembly-CSharp
+        m_MethodName: ChangePassword
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -6104,7 +6158,7 @@ GameObject:
   - component: {fileID: 1358493004}
   - component: {fileID: 1358493003}
   m_Layer: 5
-  m_Name: EditNewDisplaynameTextBox
+  m_Name: NewPassWordTextBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7114,13 +7168,13 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 284597963}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: 
+      - m_Target: {fileID: 284597968}
+        m_TargetAssemblyTypeName: AccountUIController, Assembly-CSharp
+        m_MethodName: EditName
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -7287,7 +7341,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 28.235352, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -8435,7 +8489,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 34.46466, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -9398,7 +9452,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 30.25769, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -10063,7 +10117,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.392}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.5882353}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -10211,7 +10265,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 34.120117, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -10454,7 +10508,7 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_characterHorizontalScale: 1
@@ -11511,7 +11565,7 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_characterHorizontalScale: 1
