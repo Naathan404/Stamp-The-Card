@@ -7,6 +7,10 @@ public class FilterManager : Singleton<FilterManager>
 {
     [Header("References")]
     [SerializeField] private Volume _globalVolume;
+
+    public Color HazardColor = new Color(1f, 0.3f, 0.3f);
+    public Color AdvantageColor = new Color(0.3f, 1f, 0.3f);
+    public Color FlashColor = new Color(2f, 2f, 2f);
     
     private ColorAdjustments _colorAdjustments;
 

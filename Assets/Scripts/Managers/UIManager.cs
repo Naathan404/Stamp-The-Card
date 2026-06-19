@@ -1,11 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using DG.Tweening;
-using ExitGames.Client.Photon.StructWrapping;
 using Fusion;
 using TMPro;
-using UnityEditor;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -26,6 +24,7 @@ public class UIManager : MonoBehaviour
     public RectTransform MenuButton;
     private List<string> _loseMessages = new List<string>();
     private List<string> _winMessages = new List<string>();
+    private float _gameOverAppearTime = 1.5f;
 
     [Header("Seat Transforms")]
     [SerializeField] private Transform _bottomSeatTransform;
@@ -58,10 +57,6 @@ public class UIManager : MonoBehaviour
     [SerializeField] private float _countTime = 1.0f;
     [SerializeField] private float _attackTime = 0.5f;
     [SerializeField] private float _flashTime = 0.4f;
-
-    private Color _hazardColor = new Color(1f, 0.3f, 0.3f);
-    private Color _advantageColor = new Color(0.3f, 1f, 0.3f);
-    private Color _flashColor = new Color(2f, 2f, 2f);
 
     private List<string> _drawLines = new List<string>();
 
@@ -160,7 +155,7 @@ public class UIManager : MonoBehaviour
             if (isMyHp) 
             {
                 // MÌNH BỊ ĐÁNH
-                FilterManager.Instance.FlashScreen(_hazardColor);
+                FilterManager.Instance.FlashScreen(FilterManager.Instance.HazardColor);
                 hpText.color = Color.red;
                 hpText.transform.DOPunchScale(Vector3.one * 0.5f, 0.5f, vibrato: 10, elasticity: 1);
                 hpText.transform.DOShakePosition(0.5f, strength: 15f);
@@ -176,8 +171,8 @@ public class UIManager : MonoBehaviour
             {
                 // ĐỊCH BỊ ĐÁNH 
                 // Đổi màu cam rực (Critical)
-                FilterManager.Instance.FlashScreen(_flashColor);
-                hpText.color = _hazardColor; 
+                FilterManager.Instance.FlashScreen(FilterManager.Instance.FlashColor);
+                hpText.color = FilterManager.Instance.HazardColor; 
                 // Phình to hơn bình thường nhưng không rung Camera
                 hpText.transform.DOPunchScale(Vector3.one * 0.8f, 0.4f, vibrato: 15);
                 // Lắc ngả nghiêng Text thay vì lắc vị trí 
@@ -196,7 +191,7 @@ public class UIManager : MonoBehaviour
         }
         else // NẾU ĐƯỢC HỒI MÁU
         {
-            FilterManager.Instance.FlashScreen(_advantageColor);
+            FilterManager.Instance.FlashScreen(FilterManager.Instance.AdvantageColor);
             hpText.color = Color.green;
             hpText.transform.DOPunchScale(Vector3.one * 0.3f, 0.5f, vibrato: 5);
             hpText.DOColor(Color.white, 0.5f).SetDelay(0.5f);
@@ -445,7 +440,7 @@ public class UIManager : MonoBehaviour
         // bước 5: IMPACT
         PlayerCenterText.gameObject.SetActive(false);
         OppCenterText.gameObject.SetActive(false);
-        FilterManager.Instance.FlashScreen(_flashColor, _flashTime);
+        FilterManager.Instance.FlashScreen(FilterManager.Instance.FlashColor, _flashTime);
         Camera.main.transform.DOShakePosition(0.4f, 0.5f, 25);
 
         // bước 6: HIỆN CHÊNH LỆCH
@@ -454,14 +449,14 @@ public class UIManager : MonoBehaviour
 
         if(damage == 0)
         {
-            FinalDamageText.text = _drawLines[Random.Range(0, _drawLines.Count)];
+            FinalDamageText.text = _drawLines[UnityEngine.Random.Range(0, _drawLines.Count)];
             FinalDamageText.color = Color.white;
             FinalDamageText.fontSize = 70;
         }
         else
         {
             FinalDamageText.text = damage.ToString();
-            FinalDamageText.color = iTakeDamage ? _hazardColor : _advantageColor; 
+            FinalDamageText.color = iTakeDamage ? FilterManager.Instance.HazardColor : FilterManager.Instance.AdvantageColor; 
             FinalDamageText.fontSize = 150;
         }
         
@@ -493,13 +488,13 @@ public class UIManager : MonoBehaviour
             // Nháy đỏ nếu mình ăn đấm
             if (iTakeDamage) 
             {
-                FilterManager.Instance.FlashScreen(_hazardColor, _flashTime);
+                FilterManager.Instance.FlashScreen(FilterManager.Instance.HazardColor, _flashTime);
                 Camera.main.transform.DOShakePosition(0.3f, 0.4f, 20);
             } 
             else 
             {
                 // Đối thủ ăn đấm nháy trắng
-                FilterManager.Instance.FlashScreen(_flashColor, _flashTime);
+                FilterManager.Instance.FlashScreen(FilterManager.Instance.FlashColor, _flashTime);
             }
         }
         else
@@ -524,7 +519,7 @@ public class UIManager : MonoBehaviour
         ResultText.text = title;
         MessageText.text = message;
 
-                GameOverPanel.gameObject.SetActive(true);
+        GameOverPanel.gameObject.SetActive(true);
         MenuButton.transform.localScale = Vector2.zero;
         MenuButton.GetComponent<Button>().enabled = false;
         ResultText.text = title;
@@ -538,9 +533,9 @@ public class UIManager : MonoBehaviour
         MessageText.transform.localScale = Vector3.zero;
 
         Sequence gameOverSeq = DOTween.Sequence();
-        gameOverSeq.Append(GameOverPanel.DOFade(1f, 0.5f));
-        gameOverSeq.Join(ResultText.transform.DOScale(Vector3.one, 0.8f).SetEase(Ease.OutBack));
-        gameOverSeq.Join(MessageText.transform.DOScale(Vector3.one, 0.8f).SetEase(Ease.OutBack));
+        gameOverSeq.Append(GameOverPanel.DOFade(1f, _gameOverAppearTime));
+        gameOverSeq.Join(ResultText.transform.DOScale(Vector3.one, _gameOverAppearTime * 1.5f).SetEase(Ease.OutBack));
+        gameOverSeq.Join(MessageText.transform.DOScale(Vector3.one, _gameOverAppearTime * 1.5f).SetEase(Ease.OutBack));
         gameOverSeq.Join(Camera.main.transform.DOShakePosition(0.5f, 0.5f, 20));
 
         gameOverSeq.AppendInterval(1.5f);
@@ -563,12 +558,12 @@ public class UIManager : MonoBehaviour
         if (didIWin)
         {
             resultMessage = "YOU WON";
-            message = _winMessages[Random.Range(0, _winMessages.Count)];
+            message = _winMessages[UnityEngine.Random.Range(0, _winMessages.Count)];
         }
         else
         {
             resultMessage = "YOU LOSE";
-            message = _loseMessages[Random.Range(0, _loseMessages.Count)];
+            message = _loseMessages[UnityEngine.Random.Range(0, _loseMessages.Count)];
         }
 
         GameOverPanel.gameObject.SetActive(true);
@@ -585,10 +580,10 @@ public class UIManager : MonoBehaviour
         MessageText.transform.localScale = Vector3.zero;
 
         Sequence gameOverSeq = DOTween.Sequence();
-        gameOverSeq.Append(GameOverPanel.DOFade(1f, 0.5f));
-        gameOverSeq.Join(ResultText.transform.DOScale(Vector3.one, 0.8f).SetEase(Ease.OutBack));
-        gameOverSeq.Join(MessageText.transform.DOScale(Vector3.one, 0.8f).SetEase(Ease.OutBack));
-        gameOverSeq.Join(Camera.main.transform.DOShakePosition(0.5f, 0.5f, 20));
+        gameOverSeq.Append(GameOverPanel.DOFade(1f, _gameOverAppearTime));
+        gameOverSeq.Join(ResultText.transform.DOScale(Vector3.one, _gameOverAppearTime).SetEase(Ease.OutBack));
+        gameOverSeq.Join(MessageText.transform.DOScale(Vector3.one, _gameOverAppearTime).SetEase(Ease.OutBack));
+        gameOverSeq.Join(Camera.main.transform.DOShakePosition(1f, 0.5f, 20));
 
         gameOverSeq.AppendInterval(1.5f);
 

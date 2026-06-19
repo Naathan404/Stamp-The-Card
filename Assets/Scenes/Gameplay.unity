@@ -4944,6 +4944,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FilterManager
   _globalVolume: {fileID: 473906398}
+  HazardColor: {r: 1, g: 0.3, b: 0.3, a: 1}
+  AdvantageColor: {r: 0.3, g: 1, b: 0.3, a: 1}
+  FlashColor: {r: 2, g: 2, b: 2, a: 1}
 --- !u!4 &1316160162
 Transform:
   m_ObjectHideFlags: 0
@@ -5655,14 +5658,14 @@ MonoBehaviour:
   stampToolPrefab: {fileID: 4373442567949587800, guid: 3443b51c4e1525b42bb538582dc59e98, type: 3}
   stampID: 1
   isUsed: 0
-  _pickUpScale: 1.2
+  _pickUpScale: 1.25
   _bloodImpactParticle: {fileID: 1139018271}
-  _shakeAmplitude: 0.2
-  _shakeDuration: 0.2
+  _shakeAmplitude: 0.4
+  _shakeDuration: 0.4
   _stampStartPosition: 5
   _stampSpeed: 10
-  _stampImpactScale: 1.5
-  _stampImpactDuration: 0.2
+  _stampImpactScale: 2
+  _stampImpactDuration: 0.36
   _originalScale: {x: 1, y: 1}
 --- !u!61 &1484420855
 BoxCollider2D:
@@ -7371,14 +7374,14 @@ MonoBehaviour:
   stampToolPrefab: {fileID: 4373442567949587800, guid: 3443b51c4e1525b42bb538582dc59e98, type: 3}
   stampID: 1
   isUsed: 0
-  _pickUpScale: 1.2
+  _pickUpScale: 1.25
   _bloodImpactParticle: {fileID: 1139018271}
-  _shakeAmplitude: 0.2
-  _shakeDuration: 0.2
+  _shakeAmplitude: 0.4
+  _shakeDuration: 0.4
   _stampStartPosition: 5
   _stampSpeed: 10
-  _stampImpactScale: 1.5
-  _stampImpactDuration: 0.2
+  _stampImpactScale: 2
+  _stampImpactDuration: 0.36
   _originalScale: {x: 1, y: 1}
 --- !u!61 &1876576388
 BoxCollider2D:
@@ -8105,14 +8108,14 @@ MonoBehaviour:
   stampToolPrefab: {fileID: 4373442567949587800, guid: 3443b51c4e1525b42bb538582dc59e98, type: 3}
   stampID: 1
   isUsed: 0
-  _pickUpScale: 1.2
+  _pickUpScale: 1.25
   _bloodImpactParticle: {fileID: 1139018271}
-  _shakeAmplitude: 0.2
-  _shakeDuration: 0.2
+  _shakeAmplitude: 0.4
+  _shakeDuration: 0.4
   _stampStartPosition: 5
   _stampSpeed: 10
-  _stampImpactScale: 1.5
-  _stampImpactDuration: 0.2
+  _stampImpactScale: 2
+  _stampImpactDuration: 0.36
   _originalScale: {x: 1, y: 1}
 --- !u!61 &2050327818
 BoxCollider2D:

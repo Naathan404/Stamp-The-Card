@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using DG.Tweening;
 using Fusion;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class TableVisualManager : Singleton<TableVisualManager>
@@ -53,6 +52,12 @@ public class TableVisualManager : Singleton<TableVisualManager>
     private Vector3[] _topInitialPos = new Vector3[3];
     private Queue<TextMeshPro> _floatingTextPool = new Queue<TextMeshPro>();
     private Coroutine _dealCoroutine;
+
+
+    private float _rotateOpponentCardTime = 0.3f;
+    private float _stampResolveTime = 0.4f;
+    private float _hologramFlashTime = 0.3f;
+    private float _hologramFloatingTime = 0.5f;
     #endregion
 
     private void Start()
@@ -411,8 +416,8 @@ public class TableVisualManager : Singleton<TableVisualManager>
             if (StampSprites[i].gameObject != usedStampGO && StampSprites[i].gameObject.activeSelf)
             {
                 var dragger = StampSprites[i].GetComponent<StampDragger>();
-
-                int capturedIndex = i; 
+                dragger.isUsed = true;
+                int capturedIndex = i;  
                 StampSprites[capturedIndex].transform.DOScale(Vector3.zero, 0.3f)
                     .SetEase(Ease.InBack)
                     .OnComplete(() =>
@@ -562,20 +567,20 @@ public class TableVisualManager : Singleton<TableVisualManager>
 
             CardData cardData = DataManager.Instance.GetCardDataByID(cardID);
 
-            topCard.transform.DOMoveY(topCard.transform.position.y - 0.72f, 0.2f);
-            topCard.transform.DORotate(new Vector3(0, 90, 0), 0.2f).SetEase(Ease.InQuad);
+            topCard.transform.DOMoveY(topCard.transform.position.y - 0.72f, _rotateOpponentCardTime);
+            topCard.transform.DORotate(new Vector3(0, 90, 0), _rotateOpponentCardTime).SetEase(Ease.InQuad);
 
-            yield return new WaitForSeconds(0.2f);
+            yield return new WaitForSeconds(_rotateOpponentCardTime);
 
             topCard.sprite = cardData.Artwork;
             topslot.Data = cardData;
             topslot.Score = cardData.BaseScore;
-            topCard.transform.DORotate(Vector3.zero, 0.2f).SetEase(Ease.OutQuad);
+            topCard.transform.DORotate(Vector3.zero, _rotateOpponentCardTime).SetEase(Ease.OutQuad);
 
             TopCardTexts[i].gameObject.SetActive(true);
             TopCardTexts[i].text = topslot.Score.ToString();
-            TopCardTexts[i].transform.DOPunchScale(Vector3.one * 0.5f, 0.3f);
-            yield return new WaitForSeconds(0.15f);
+            TopCardTexts[i].transform.DOPunchScale(Vector3.one * 0.5f, _rotateOpponentCardTime);
+            yield return new WaitForSeconds(0.2f);
         }
 
         for(int i = 0; i < 3; i++)
@@ -631,7 +636,7 @@ public class TableVisualManager : Singleton<TableVisualManager>
         Debug.Log("[Table Visual Manager] Đã lật xong bài địch");
     }
 
-private IEnumerator VisualResolveTierRoutine(ExecutionTier tier, CardSlot[] hostSlots, CardSlot[] clientSlots, int currentTurn)
+    private IEnumerator VisualResolveTierRoutine(ExecutionTier tier, CardSlot[] hostSlots, CardSlot[] clientSlots, int currentTurn)
     {
         bool hostFirst = (currentTurn % 2 == 1);
         if (hostFirst) 
@@ -648,7 +653,7 @@ private IEnumerator VisualResolveTierRoutine(ExecutionTier tier, CardSlot[] host
 
     private IEnumerator VisualResolveMainStampsRoutine(CardSlot[] hostSlots, CardSlot[] clientSlots, int currentTurn)
     {
-        bool hostFirst = (currentTurn % 2 == 1);
+        bool hostFirst = currentTurn % 2 == 1;
         if (hostFirst) 
         {
             yield return StartCoroutine(ApplyStampsVisualRoutine(null, hostSlots, clientSlots, true));
@@ -701,33 +706,6 @@ private IEnumerator VisualResolveTierRoutine(ExecutionTier tier, CardSlot[] host
         }
     }
 
-    // private IEnumerator AnimateStampTrigger(CardSlot slot, int stampIndex, int cardID)
-    // {
-    //     bool isJoker = GameConstants.IsJokerStamp(cardID);
-    //     int visualIndex = isJoker ? 1 : stampIndex;
-
-    //     SpriteRenderer visual = slot.StampRenderers[visualIndex];
-
-    //     // stamp nảy lên rồi chớp sáng
-    //     if (visual != null && visual.gameObject.activeSelf)
-    //     {
-    //         visual.transform.DOKill();
-    //         visual.transform.DOPunchScale(Vector3.one * 0.6f, 0.4f, vibrato: 10);
-            
-    //         visual.color = new Color(2f, 2f, 2f); 
-    //         visual.DOColor(Color.white, 0.4f);
-    //     }
-
-    //     // Camera giật nhẹ 
-    //     if (Camera.main != null) 
-    //     {
-    //         Camera.main.transform.DOComplete();
-    //         Camera.main.transform.DOShakePosition(0.2f, strength: 0.1f, vibrato: 10);
-    //     }
-
-    //     yield return new WaitForSeconds(0.3f);
-    // }
-
     private IEnumerator AnimateStampTrigger(CardSlot slot, int stampIndex, BaseStampData stampData)
     {
         int cardID = slot.Data.CardID;
@@ -740,9 +718,9 @@ private IEnumerator VisualResolveTierRoutine(ExecutionTier tier, CardSlot[] host
         {
             // chớp sáng stamp goocs
             visual.transform.DOKill();
-            visual.transform.DOPunchScale(Vector3.one * 0.6f, 0.4f, vibrato: 10);
+            visual.transform.DOPunchScale(Vector3.one * 0.6f, _stampResolveTime, vibrato: 10);
             visual.color = new Color(2f, 2f, 2f); 
-            visual.DOColor(Color.white, 0.4f);
+            visual.DOColor(Color.white, _stampResolveTime);
 
             // gọi hologram
             if (_stampHologramPrefab != null)
@@ -759,13 +737,13 @@ private IEnumerator VisualResolveTierRoutine(ExecutionTier tier, CardSlot[] host
                 // Hoạt ảnh: Bung từ số 0, bay lên cao và mờ dần
                 holo.transform.localScale = Vector3.zero;
                 // holo.transform.DOScale(baseScale * 2.5f, 0.3f).SetEase(Ease.OutBack); 
-                holo.transform.DOScale(new Vector3(baseScale.x * 2f, baseScale.y * 3f, 1f), 0.15f)
+                holo.transform.DOScale(new Vector3(baseScale.x * 2f, baseScale.y * 3f, 1f), _stampResolveTime)
                     .OnComplete(() => {
-                        holo.transform.DOScale(baseScale * 3.6f, 0.2f).SetEase(Ease.OutBack);
+                        holo.transform.DOScale(baseScale * 3.6f, _hologramFlashTime).SetEase(Ease.OutBack);
                     });
-                holo.transform.DOMoveY(holo.transform.position.y + 2f, 0.5f).SetEase(Ease.OutQuad);
+                holo.transform.DOMoveY(holo.transform.position.y + 2f, _hologramFloatingTime).SetEase(Ease.OutQuad);
                 
-                holo.DOFade(0f, 0.5f).SetDelay(0.3f).OnComplete(() => Destroy(holo.gameObject));
+                holo.DOFade(0f, _hologramFloatingTime).SetDelay(0.3f).OnComplete(() => Destroy(holo.gameObject));
             }
         }
 
