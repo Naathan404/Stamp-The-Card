@@ -1,5 +1,7 @@
 using TMPro;
+using TMPro.EditorUtilities;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class AccountUIController : MonoBehaviour
 {
@@ -10,6 +12,21 @@ public class AccountUIController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _rankPointsText;
     [SerializeField] private TextMeshProUGUI _totalWinsText;
     [SerializeField] private TextMeshProUGUI _totalLosesText;
+
+    [Header("EditPanel")]
+    [SerializeField] private TMP_EditorPanelUI _editPanel;
+    [SerializeField] private TMP_InputField _usernameTextbox;
+    [SerializeField] private TMP_InputField _displaynameTextbox;
+
+    [Header("ChangePasswordPanel")]
+    [SerializeField] private TMP_EditorPanelUI _changePasswordPanel;
+    [SerializeField] private TMP_InputField _currentPasswordTextbox;
+    [SerializeField] private TMP_InputField _newPasswordTextbox;
+    [SerializeField] private TMP_InputField _confirmNewPasswordTextbox;
+
+
+
+
 
     private void Start()
     {
@@ -31,7 +48,15 @@ public class AccountUIController : MonoBehaviour
         SceneTransitionManager.Instance.LoadSceneAsync("Menu");
         AudioManager.Instance.PlaySFX(AudioManager.Instance.ButtonClick, true);
     }
+    public void EditName()
+    {
+        _usernameInputField.readOnly = false;
+    }
 
+    public void ChangePassword()
+    {
+
+    }
     public void LogOut()
     {
         Debug.Log("S? l??ng stamp tr??c khi b?m LogOut: " + LocalPlayerData.SelectedStamps.Count);
