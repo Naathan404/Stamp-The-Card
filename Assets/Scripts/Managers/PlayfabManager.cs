@@ -18,6 +18,91 @@ public class PlayfabManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
         }
     }
+    // Hàm phụ trợ: Xác thực xem mật khẩu hiện tại của User có đúng hay không
+    public void VerifyCurrentPassword(string currentPassword, Action onSuccess, Action onError)
+    {
+        // Sử dụng Email hoặc Username để xác thực lại ngầm (ở đây dùng Username làm ví dụ)
+        var request = new LoginWithPlayFabRequest
+        {
+            Username = LocalPlayerData.Username,
+            Password = currentPassword
+        };
+
+        PlayFabClientAPI.LoginWithPlayFab(request,
+            result => {
+                Debug.Log("Xác thực mật khẩu hiện tại chính xác!");
+                onSuccess?.Invoke();
+            },
+            error => {
+                Debug.LogError("Xác thực thất bại: Mật khẩu hiện tại không đúng.");
+                onError?.Invoke();
+            }
+        );
+    }
+
+    // Cập nhật Username (Đã lồng xác thực mật khẩu bên trong để tăng tính bảo mật)
+    public void UpdateUsername(string newName, string currentPassword, Action onSuccess, Action onError)
+    {
+        // Bước 1: Kiểm tra mật khẩu hiện tại trước
+        VerifyCurrentPassword(currentPassword,
+            () => {
+                // Bước 2: Nếu đúng mật khẩu, tiến hành đổi Username
+                var request = new AddUsernamePasswordRequest()
+                {
+                    Username = newName,
+                    Password = currentPassword // Đồng thời cập nhật luôn cụm Auth mới
+                };
+
+                PlayFabClientAPI.AddUsernamePassword(request,
+                    result => {
+                        Debug.Log("Thay doi Username thanh cong!");
+                        LocalPlayerData.Username = newName;
+                        OnDataChanged?.Invoke();
+                        onSuccess?.Invoke();
+                    },
+                    error => {
+                        Debug.LogError("Thay doi Username that bai: " + error.GenerateErrorReport());
+                        onError?.Invoke();
+                    }
+                );
+            },
+            () => {
+                // Nếu mật khẩu hiện tại nhập vào bị sai
+                onError?.Invoke();
+            }
+        );
+    }
+
+    // Đổi mật khẩu tài khoản (Đã lồng xác thực mật khẩu cũ bên trong)
+    public void ChangePassword(string currentPassword, string newPassword, Action onSuccess, Action onError)
+    {
+        // Bước 1: Kiểm tra mật khẩu cũ trước
+        VerifyCurrentPassword(currentPassword,
+            () => {
+                // Bước 2: Nếu mật khẩu cũ đúng, ghi đè bằng mật khẩu mới
+                var request = new AddUsernamePasswordRequest()
+                {
+                    Username = LocalPlayerData.Username,
+                    Password = newPassword
+                };
+
+                PlayFabClientAPI.AddUsernamePassword(request,
+                    result => {
+                        Debug.Log("Doi mat khau thanh cong!");
+                        onSuccess?.Invoke();
+                    },
+                    error => {
+                        Debug.LogError("Doi mat khau that bai: " + error.GenerateErrorReport());
+                        onError?.Invoke();
+                    }
+                );
+            },
+            () => {
+                // Nếu mật khẩu cũ nhập vào bị sai
+                onError?.Invoke();
+            }
+        );
+    }
 
     //Cap nhat display name
     public void UpdateDisplayName(string name, Action onSuccess, Action onError)

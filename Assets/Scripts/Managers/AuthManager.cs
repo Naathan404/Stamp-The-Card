@@ -134,7 +134,7 @@ public class AuthManager : Singleton<AuthManager>
         }
         else if (error.Error == PlayFabErrorCode.UsernameNotAvailable)
         {
-            Debug.LogWarning("Tên tài khoản này đã có người xài!");
+            Debug.LogWarning("Tên tài khoản này đã có người sử dụng!");
             _loginUI.ShowNotification("Username is already taken!");
         }
         else
