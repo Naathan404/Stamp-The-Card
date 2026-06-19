@@ -34,10 +34,19 @@ public class AccountUIController : MonoBehaviour
 
     public void LogOut()
     {
-        LocalPlayerData.Clear();
+        Debug.Log("S? l??ng stamp tr??c khi b?m LogOut: " + LocalPlayerData.SelectedStamps.Count);
 
-        SceneTransitionManager.Instance.LoadSceneAsync("Login");
-        AudioManager.Instance.PlaySFX(AudioManager.Instance.ButtonClick, true);
+        PlayfabManager.Instance.SaveSelectedStamps(() =>
+        {
+            Debug.Log("Luu thanh cong.");
+
+            // Xoa du lieu tai local
+            LocalPlayerData.Clear();
+
+            // Chuyen scene
+            SceneTransitionManager.Instance.LoadSceneAsync("Login");
+            AudioManager.Instance.PlaySFX(AudioManager.Instance.ButtonClick, true);
+        });
     }
 
     //Dang ky su kien khi data thay doi thi cap nhat lai UI

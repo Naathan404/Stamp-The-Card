@@ -3,13 +3,15 @@ using UnityEngine.EventSystems;
 
 public class DropZone : MonoBehaviour, IDropHandler
 {
+    [SerializeField] private int _maxSlot;
+
     public void OnDrop(PointerEventData eventData)
     {
-        if (transform.childCount >= 9)
+        if (transform.childCount >= _maxSlot)
         {
-            Debug.Log("Da chon du 9 stamp!");
+            Debug.Log("Khong du slot de them stamp");
             return;
-        }    
+        }
 
         GameObject dropItem = eventData.pointerDrag;
 
