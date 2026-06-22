@@ -1326,8 +1326,8 @@ RectTransform:
   - {fileID: 275507785}
   - {fileID: 457745102}
   - {fileID: 1144267274}
-  - {fileID: 973378556}
   - {fileID: 127137263}
+  - {fileID: 973378556}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -2506,6 +2506,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FilterManager
   _globalVolume: {fileID: 79778667}
+  HazardColor: {r: 1, g: 0.3, b: 0.3, a: 1}
+  AdvantageColor: {r: 0.3, g: 1, b: 0.3, a: 1}
+  FlashColor: {r: 2, g: 2, b: 2, a: 1}
 --- !u!4 &1403414897
 Transform:
   m_ObjectHideFlags: 0

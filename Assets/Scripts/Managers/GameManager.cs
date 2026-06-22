@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
+using DG.Tweening;
 using Fusion;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -308,9 +309,59 @@ public class GameManager : NetworkSingleton<GameManager>
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    public void RPC_ShowGameOverUI(bool isHostWinner)
+    public void RPC_ProcessMatchEnd(bool isHostWinner)
     {
-        UIManager.Instance.ShowGameOverUI(isHostWinner);
+        bool isMeHost = Runner.IsServer;
+        bool didIWin = (isMeHost && isHostWinner) || (!isMeHost && !isHostWinner);
+
+        int oldRank = LocalPlayerData.RankPoints;
+        int oldSouls = LocalPlayerData.Souls;
+        int eloChange = 0;
+        int earnedSouls = 0;
+
+        if (didIWin)
+        {
+            LocalPlayerData.TotalWins++;
+            earnedSouls = UnityEngine.Random.Range(15, 20);
+            if (oldRank < 500)
+                eloChange = UnityEngine.Random.Range(30, 36);
+            else if (oldRank < 1000)
+                eloChange = UnityEngine.Random.Range(20, 26);
+            else if (oldRank < 1500)
+                eloChange = UnityEngine.Random.Range(10, 16);
+            Debug.Log($"[MatchResult] BẠN ĐÃ THẮNG! Rank: {LocalPlayerData.RankPoints}");
+        }
+        else
+        {
+            LocalPlayerData.TotalLoses++;
+            earnedSouls = UnityEngine.Random.Range(2, 6);
+            if (oldRank < 500)
+                eloChange = UnityEngine.Random.Range(-10, -8);
+            else if (oldRank < 1000)
+                eloChange = UnityEngine.Random.Range(-15, -12);
+            else if (oldRank < 1500)
+                eloChange = UnityEngine.Random.Range(-20, -17);
+            Debug.Log($"[MatchResult] BẠN ĐÃ THUA! Rank: {LocalPlayerData.RankPoints}");
+        }
+
+        LocalPlayerData.RankPoints = Mathf.Max(LocalPlayerData.RankPoints + eloChange, 0);
+
+        if (PlayfabManager.Instance != null)
+        {
+            float delayTime = Runner.IsServer ? 0f : 0.5f;
+            DOVirtual.DelayedCall(delay: delayTime, () =>
+            {
+                PlayfabManager.Instance.UpdateStatistics(
+                    LocalPlayerData.TotalWins, 
+                    LocalPlayerData.TotalLoses, 
+                    LocalPlayerData.RankPoints
+                );
+
+                PlayfabManager.Instance.AddSoul(earnedSouls);
+            });
+        }
+
+        UIManager.Instance.ShowGameOverUI(isHostWinner, oldRank: oldRank, eloChange: eloChange, oldSouls: oldSouls, earnedSouls: earnedSouls);
     }
     
     #endregion

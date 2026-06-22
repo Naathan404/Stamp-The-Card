@@ -4,6 +4,7 @@ using DG.Tweening;
 using Fusion;
 using TMPro;
 using Unity.Mathematics;
+using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,9 +23,11 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI ResultText;
     public TextMeshProUGUI MessageText;
     public RectTransform MenuButton;
+    public TextMeshProUGUI SoulText;
+    public TextMeshProUGUI RankPointText;
     private List<string> _loseMessages = new List<string>();
     private List<string> _winMessages = new List<string>();
-    private float _gameOverAppearTime = 1.5f;
+    private float _gameOverAppearTime = 1.0f;
 
     [Header("Seat Transforms")]
     [SerializeField] private Transform _bottomSeatTransform;
@@ -55,7 +58,7 @@ public class UIManager : MonoBehaviour
     public Transform OppAvatarTransform;    // Vị trí bay vào nếu địch thua
     [SerializeField] private float _mergeTime = 0.5f;
     [SerializeField] private float _countTime = 1.0f;
-    [SerializeField] private float _attackTime = 0.5f;
+    [SerializeField] private float _attackTime = 0.8f;
     [SerializeField] private float _flashTime = 0.4f;
 
     private List<string> _drawLines = new List<string>();
@@ -63,6 +66,8 @@ public class UIManager : MonoBehaviour
     private Vector3 _originalPlayerCenterTextPosition;
     private Vector3 _originalOppCenterTextPosition;
     private Vector3 _originalFinalDamageTextPosition;
+
+    Color grayColor = new Color(0.6f, 0.6f, 0.6f, 1f);
 
 
 
@@ -78,6 +83,7 @@ public class UIManager : MonoBehaviour
             Instance = this;
             //DontDestroyOnLoad(this.gameObject);
         }
+        DOTween.defaultTimeScaleIndependent = true;
     }
 
     protected virtual void OnDestroy()
@@ -241,6 +247,57 @@ public class UIManager : MonoBehaviour
             _topNameText.text = playerData.DisplayName.ToString();
     }
 
+    // public void ShowBattleStartAnnouncement()
+    // {
+    //     if (BattleStartPanelGroup == null || BattleStartTextRect == null) return;
+
+    //     BattleStartPanelGroup.DOKill();
+    //     BattleStartTextRect.DOKill();
+        
+    //     BattleStartPanelGroup.gameObject.SetActive(true);
+        
+    //     BattleStartPanelGroup.alpha = 0f;
+        
+    //     BattleStartTextRect.localScale = Vector3.one;
+    //     BattleStartTextRect.anchoredPosition = new Vector2(-1500f, 0f);
+
+    //     if (GameManager.Instance.Runner.IsServer)
+    //     {
+    //         if (GameStateManager.Instance.CurrentTurn % 2 == 1)
+    //             BattleStartTMP.text = "YOU GO FIRST!";
+    //         else
+    //             BattleStartTMP.text = "YOU GO SECOND!";
+    //     }
+    //     else
+    //     {
+    //         if (GameStateManager.Instance.CurrentTurn % 2 == 1)
+    //             BattleStartTMP.text = "YOU GO SECOND!";
+    //         else
+    //             BattleStartTMP.text = "YOU GO FIRST!";
+    //     }
+
+
+    //     Sequence seq = DOTween.Sequence();
+    //     seq.AppendInterval(0.5f);
+    //     seq.Append(BattleStartPanelGroup.DOFade(1f, 0.5f));
+        
+    //     seq.Join(BattleStartTextRect.DOAnchorPosX(0f, _battleStartTextAppearDuration).SetEase(Ease.OutBack));
+    //     //seq.Join(BattleStartTextRect.DOPunchScale(Vector3.one * 0.5f, _battleStartTextAppearDuration, vibrato: 10, elasticity: 1));
+
+    //     if (Camera.main != null)
+    //     {
+    //         seq.Join(Camera.main.transform.DOShakePosition(0.5f, strength: 0.2f, vibrato: 15));
+    //     }
+
+    //     seq.AppendInterval(_battleStartTextDuration);
+    //     seq.Append(BattleStartTextRect.DOAnchorPosX(2000f, _battleStartTextAppearDuration).SetEase(Ease.InBack));
+    //     seq.Join(BattleStartPanelGroup.DOFade(0f, _battleStartTextAppearDuration * 0.8f));
+
+    //     seq.OnComplete(() => {
+    //         BattleStartPanelGroup.gameObject.SetActive(false);
+    //     });
+    // }
+
     public void ShowBattleStartAnnouncement()
     {
         if (BattleStartPanelGroup == null || BattleStartTextRect == null) return;
@@ -249,43 +306,45 @@ public class UIManager : MonoBehaviour
         BattleStartTextRect.DOKill();
         
         BattleStartPanelGroup.gameObject.SetActive(true);
-        
         BattleStartPanelGroup.alpha = 0f;
-        
-        BattleStartTextRect.localScale = Vector3.one;
+
+        bool isHost = GameManager.Instance.Runner.IsServer;
+        bool isTurnOdd = GameStateManager.Instance.CurrentTurn % 2 == 1;
+        bool iGoFirst = (isHost && isTurnOdd) || (!isHost && !isTurnOdd);
+
+        BattleStartTMP.text = iGoFirst ? "YOU GO FIRST!" : "YOU GO SECOND!";
+
         BattleStartTextRect.anchoredPosition = new Vector2(-1500f, 0f);
-
-        if (GameManager.Instance.Runner.IsServer)
-        {
-            if (GameStateManager.Instance.CurrentTurn % 2 == 1)
-                BattleStartTMP.text = "YOU GO FIRST!";
-            else
-                BattleStartTMP.text = "YOU GO SECOND!";
-        }
-        else
-        {
-            if (GameStateManager.Instance.CurrentTurn % 2 == 1)
-                BattleStartTMP.text = "YOU GO SECOND!";
-            else
-                BattleStartTMP.text = "YOU GO FIRST!";
-        }
-
+        BattleStartTextRect.localScale = Vector3.one * 2f; 
+        BattleStartTextRect.localRotation = Quaternion.Euler(0, 0, 15f); 
 
         Sequence seq = DOTween.Sequence();
-        seq.AppendInterval(0.5f);
-        seq.Append(BattleStartPanelGroup.DOFade(1f, 0.5f));
+        seq.AppendInterval(0.2f); 
+
+        seq.Append(BattleStartPanelGroup.DOFade(1f, 0.3f));
+        seq.Join(BattleStartTextRect.DOAnchorPosX(0f, _battleStartTextAppearDuration).SetEase(Ease.OutExpo));
+        seq.Join(BattleStartTextRect.DOScale(Vector3.one, _battleStartTextAppearDuration).SetEase(Ease.OutBack, 2f));
+        seq.Join(BattleStartTextRect.DORotate(Vector3.zero, _battleStartTextAppearDuration).SetEase(Ease.OutBack));
+
+        seq.AppendCallback(() => {
+            // if (Camera.main != null)
+            // {
+            //     Camera.main.transform.DOComplete();
+            //     Camera.main.transform.DOShakePosition(0.4f, strength: 0.4f, vibrato: 20);
+            // }
+            if (FilterManager.Instance != null)
+            {
+                FilterManager.Instance.FlashScreen(FilterManager.Instance.FlashColor, 0.2f);
+            }
+        });
+
+        seq.Append(BattleStartTextRect.DOAnchorPosX(100f, _battleStartTextDuration).SetEase(Ease.Linear));
+
+        seq.Append(BattleStartTextRect.DOAnchorPosX(2000f, _battleStartTextAppearDuration).SetEase(Ease.InBack, 1.5f));
+        seq.Join(BattleStartTextRect.DOScale(Vector3.one * 0.5f, _battleStartTextAppearDuration).SetEase(Ease.InBack));
+        seq.Join(BattleStartTextRect.DORotate(new Vector3(0, 0, -15f), _battleStartTextAppearDuration).SetEase(Ease.InBack));
         
-        seq.Join(BattleStartTextRect.DOAnchorPosX(0f, _battleStartTextAppearDuration).SetEase(Ease.OutBack));
-        //seq.Join(BattleStartTextRect.DOPunchScale(Vector3.one * 0.5f, _battleStartTextAppearDuration, vibrato: 10, elasticity: 1));
-
-        if (Camera.main != null)
-        {
-            seq.Join(Camera.main.transform.DOShakePosition(0.5f, strength: 0.2f, vibrato: 15));
-        }
-
-        seq.AppendInterval(_battleStartTextDuration);
-        seq.Append(BattleStartTextRect.DOAnchorPosX(2000f, _battleStartTextAppearDuration).SetEase(Ease.InBack));
-        seq.Join(BattleStartPanelGroup.DOFade(0f, _battleStartTextAppearDuration * 0.8f));
+        seq.Join(BattleStartPanelGroup.DOFade(0f, _battleStartTextAppearDuration));
 
         seq.OnComplete(() => {
             BattleStartPanelGroup.gameObject.SetActive(false);
@@ -334,24 +393,31 @@ public class UIManager : MonoBehaviour
             TurnAnnouncementCanvasGroup.alpha = 0f;
         }
 
+        // seq.Append(TurnAnnouncementRect.DOScale(Vector3.one, _turnTextAppearDuration).SetEase(Ease.OutExpo));
+        // seq.Join(TurnAnnouncementCanvasGroup.DOFade(1f, 0.5f));
+        seq.Append(TurnAnnouncementRect.DOScale(Vector3.one, _turnTextAppearDuration).SetEase(Ease.OutBack, overshoot: 1.5f));
+        seq.Join(TurnAnnouncementCanvasGroup.DOFade(1f, 0.4f));
 
+        seq.AppendCallback(() => {
+            if (Camera.main != null) 
+            {
+                Camera.main.transform.DOComplete();
+                Camera.main.transform.DOShakePosition(0.3f, strength: 0.15f, vibrato: 15);
+            }
+        });
 
-        seq.Append(TurnAnnouncementRect.DOScale(Vector3.one, _turnTextAppearDuration).SetEase(Ease.OutExpo));
-        seq.Join(TurnAnnouncementCanvasGroup.DOFade(1f, 0.5f));
+        //seq.AppendInterval(_turnTextDuration);
+        seq.Append(TurnAnnouncementRect.DOScale(Vector3.one * 1.08f, _turnTextDuration).SetEase(Ease.Linear));
 
-        if (Camera.main != null)
-        {
-            seq.Join(Camera.main.transform.DOShakePosition(0.3f, strength: 0.1f, vibrato: 10));
-        }
-
-        seq.AppendInterval(_turnTextDuration);
-
-        seq.Append(TurnAnnouncementRect.DOScale(Vector3.one * 1.5f, _turnTextAppearDuration).SetEase(Ease.InQuad));
-        seq.Join(TurnAnnouncementCanvasGroup.DOFade(0f, 0.5f));
+        // seq.Append(TurnAnnouncementRect.DOScale(Vector3.one * 1.5f, _turnTextAppearDuration).SetEase(Ease.InQuad));
+        // seq.Join(TurnAnnouncementCanvasGroup.DOFade(0f, 0.5f));
+        seq.Append(TurnAnnouncementRect.DOScale(Vector3.one * 2f, _turnTextAppearDuration).SetEase(Ease.InExpo));
+        seq.Join(TurnAnnouncementCanvasGroup.DOFade(0f, _turnTextAppearDuration).SetEase(Ease.InExpo));
 
         if (BlackScreenCurtain != null)
         {
-            seq.Join(BlackScreenCurtain.DOFade(0f, 0.5f).SetEase(Ease.InOutSine));
+            seq.AppendInterval(0.05f);
+            seq.Join(BlackScreenCurtain.DOFade(0f, 0.4f).SetEase(Ease.InOutSine));
         }
 
         seq.OnComplete(() => {
@@ -362,11 +428,6 @@ public class UIManager : MonoBehaviour
             }
         });
     }
-
-
-
-
-
 
     public IEnumerator CinematicEndPhaseRoutine(int hostRawScore, int clientRawScore)
     {
@@ -400,6 +461,8 @@ public class UIManager : MonoBehaviour
         FinalDamageText.transform.position = _originalFinalDamageTextPosition;
         FinalDamageText.alpha = 1f;
         FinalDamageText.transform.localScale = Vector3.one;
+
+        FilterManager.Instance.SetDramaticFilter(true);
 
         //  bước 1: ĐẾM ĐIỂM ĐỐI THỦ (1 giây) 
         OppCenterText.transform.DOScale(1f, 0.25f).WaitForCompletion();
@@ -446,6 +509,8 @@ public class UIManager : MonoBehaviour
         // bước 6: HIỆN CHÊNH LỆCH
         FinalDamageText.gameObject.SetActive(true);
         FinalDamageText.transform.position = centerScreenPos;
+        FinalDamageText.alpha = 1f;
+        FinalDamageText.transform.rotation = Quaternion.identity;
 
         if(damage == 0)
         {
@@ -455,17 +520,19 @@ public class UIManager : MonoBehaviour
         }
         else
         {
-            FinalDamageText.text = damage.ToString();
+            FinalDamageText.text = iTakeDamage ? "-" + damage : damage.ToString();
             FinalDamageText.color = iTakeDamage ? FilterManager.Instance.HazardColor : FilterManager.Instance.AdvantageColor; 
             FinalDamageText.fontSize = 150;
         }
         
         FinalDamageText.transform.localScale = Vector3.zero;
-        yield return FinalDamageText.transform.DOScale(Vector3.one * 2.5f, _flashTime)
-            .SetEase(Ease.OutBack)
-            .WaitForCompletion();
 
-        yield return new WaitForSeconds(0.6f);
+        DG.Tweening.Sequence popSeq = DOTween.Sequence();
+        popSeq.Append(FinalDamageText.transform.DOScale(Vector3.one * 2.5f, _flashTime).SetEase(Ease.OutBack));
+        popSeq.Join(FinalDamageText.transform.DOPunchRotation(new Vector3(0, 0, UnityEngine.Random.Range(-25f, 25f)), _flashTime * 1.25f, vibrato: 6));
+        yield return popSeq.WaitForCompletion();
+
+        yield return new WaitForSeconds(0.5f);
 
         // bước 7: ATTACK
         if(damage > 0)
@@ -473,13 +540,14 @@ public class UIManager : MonoBehaviour
             Vector3 targetPos = iTakeDamage ? PlayerAvatarTransform.position : OppAvatarTransform.position;
             Vector3 uiTargetPos = Camera.main.WorldToScreenPoint(targetPos);
             uiTargetPos.z = 0f;
+            
             // Bay vút đi
             DG.Tweening.Sequence attackSeq = DOTween.Sequence();
             attackSeq.Append(FinalDamageText.transform.DOMove(uiTargetPos, _attackTime)
-                .SetEase(Ease.InExpo));
-            attackSeq.Join(FinalDamageText.transform.DOScale(0.5f, _attackTime)
-                .SetEase(Ease.InExpo));
-            attackSeq.Join(FinalDamageText.DOFade(0f, _attackTime)
+                .SetEase(Ease.InBack, 1.5f));
+            attackSeq.Join(FinalDamageText.transform.DOScale(1.5f, _attackTime)
+                .SetEase(Ease.InBack));
+            attackSeq.Join(FinalDamageText.DOFade(0.7f, _attackTime)
                 .SetEase(Ease.InExpo));
             yield return attackSeq.WaitForCompletion();
 
@@ -489,20 +557,23 @@ public class UIManager : MonoBehaviour
             if (iTakeDamage) 
             {
                 FilterManager.Instance.FlashScreen(FilterManager.Instance.HazardColor, _flashTime);
-                Camera.main.transform.DOShakePosition(0.3f, 0.4f, 20);
+                FilterManager.Instance.FlashVignette(FilterManager.Instance.HazardColor, 0.45f, 0.4f);
+                Camera.main.transform.DOShakePosition(0.4f, 0.5f, 25);
             } 
             else 
             {
                 // Đối thủ ăn đấm nháy trắng
                 FilterManager.Instance.FlashScreen(FilterManager.Instance.FlashColor, _flashTime);
+                Camera.main.transform.DOShakePosition(0.2f, strength: 0.3f, vibrato: 15);
             }
         }
         else
         {
             DG.Tweening.Sequence drawSeq = DOTween.Sequence();
-            drawSeq.Append(FinalDamageText.transform.DOShakePosition(0.5f, 10f));
-            drawSeq.Join(FinalDamageText.DOFade(0f, 0.5f).SetEase(Ease.InQuad));
-            drawSeq.Join(FinalDamageText.transform.DOScale(Vector3.one * 3f, _attackTime)); // Phình to rồi biến mất
+            drawSeq.Append(FinalDamageText.transform.DOShakePosition(duration: 0.4f, strength: 20f, vibrato: 15));
+            drawSeq.Join(FinalDamageText.transform.DOMoveY(FinalDamageText.transform.position.y - 200f, 0.3f).SetEase(Ease.InQuad));
+            drawSeq.Join(FinalDamageText.DOFade(0f, 0.3f).SetEase(Ease.InQuad));
+            //drawSeq.Join(FinalDamageText.transform.DOScale(Vector3.one * 3f, _attackTime)); // Phình to rồi biến mất
             
             yield return drawSeq.WaitForCompletion();
             
@@ -548,7 +619,7 @@ public class UIManager : MonoBehaviour
             });
     }
 
-    public void ShowGameOverUI(bool isHostWinner)
+    public void ShowGameOverUI(bool isHostWinner, int oldRank, int eloChange, int oldSouls, int earnedSouls)
     {
         bool amIHost = GameManager.Instance.Runner.IsServer;
         bool didIWin = (amIHost && isHostWinner) || (!amIHost && !isHostWinner);
@@ -572,6 +643,11 @@ public class UIManager : MonoBehaviour
         ResultText.text = resultMessage;
         MessageText.text = message;
 
+        RankPointText.text = $"{oldRank}";
+        SoulText.text = $"{oldSouls}";
+        RankPointText.transform.localScale = Vector3.zero;
+        SoulText.transform.localScale = Vector3.zero;
+
         TableVisualManager.Instance.StopAllCoroutines();
         FilterManager.Instance.SetDramaticFilter(true);
 
@@ -579,20 +655,56 @@ public class UIManager : MonoBehaviour
         ResultText.transform.localScale = Vector3.zero;
         MessageText.transform.localScale = Vector3.zero;
 
-        Sequence gameOverSeq = DOTween.Sequence();
+        Sequence gameOverSeq = DOTween.Sequence().SetUpdate(true);
+
         gameOverSeq.Append(GameOverPanel.DOFade(1f, _gameOverAppearTime));
         gameOverSeq.Join(ResultText.transform.DOScale(Vector3.one, _gameOverAppearTime).SetEase(Ease.OutBack));
         gameOverSeq.Join(MessageText.transform.DOScale(Vector3.one, _gameOverAppearTime).SetEase(Ease.OutBack));
         gameOverSeq.Join(Camera.main.transform.DOShakePosition(1f, 0.5f, 20));
 
-        gameOverSeq.AppendInterval(1.5f);
+        gameOverSeq.AppendInterval(0.5f);
+
+        gameOverSeq.Append(RankPointText.transform.DOScale(Vector3.one, 0.4f).SetEase(Ease.OutBack));
+        gameOverSeq.Join(SoulText.transform.DOScale(Vector3.one, 0.4f).SetEase(Ease.OutBack));
+
+        gameOverSeq.AppendInterval(0.5f);
+
+        // chạy số
+        int currentVisualRank = oldRank;
+        int targetRank = Mathf.Max(0, oldRank + eloChange);
+        string rankPrefix = eloChange >= 0 ? "+" : ""; 
+        string rankColor = eloChange >= 0 ? "#00FF00" : "#FF4444"; // Xanh lá nếu tăng, Đỏ nếu giảm
+
+        gameOverSeq.Append(DOTween.To(() => currentVisualRank, x => {
+            currentVisualRank = x;
+            RankPointText.text = $"{currentVisualRank} <color={rankColor}>({rankPrefix}{eloChange})</color>";
+        }, targetRank, 1.5f).SetEase(Ease.OutCubic));
+        gameOverSeq.Append(RankPointText.transform.DOPunchScale(Vector3.one * 0.3f, 0.5f, vibrato: 5));
+
+        int currentVisualSoul = oldSouls;
+        int targetSoul = oldSouls + earnedSouls;
+        string soulPrefix = earnedSouls >= 0 ? "+" : "";
+        string soulColor = "#00FFFF";
+
+        gameOverSeq.AppendInterval(0.3f);
+
+        // Dùng Join để cho Soul chạy ĐỒNG THỜI với Rank
+        gameOverSeq.Append(DOTween.To(() => currentVisualSoul, x => {
+            currentVisualSoul = x;
+            SoulText.text = $"{currentVisualSoul} <color={soulColor}>({soulPrefix}{earnedSouls})</color>";
+        }, targetSoul, 1.5f).SetEase(Ease.OutCubic));
+        gameOverSeq.Append(SoulText.transform.DOPunchScale(Vector3.one * 0.3f, 0.5f, vibrato: 5));
+
+
+        gameOverSeq.AppendInterval(1.0f);
 
         MenuButton.gameObject.SetActive(true);
-        gameOverSeq.Append(MenuButton.transform.DOScale(Vector3.one, 0.5f)).SetEase(Ease.OutBack)
-            .OnComplete(() =>
-            {
-                MenuButton.GetComponent<Button>().enabled = true;
-            });
+        gameOverSeq.Append(MenuButton.transform.DOScale(Vector3.one, 0.5f).SetEase(Ease.OutBack));
+
+        gameOverSeq.OnComplete(() =>
+        {
+            MenuButton.GetComponent<Button>().enabled = true;
+        });
     }
 
 

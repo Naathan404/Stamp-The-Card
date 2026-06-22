@@ -149,14 +149,14 @@ public class EndPhaseHandler : PhaseHandler
         if (gameManager.HostHP <= 0)
         {
             Debug.Log("[GameOver] Client thắng!");
-            gameManager.RPC_ShowGameOverUI(false);
+            gameManager.RPC_ProcessMatchEnd(false);
             GameStateManager.Instance.ChangePhase(GameStateManager.GamePhase.GameOver);
             return true;
         }
         if (gameManager.ClientHP <= 0)
         {
             Debug.Log("[GameOver] Host thắng!");
-            gameManager.RPC_ShowGameOverUI(true);
+            gameManager.RPC_ProcessMatchEnd(true);
             GameStateManager.Instance.ChangePhase(GameStateManager.GamePhase.GameOver);
             return true;
         }

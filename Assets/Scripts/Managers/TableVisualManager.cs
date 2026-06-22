@@ -58,6 +58,9 @@ public class TableVisualManager : Singleton<TableVisualManager>
     private float _stampResolveTime = 0.4f;
     private float _hologramFlashTime = 0.3f;
     private float _hologramFloatingTime = 0.5f;
+
+    Color grayColor = new Color(0.6f, 0.6f, 0.6f, 1f);
+
     #endregion
 
     private void Start()
@@ -466,6 +469,16 @@ public class TableVisualManager : Singleton<TableVisualManager>
         return result;
     }
 
+    private TextMeshPro GetTextForSlot(CardSlot slot)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            // Kiểm tra xem slot này nằm ở hàng dưới hay hàng trên
+            if (BottomCardSprites[i].GetComponent<CardSlot>() == slot) return BottomCardTexts[i];
+            if (TopCardSprites[i].GetComponent<CardSlot>() == slot) return TopCardTexts[i];
+        }
+        return null;
+    }
 
     private void SetActiveSpritesOnTable(bool isActive)
     {
@@ -503,14 +516,49 @@ public class TableVisualManager : Singleton<TableVisualManager>
         SpawnFloatingText(textMesh, difference);
 
         textMesh.transform.DOKill(true); 
-        textMesh.transform.DOPunchScale(Vector3.one * 0.4f, 0.5f, vibrato: 3);
+        textMesh.transform.DOPunchScale(Vector3.one * 0.5f, 0.5f, vibrato: 3);
 
         DOTween.To(() => currentScore, x => {
             textMesh.text = x.ToString();
         }, targetScore, 0.5f).SetEase(Ease.OutQuad);
     }
 
-    private void SpawnFloatingText(TextMeshPro referenceText, int diff)
+    // private void SpawnFloatingText(TextMeshPro referenceText, int diff)
+    // {
+    //     if (_floatingTextPrefab == null) return;
+
+    //     TextMeshPro tmp;
+    //     if (_floatingTextPool.Count > 0)
+    //     {
+    //         tmp = _floatingTextPool.Dequeue();
+    //         tmp.gameObject.SetActive(true);
+    //     }
+    //     else
+    //     {
+    //         tmp = Instantiate(_floatingTextPrefab);
+    //     }
+
+    //     tmp.transform.DOKill(); 
+        
+    //     Vector3 spawnPos = referenceText.transform.position + new Vector3(0, -1.5f, 0f);
+    //     tmp.transform.position = spawnPos;
+
+    //     tmp.text = diff > 0 ? $"+{diff}" : $"{diff}"; 
+    //     Color targetColor = diff > 0 ? Color.green : Color.red;
+    //     tmp.color = new Color(targetColor.r, targetColor.g, targetColor.b, 1f); 
+        
+    //     tmp.sortingOrder = 30000; 
+
+    //     tmp.transform.DOMoveY(spawnPos.y + 3f, 2f).SetEase(Ease.OutCirc);
+        
+    //     tmp.DOFade(0f, 1f).SetDelay(1f).OnComplete(() => 
+    //     {
+    //         tmp.gameObject.SetActive(false);     
+    //         _floatingTextPool.Enqueue(tmp);     
+    //     });
+    // }
+
+    private void ShowFloatingTextCore(TextMeshPro referenceText, string message, Color textColor)
     {
         if (_floatingTextPrefab == null) return;
 
@@ -527,22 +575,34 @@ public class TableVisualManager : Singleton<TableVisualManager>
 
         tmp.transform.DOKill(); 
         
+        tmp.text = message; 
+        tmp.color = new Color(textColor.r, textColor.g, textColor.b, 1f); 
+        tmp.sortingOrder = 30000; 
+        
         Vector3 spawnPos = referenceText.transform.position + new Vector3(0, -1.5f, 0f);
         tmp.transform.position = spawnPos;
 
-        tmp.text = diff > 0 ? $"+{diff}" : $"{diff}"; 
-        Color targetColor = diff > 0 ? Color.green : Color.red;
-        tmp.color = new Color(targetColor.r, targetColor.g, targetColor.b, 1f); 
-        
-        tmp.sortingOrder = 30000; 
-
-        tmp.transform.DOMoveY(spawnPos.y + 3f, 1.5f).SetEase(Ease.OutCirc);
+        tmp.transform.DOMoveY(spawnPos.y + 3f, 2f).SetEase(Ease.OutCirc);
         
         tmp.DOFade(0f, 1f).SetDelay(1f).OnComplete(() => 
         {
             tmp.gameObject.SetActive(false);     
             _floatingTextPool.Enqueue(tmp);     
         });
+    }
+
+    private void SpawnFloatingText(TextMeshPro referenceText, int diff)
+    {
+        string msg = diff > 0 ? $"+{diff}" : $"{diff}"; 
+        Color targetColor = diff > 0 ? Color.green : Color.red;
+        ShowFloatingTextCore(referenceText, msg, targetColor);
+    }
+
+    public void ShowMissText(TextMeshPro referenceText, string customMessage = "VÔ HIỆU")
+    {
+        ShowFloatingTextCore(referenceText, customMessage, grayColor);
+        referenceText.transform.DOKill(true);
+        referenceText.transform.DOPunchRotation(new Vector3(0, 0, 15f), 0.4f, vibrato: 6);
     }
     #endregion
 
@@ -695,8 +755,36 @@ public class TableVisualManager : Singleton<TableVisualManager>
                             //yield return StartCoroutine(AnimateStampTrigger(mySlots[i], s, cardID));
                             yield return StartCoroutine(AnimateStampTrigger(mySlots[i], s, stampData));
 
+                            int[] oldMyScores = new int[3];
+                            int[] oldOppScores = new int[3];
+                            for (int k = 0; k < 3; k++)
+                            {
+                                oldMyScores[k] = mySlots[k].Score;
+                                oldOppScores[k] = oppSlots[k].Score;
+                            }
+
                             stampData.ApplyEffect(mySlots, oppSlots, i);
-                            UpdateBoardScores();
+
+                            bool hasEffect = false;
+                            for (int k = 0; k < 3; k++)
+                            {
+                                if (mySlots[k].Score != oldMyScores[k] || oppSlots[k].Score != oldOppScores[k])
+                                {
+                                    hasEffect = true;
+                                    break;
+                                }
+                            }
+
+                            if (hasEffect)
+                                UpdateBoardScores();
+                            else
+                            {
+                                TextMeshPro targetText = GetTextForSlot(mySlots[i]);
+                                if (targetText != null)
+                                {
+                                    ShowMissText(targetText, "No effect"); 
+                                }
+                            }
 
                             yield return new WaitForSeconds(0.6f);
                         }             
