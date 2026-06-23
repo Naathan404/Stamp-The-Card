@@ -571,6 +571,7 @@ public class UIManager : MonoBehaviour
         {
             DG.Tweening.Sequence drawSeq = DOTween.Sequence();
             drawSeq.Append(FinalDamageText.transform.DOShakePosition(duration: 0.4f, strength: 20f, vibrato: 15));
+            drawSeq.AppendInterval(0.5f);
             drawSeq.Join(FinalDamageText.transform.DOMoveY(FinalDamageText.transform.position.y - 200f, 0.3f).SetEase(Ease.InQuad));
             drawSeq.Join(FinalDamageText.DOFade(0f, 0.3f).SetEase(Ease.InQuad));
             //drawSeq.Join(FinalDamageText.transform.DOScale(Vector3.one * 3f, _attackTime)); // Phình to rồi biến mất

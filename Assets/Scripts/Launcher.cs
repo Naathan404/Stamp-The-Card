@@ -6,7 +6,7 @@ using System;
 using UnityEngine.SceneManagement;
 using System.Linq;
 
-[RequireComponent(typeof(NetworkRunner))]
+//[RequireComponent(typeof(NetworkRunner))]
 public class Launcher : MonoBehaviour, INetworkRunnerCallbacks
 {
     [Header("NETWORK")]
@@ -14,12 +14,33 @@ public class Launcher : MonoBehaviour, INetworkRunnerCallbacks
     [SerializeField] private NetworkPrefabRef _playerPrefab;
     private Dictionary<PlayerRef, NetworkObject> _spawnedCharacterDic = new Dictionary<PlayerRef, NetworkObject>();
 
+    public static Launcher Instance;
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this.gameObject);
+            return;
+        }
+        Instance = this;
+        this.transform.SetParent(null); 
+        DontDestroyOnLoad(this.gameObject); 
+    }
+
     public async void StartGame(GameMode mode, string roomName)
     {
         _spawnedCharacterDic.Clear();
-        _runner = GetComponent<NetworkRunner>();
+
+        GameObject runnerObj = new GameObject("MySessionRunner");
+        DontDestroyOnLoad(runnerObj);
+
         // Create the Fusion runner and let it know that we will be providing user input
+        _runner = runnerObj.AddComponent<NetworkRunner>();
         _runner.ProvideInput = true;
+
+        var sceneManager = runnerObj.AddComponent<NetworkSceneManagerDefault>();
+        _runner.AddCallbacks(this);
 
         // Start or join (depends on gamemode) a session with a specific name
         await _runner.StartGame(new StartGameArgs
@@ -27,15 +48,22 @@ public class Launcher : MonoBehaviour, INetworkRunnerCallbacks
            GameMode = mode,
            SessionName = roomName,
            PlayerCount = 2,
-           SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>()
+           SceneManager = /*gameObject.AddComponent<NetworkSceneManagerDefault>()*/ sceneManager
         });
     }
 
+    public void CancelMatchmaking()
+    {
+        if (_runner != null && !_runner.IsShutdown)
+        {
+            Debug.Log("[Laucher] Hủy tìm trận");
+            _runner.Shutdown();
+        }
+    }
 
     #region Interface Implementation
     void INetworkRunnerCallbacks.OnConnectedToServer(NetworkRunner runner)
     {
-
     }
 
     void INetworkRunnerCallbacks.OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason)
@@ -168,6 +196,23 @@ public class Launcher : MonoBehaviour, INetworkRunnerCallbacks
     void INetworkRunnerCallbacks.OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
     {
         _spawnedCharacterDic.Clear();
+        if (runner != null)
+        {
+            runner.RemoveCallbacks(this);
+        }
+    }
+
+    public void LeaveMatch()
+    {
+        if (_runner != null && !_runner.IsShutdown)
+        {
+            Debug.Log("Đang chủ động rời trận. Hàm OnShutdown sẽ tự động đưa bạn về Lobby...");
+            _runner.Shutdown(); 
+        }
+        else 
+        {
+            
+        }
     }
 
     void INetworkRunnerCallbacks.OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message)
