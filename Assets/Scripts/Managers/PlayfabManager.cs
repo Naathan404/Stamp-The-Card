@@ -21,7 +21,7 @@ public class PlayfabManager : MonoBehaviour
     // Hàm phụ trợ: Xác thực xem mật khẩu hiện tại của User có đúng hay không
     public void VerifyCurrentPassword(string currentPassword, Action onSuccess, Action onError)
     {
-        // Sử dụng Email hoặc Username để xác thực lại ngầm (ở đây dùng Username làm ví dụ)
+        // Sử dụng Email hoặc Username để xác thực lại ngầm
         var request = new LoginWithPlayFabRequest
         {
             Username = LocalPlayerData.Username,
@@ -41,64 +41,76 @@ public class PlayfabManager : MonoBehaviour
     }
 
     // Cập nhật Username (Đã lồng xác thực mật khẩu bên trong để tăng tính bảo mật)
-    public void UpdateUsername(string newName, string currentPassword, Action onSuccess, Action onError)
+    public void UpdateUsername(string newName, Action onSuccess, Action onError)
     {
-        // Bước 1: Kiểm tra mật khẩu hiện tại trước
-        VerifyCurrentPassword(currentPassword,
-            () => {
-                // Bước 2: Nếu đúng mật khẩu, tiến hành đổi Username
-                var request = new AddUsernamePasswordRequest()
-                {
-                    Username = newName,
-                    Password = currentPassword // Đồng thời cập nhật luôn cụm Auth mới
-                };
+        
+        var request = new AddUsernamePasswordRequest()
+        {
+            Username = newName,
+        };
 
-                PlayFabClientAPI.AddUsernamePassword(request,
-                    result => {
-                        Debug.Log("Thay doi Username thanh cong!");
-                        LocalPlayerData.Username = newName;
-                        OnDataChanged?.Invoke();
-                        onSuccess?.Invoke();
-                    },
-                    error => {
-                        Debug.LogError("Thay doi Username that bai: " + error.GenerateErrorReport());
-                        onError?.Invoke();
-                    }
-                );
-            },
-            () => {
-                // Nếu mật khẩu hiện tại nhập vào bị sai
-                onError?.Invoke();
-            }
+        PlayFabClientAPI.AddUsernamePassword(request,
+           result => {
+               Debug.Log("Thay doi Username thanh cong!");
+               LocalPlayerData.Username = newName;
+               OnDataChanged?.Invoke();
+               onSuccess?.Invoke();
+           },
+           error => {
+               Debug.LogError("Thay doi Username that bai: " + error.GenerateErrorReport());
+               onError?.Invoke();
+           }
         );
+          
     }
 
     // Đổi mật khẩu tài khoản (Đã lồng xác thực mật khẩu cũ bên trong)
-    public void ChangePassword(string currentPassword, string newPassword, Action onSuccess, Action onError)
+    // Thay thế hoàn toàn hàm ChangePassword cũ trong PlayfabManager.cs bằng hàm này:
+    public void ChangePassword(Action onSuccess, Action onError)
     {
-        // Bước 1: Kiểm tra mật khẩu cũ trước
-        VerifyCurrentPassword(currentPassword,
-            () => {
-                // Bước 2: Nếu mật khẩu cũ đúng, ghi đè bằng mật khẩu mới
-                var request = new AddUsernamePasswordRequest()
-                {
-                    Username = LocalPlayerData.Username,
-                    Password = newPassword
-                };
+        // Bước 1: Gọi API lấy Email của người chơi hiện tại từ Server về trước
+        var accountInfoRequest = new GetAccountInfoRequest();
 
-                PlayFabClientAPI.AddUsernamePassword(request,
-                    result => {
-                        Debug.Log("Doi mat khau thanh cong!");
-                        onSuccess?.Invoke();
-                    },
-                    error => {
-                        Debug.LogError("Doi mat khau that bai: " + error.GenerateErrorReport());
-                        onError?.Invoke();
-                    }
-                );
+        PlayFabClientAPI.GetAccountInfo(accountInfoRequest,
+            accountResult =>
+            {
+                if (accountResult.AccountInfo != null &&
+                    accountResult.AccountInfo.PrivateInfo != null &&
+                    !string.IsNullOrEmpty(accountResult.AccountInfo.PrivateInfo.Email))
+                {
+                    string userEmail = accountResult.AccountInfo.PrivateInfo.Email;
+
+                    // Bước 2: Dùng API chuẩn của PlayFab để gửi Email khôi phục/đổi mật khẩu
+                    var recoveryRequest = new SendAccountRecoveryEmailRequest
+                    {
+                        Email = userEmail,
+                        TitleId = PlayFabSettings.TitleId // Tự động lấy Title ID đang cấu hình trong Unity
+                    };
+
+                    PlayFabClientAPI.SendAccountRecoveryEmail(recoveryRequest,
+                        result =>
+                        {
+                            Debug.Log("Đã gửi link đổi mật khẩu vào Email của người chơi thành công!");
+                            onSuccess?.Invoke();
+                            // Khi thành công, UI bên AccountUIController sẽ nhảy vào khối onSuccess.
+                            // Bạn có thể đổi dòng Debug.Log bên UI thành: "Vui lòng kiểm tra Email để đặt lại mật khẩu!"
+                        },
+                        error =>
+                        {
+                            Debug.LogError("Gửi email đặt lại mật khẩu thất bại: " + error.GenerateErrorReport());
+                            onError?.Invoke();
+                        }
+                    );
+                }
+                else
+                {
+                    Debug.LogError("Tài khoản này chưa được liên kết Email trên PlayFab, không thể gửi yêu cầu!");
+                    onError?.Invoke();
+                }
             },
-            () => {
-                // Nếu mật khẩu cũ nhập vào bị sai
+            accountError =>
+            {
+                Debug.LogError("Không thể lấy thông tin tài khoản từ Server: " + accountError.GenerateErrorReport());
                 onError?.Invoke();
             }
         );
