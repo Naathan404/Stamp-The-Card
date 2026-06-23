@@ -18,10 +18,11 @@ public class GameManager : NetworkSingleton<GameManager>
     public int CurrentCardIndexFromMainDeck = 0;
 
     [Header("STAMP DECK")]
-    [HideInInspector] public List<int> HostStampDeck = new List<int>(GameConstants.MAX_STAMP_CAPACITY);
-    [HideInInspector] public List<int> ClientStampDeck = new List<int>(GameConstants.MAX_STAMP_CAPACITY);
+    [HideInInspector] public List<int> HostStampDeck = new List<int>();
+    [HideInInspector] public List<int> ClientStampDeck = new List<int>();
     [Networked] public int NetworkedHostStampCount { get; set; }
     [Networked] public int NetworkedClientStampCount { get; set; }
+    [Networked] public NetworkBool AreStampsReady { get; set; }
     public int HostCurrentStampIndex = 0;
     public int ClientCurrentStampIndex = 0;
 
@@ -95,20 +96,22 @@ public class GameManager : NetworkSingleton<GameManager>
             }
 
             // NẠP STAMP DECK (Tránh việc toàn số 0)
-            HostStampDeck.Clear();
-            ClientStampDeck.Clear();
-            var hostRandomStamps = Enumerable.Range(1, StampNum)
-                                             .OrderBy(x => Guid.NewGuid())
-                                             .Take(GameConstants.MAX_STAMP_CAPACITY)
-                                             .ToList();
+            // HostStampDeck.Clear();
+            // ClientStampDeck.Clear();
+            // var hostRandomStamps = Enumerable.Range(1, StampNum)
+            //                                 .OrderBy(x => Guid.NewGuid())
+            //                                 .Take(GameConstants.MAX_STAMP_CAPACITY)
+            //                                 .ToList();
 
-            var clientRandomStamps = Enumerable.Range(1, StampNum)
-                                               .OrderBy(x => Guid.NewGuid())
-                                               .Take(GameConstants.MAX_STAMP_CAPACITY)
-                                               .ToList();
+            // var clientRandomStamps = Enumerable.Range(1, StampNum)
+            //                                 .OrderBy(x => Guid.NewGuid())
+            //                                 .Take(GameConstants.MAX_STAMP_CAPACITY)
+            //                                 .ToList();
 
-            HostStampDeck.AddRange(hostRandomStamps);
-            ClientStampDeck.AddRange(clientRandomStamps);
+            // HostStampDeck.AddRange(hostRandomStamps);
+            // ClientStampDeck.AddRange(clientRandomStamps);
+
+            StartCoroutine(WaitAndLoadStampsCoroutine());
 
             // SET BÀI TRÊN TAY LÀ -1 
             for(int i = 0; i < GameConstants.PLAYER_HAND_SIZE; i++)
@@ -131,6 +134,42 @@ public class GameManager : NetworkSingleton<GameManager>
         _calculateHandler = new CalculatePhaseHandler(this);
         _endHandler = new EndPhaseHandler(this);
 
+    }
+
+    private System.Collections.IEnumerator WaitAndLoadStampsCoroutine()
+    {
+        PlayerNetworkData hostData = null;
+        PlayerNetworkData clientData = null;
+
+        while (hostData == null || clientData == null)
+        {
+            foreach (var playerData in FindObjectsByType<PlayerNetworkData>(FindObjectsSortMode.None))
+            {
+                // Ai có InputAuthority là chính bản thân Server thì người đó là Host
+                if (playerData.Object.InputAuthority == Runner.LocalPlayer)
+                    hostData = playerData;
+                else
+                    clientData = playerData;
+            }
+            yield return null;
+        }
+
+        yield return new WaitUntil(() => hostData.IsStampSynced && clientData.IsStampSynced);
+
+        HostStampDeck.Clear();
+        ClientStampDeck.Clear();
+
+        HostStampDeck.AddRange(hostData.GetPlayerStampIDs().Take(9));
+        ClientStampDeck.AddRange(clientData.GetPlayerStampIDs().Take(9));
+
+        HostStampDeck = HostStampDeck.OrderBy(x => Guid.NewGuid()).ToList();
+        ClientStampDeck = ClientStampDeck.OrderBy(x => Guid.NewGuid()).ToList();
+
+        NetworkedHostStampCount = HostStampDeck.Count;
+        NetworkedClientStampCount = ClientStampDeck.Count;
+
+        Debug.Log($"[GameManager] Đã nạp xong bộ Tem thực tế! Host: {HostStampDeck.Count} tem | Client: {ClientStampDeck.Count} tem.");
+        AreStampsReady = true;
     }
 
     #region EXECUTING

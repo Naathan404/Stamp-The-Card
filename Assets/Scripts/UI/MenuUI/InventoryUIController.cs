@@ -34,7 +34,6 @@ public class InventoryUIController : MonoBehaviour
         if (_controller != null)
         {
             _controller.SaveSelectedStampsToLocal();
-            Debug.Log("Da luu danh sach selected stamp vao local");
         }
 
         AudioManager.Instance.PlaySFX(AudioManager.Instance.ButtonClick, true);
