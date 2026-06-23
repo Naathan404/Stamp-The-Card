@@ -16,9 +16,9 @@ public class SpecialEffectStampData : BaseStampData
 {
     public EffectType effectType;
 
-    public override void ApplyEffect(CardSlot[] myCards, CardSlot[] enemyCards, int currentCardIndex)
+    public override string ApplyEffect(CardSlot[] myCards, CardSlot[] enemyCards, int currentCardIndex)
     {
-        if (!isEnabled) return;
+        if (!isEnabled) return "NoEffect";
 
         switch (effectType)
         {
@@ -29,7 +29,7 @@ public class SpecialEffectStampData : BaseStampData
                     if (targetToCheck != null)
                         NullifyStampEffect(targetToCheck);
                 }
-                break;
+                return "SILENCED";
 
             case EffectType.COPY:
                 CardSlot oppositeCard = enemyCards[2 - currentCardIndex];
@@ -49,13 +49,13 @@ public class SpecialEffectStampData : BaseStampData
 
                 if (targetToCopy != null && targetToCopy.stampName != this.stampName)
                 {
-                    targetToCopy.ApplyEffect(myCards, enemyCards, currentCardIndex);
+                    return targetToCopy.ApplyEffect(myCards, enemyCards, currentCardIndex);
                 }
                 break;
 
             case EffectType.IMMUNITY:
                 myCards[currentCardIndex].IsImmuneLowerScore = true;
-                break;
+                return "IMMUNE";
 
             case EffectType.RESET_SCORE:
                 foreach (var target in targets)
@@ -64,17 +64,19 @@ public class SpecialEffectStampData : BaseStampData
                     if (targetToCheck != null)
                         ResetScore(targetToCheck);
                 }
-                break;
+                return "RESET";
 
             case EffectType.RANDOM_SCORE_CHANGE:
                 CardSlot currentCard = myCards[currentCardIndex];
                 currentCard.Score += currentCard.LastRandomValue;
-                break;
+                return "ScoreChanged";
 
             case EffectType.BALANCE_SCORE:
                 myCards[currentCardIndex].Score = enemyCards[2 - currentCardIndex].Data.BaseScore;
-                break;
+                return "ScoreChanged";
         }
+
+        return "NoEffect";
     }
 
     private void NullifyStampEffect(CardSlot currentCard)

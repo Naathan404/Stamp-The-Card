@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SimpleScoreModifierStampData
   _stampID: 31
   _stampRank: 2
-  _stampName: "Tr\u1EEBng ph\u1EA1t"
-  _stampEffect: "Chia \u0111\xF4i s\u1ED1 n\xFAt l\xE1 b\xE0i \u0111\u1ED1i di\u1EC7n"
+  _stampName: Punishment
+  _stampEffect: 'Foe: Halve Pts.'
   targets: 03000000
   _bloodCost: 0
   ExeTier: 2
-  stampArt: {fileID: 7482667652216324306, guid: 0c99a264a6de7f24892afb4874eb8965, type: 3}
+  stampArt: {fileID: -8342472817123768823, guid: 438bd46b58545ae478693ad04ea1fe24, type: 3}
   isEnabled: 1
   amountToChange: 0.5
   scoreOperator: 1

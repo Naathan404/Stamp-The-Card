@@ -119,8 +119,22 @@ public class TableVisualManager : Singleton<TableVisualManager>
         CardSlot[] clientSlots = GetClientCardSlots();
         for (int i = 0; i < 3; i++)
         {
-            if (hostSlots[i].Data != null) hostSlots[i].Reset();
-            if (clientSlots[i].Data != null) clientSlots[i].Reset();
+            if (hostSlots[i].Data != null)
+            {
+                hostSlots[i].Reset();
+                if (GameManager.Instance.IsCardStampsPermanentlyDisabled(hostSlots[i].Data.CardID))
+                {
+                    hostSlots[i].StampsDisabled = true;
+                }
+            }
+            if (clientSlots[i].Data != null)
+            {
+                clientSlots[i].Reset();
+                if (GameManager.Instance.IsCardStampsPermanentlyDisabled(clientSlots[i].Data.CardID))
+                {
+                    clientSlots[i].StampsDisabled = true;
+                }
+            }
         }
 
         yield return new WaitForSeconds(1.0f);
@@ -523,42 +537,7 @@ public class TableVisualManager : Singleton<TableVisualManager>
         }, targetScore, 0.5f).SetEase(Ease.OutQuad);
     }
 
-    // private void SpawnFloatingText(TextMeshPro referenceText, int diff)
-    // {
-    //     if (_floatingTextPrefab == null) return;
-
-    //     TextMeshPro tmp;
-    //     if (_floatingTextPool.Count > 0)
-    //     {
-    //         tmp = _floatingTextPool.Dequeue();
-    //         tmp.gameObject.SetActive(true);
-    //     }
-    //     else
-    //     {
-    //         tmp = Instantiate(_floatingTextPrefab);
-    //     }
-
-    //     tmp.transform.DOKill(); 
-        
-    //     Vector3 spawnPos = referenceText.transform.position + new Vector3(0, -1.5f, 0f);
-    //     tmp.transform.position = spawnPos;
-
-    //     tmp.text = diff > 0 ? $"+{diff}" : $"{diff}"; 
-    //     Color targetColor = diff > 0 ? Color.green : Color.red;
-    //     tmp.color = new Color(targetColor.r, targetColor.g, targetColor.b, 1f); 
-        
-    //     tmp.sortingOrder = 30000; 
-
-    //     tmp.transform.DOMoveY(spawnPos.y + 3f, 2f).SetEase(Ease.OutCirc);
-        
-    //     tmp.DOFade(0f, 1f).SetDelay(1f).OnComplete(() => 
-    //     {
-    //         tmp.gameObject.SetActive(false);     
-    //         _floatingTextPool.Enqueue(tmp);     
-    //     });
-    // }
-
-    private void ShowFloatingTextCore(TextMeshPro referenceText, string message, Color textColor)
+    private void ShowFloatingTextCore(TextMeshPro referenceText, string message, Color textColor, float offsetX = 0f)
     {
         if (_floatingTextPrefab == null) return;
 
@@ -579,10 +558,14 @@ public class TableVisualManager : Singleton<TableVisualManager>
         tmp.color = new Color(textColor.r, textColor.g, textColor.b, 1f); 
         tmp.sortingOrder = 30000; 
         
-        Vector3 spawnPos = referenceText.transform.position + new Vector3(0, -1.5f, 0f);
+        Vector3 spawnPos = referenceText.transform.position + new Vector3(offsetX, -1.5f, 0f);
         tmp.transform.position = spawnPos;
 
         tmp.transform.DOMoveY(spawnPos.y + 3f, 2f).SetEase(Ease.OutCirc);
+        if (offsetX != 0)
+        {
+            tmp.transform.DOMoveX(spawnPos.x + (offsetX * 0.5f), 2f).SetEase(Ease.OutCirc);
+        }
         
         tmp.DOFade(0f, 1f).SetDelay(1f).OnComplete(() => 
         {
@@ -595,7 +578,7 @@ public class TableVisualManager : Singleton<TableVisualManager>
     {
         string msg = diff > 0 ? $"+{diff}" : $"{diff}"; 
         Color targetColor = diff > 0 ? Color.green : Color.red;
-        ShowFloatingTextCore(referenceText, msg, targetColor);
+        ShowFloatingTextCore(referenceText, msg, targetColor, -1f);
     }
 
     public void ShowMissText(TextMeshPro referenceText, string customMessage = "VÔ HIỆU")
@@ -755,31 +738,25 @@ public class TableVisualManager : Singleton<TableVisualManager>
                             //yield return StartCoroutine(AnimateStampTrigger(mySlots[i], s, cardID));
                             yield return StartCoroutine(AnimateStampTrigger(mySlots[i], s, stampData));
 
-                            int[] oldMyScores = new int[3];
-                            int[] oldOppScores = new int[3];
-                            for (int k = 0; k < 3; k++)
+                            string effectMessage = stampData.ApplyEffect(mySlots, oppSlots, i);
+                            TextMeshPro targetText = GetTextForSlot(mySlots[i]);
+
+                            //bool hasEffect = stampData.ApplyEffect(mySlots, oppSlots, i);
+
+                            if (effectMessage == "ScoreChanged")
                             {
-                                oldMyScores[k] = mySlots[k].Score;
-                                oldOppScores[k] = oppSlots[k].Score;
+                                UpdateBoardScores();
                             }
-
-                            stampData.ApplyEffect(mySlots, oppSlots, i);
-
-                            bool hasEffect = false;
-                            for (int k = 0; k < 3; k++)
+                            else if (!string.IsNullOrEmpty(effectMessage) && effectMessage != "NoEffect")
                             {
-                                if (mySlots[k].Score != oldMyScores[k] || oppSlots[k].Score != oldOppScores[k])
+                                UpdateBoardScores();
+                                if (targetText != null)
                                 {
-                                    hasEffect = true;
-                                    break;
+                                    ShowFloatingTextCore(targetText, effectMessage, grayColor, 1f); 
                                 }
                             }
-
-                            if (hasEffect)
-                                UpdateBoardScores();
                             else
                             {
-                                TextMeshPro targetText = GetTextForSlot(mySlots[i]);
                                 if (targetText != null)
                                 {
                                     ShowMissText(targetText, "No effect"); 

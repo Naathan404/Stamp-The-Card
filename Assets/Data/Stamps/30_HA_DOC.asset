@@ -14,13 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::VariableScoreModifierStampData
   _stampID: 30
   _stampRank: 2
-  _stampName: "H\u1EA1 \u0111\u1ED9c"
-  _stampEffect: "V\u1EDBi X stamp tr\xEAn l\xE1 b\xE0i n\xE0y, tr\u1EEB s\u1ED1 X
-    n\xFAt v\xE0o 3 l\xE1 b\xE0i phe \u0111\u1ECBch"
+  _stampName: Poison
+  _stampEffect: 'All Enemies: -X Pts (X = number of stamps on this card).'
   targets: 0000000004000000
   _bloodCost: 0
   ExeTier: 2
-  stampArt: {fileID: 7482667652216324306, guid: 0c99a264a6de7f24892afb4874eb8965, type: 3}
+  stampArt: {fileID: 4048933013992421116, guid: 438bd46b58545ae478693ad04ea1fe24, type: 3}
   isEnabled: 1
   amountToChange: -1
   scoreOperator: 0

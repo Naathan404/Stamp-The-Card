@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpecialEffectStampData
   _stampID: 28
   _stampRank: 2
-  _stampName: "\xC1o cho\xE0ng"
-  _stampEffect: "Mi\u1EC5n nhi\u1EC5m m\u1ECDi hi\u1EC7u \u1EE9ng tr\u1EEB \u0111i\u1EC3m"
+  _stampName: Cloak
+  _stampEffect: Immune to all Pt reduction.
   targets: 00000000
   _bloodCost: 0
-  ExeTier: 2
-  stampArt: {fileID: 7482667652216324306, guid: 0c99a264a6de7f24892afb4874eb8965, type: 3}
+  ExeTier: 0
+  stampArt: {fileID: -4666978151327898789, guid: 438bd46b58545ae478693ad04ea1fe24, type: 3}
   isEnabled: 1
   effectType: 2
