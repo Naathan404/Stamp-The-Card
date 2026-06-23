@@ -14,16 +14,6 @@ public class InventoryUIController : MonoBehaviour
     [SerializeField] private int _maxSelectionSlot = 9;
 
 
-    private SelectedStampZoneController _controller;
-
-    private void Awake()
-    {
-        if ( _controller == null )
-        {
-            _controller = FindAnyObjectByType<SelectedStampZoneController>();
-        }
-    }
-
     private void Start()
     {
         UpdateInventoryUI();
@@ -31,16 +21,29 @@ public class InventoryUIController : MonoBehaviour
 
     public void BackToMenu()
     {
-        if (_controller != null)
-        {
-            _controller.SaveSelectedStampsToLocal();
-        }
-
         AudioManager.Instance.PlaySFX(AudioManager.Instance.ButtonClick, true);
         SceneTransitionManager.Instance.LoadSceneAsync("Menu");
     }
 
-    private void UpdateInventoryUI()
+    public void SortInventoryPanelUI()
+    {
+
+        StampSlotUI[] currentUIItems = _stampInventoryPanel.GetComponentsInChildren<StampSlotUI>();
+
+        //Sap xep lai thu tu inventory UI
+        var sortedUIItems = currentUIItems.OrderBy(uiSlot =>
+        {
+            return LocalPlayerData.StampInInventory.FindIndex(data => data.stampInstanceID == uiSlot.stampInstance.stampInstanceID);
+        }).ToList();
+
+        //Ep UI hien thi theo dung thu tu
+        for (int i = 0; i < sortedUIItems.Count; i++)
+        {
+            sortedUIItems[i].transform.SetSiblingIndex(i);
+        }
+    }
+
+    public void UpdateInventoryUI()
     {
         //Don dep truoc khi update
         ClearPanel(_stampSelectionPanel);

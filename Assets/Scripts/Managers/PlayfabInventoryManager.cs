@@ -43,10 +43,9 @@ public class PlayFabInventoryManager : MonoBehaviour
             newStamp.data = LocalPlayerData.AllStampsDatabase.Find(stamp => stamp.stampID.ToString() == item.ItemId);
 
             LocalPlayerData.StampInInventory.Add(newStamp);
-
-            OnInventoryChanged?.Invoke();
         }
 
+        OnInventoryChanged?.Invoke();
         PlayfabManager.Instance.LoadSelectedStamps();
     }
 
