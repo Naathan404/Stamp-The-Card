@@ -319,7 +319,7 @@ public class UIManager : MonoBehaviour
         BattleStartTextRect.localRotation = Quaternion.Euler(0, 0, 15f); 
 
         Sequence seq = DOTween.Sequence();
-        seq.AppendInterval(0.2f); 
+        seq.AppendInterval(0.5f); 
 
         seq.Append(BattleStartPanelGroup.DOFade(1f, 0.3f));
         seq.Join(BattleStartTextRect.DOAnchorPosX(0f, _battleStartTextAppearDuration).SetEase(Ease.OutExpo));
@@ -416,7 +416,7 @@ public class UIManager : MonoBehaviour
 
         if (BlackScreenCurtain != null)
         {
-            seq.AppendInterval(0.05f);
+            seq.AppendInterval(0.02f);
             seq.Join(BlackScreenCurtain.DOFade(0f, 0.4f).SetEase(Ease.InOutSine));
         }
 

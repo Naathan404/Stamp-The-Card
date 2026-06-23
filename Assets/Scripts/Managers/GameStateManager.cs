@@ -82,17 +82,32 @@ public class GameStateManager : NetworkSingleton<GameStateManager>
         if(CurrentGameState == GamePhase.Waiting)
         {
             if (HasStartedFirstTurn) return;
-            if (Runner.ActivePlayers.Count() == 2 && !_startDelayTimer.IsRunning)
-            {
-                _startDelayTimer = TickTimer.CreateFromSeconds(Runner, 3f);
-            }
+            // if (Runner.ActivePlayers.Count() == 2 && !_startDelayTimer.IsRunning)
+            // {
+            //     _startDelayTimer = TickTimer.CreateFromSeconds(Runner, 3f);
+            // }
 
-            if (_startDelayTimer.Expired(Runner))
+            // if (_startDelayTimer.Expired(Runner))
+            // {
+            //     _startDelayTimer = TickTimer.None; 
+            //     HasStartedFirstTurn = true; 
+            //     ChangePhase(GamePhase.DrawPhase);
+            // }  
+
+            if (Runner.ActivePlayers.Count() == 2 && GameManager.Instance != null && GameManager.Instance.AreStampsReady)
             {
-                _startDelayTimer = TickTimer.None; 
-                HasStartedFirstTurn = true; 
-                ChangePhase(GamePhase.DrawPhase);
-            }  
+                if (!_startDelayTimer.IsRunning)
+                {
+                    _startDelayTimer = TickTimer.CreateFromSeconds(Runner, 3f);
+                }
+
+                if (_startDelayTimer.Expired(Runner))
+                {
+                    _startDelayTimer = TickTimer.None; 
+                    HasStartedFirstTurn = true; 
+                    ChangePhase(GamePhase.DrawPhase);
+                }  
+            }
         }
         else if(CurrentGameState == GamePhase.MainPhase)
         {

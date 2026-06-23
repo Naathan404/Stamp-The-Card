@@ -15,7 +15,7 @@ MonoBehaviour:
   _stampID: 11
   _stampRank: 0
   _stampName: Synergy
-  _stampEffect: 'Adjacent: -1 Pts - Self: +1 Pts per Adjacent.'
+  _stampEffect: 'Adjacent: -1 Pts. Self: +1 Pts per Adjacent.'
   targets: 000000000100000002000000
   _bloodCost: 0
   ExeTier: 3
