@@ -14,35 +14,37 @@ public class BattleRuleStampData : BaseStampData
 {
     public BattleRuleType battleRuleType;
 
-    public override void ApplyEffect(CardSlot[] myCards, CardSlot[] enemyCards, int currentCardIndex)
+    public override string ApplyEffect(CardSlot[] myCards, CardSlot[] enemyCards, int currentCardIndex)
     {
-        if (!isEnabled) return;
+        if (!isEnabled) return "NoEffect";
 
         switch (battleRuleType)
         {
             case BattleRuleType.JUDGE:
                 ApplyJudge(myCards, enemyCards, currentCardIndex);
-                break;
+                return "JUDGED";
 
             case BattleRuleType.KING_OF_TOUGHNESS:
                 myCards[currentCardIndex].IsKingOfToughness = true;
                 Debug.Log($"[Vua Lì Đòn] Slot {currentCardIndex} được miễn sát thương nếu thua cột này");
-                break;
+                return "TOUGH";
 
             case BattleRuleType.REVERSE_BALANCE:
                 myCards[currentCardIndex].IsReverseBalance = true;
                 Debug.Log($"[Đảo Ngược Cán Cân] Slot {currentCardIndex} - bên điểm cao hơn sẽ bị trừ máu");
-                break;
+                return "REVERSE";
 
             case BattleRuleType.PEACE_AMULET:
                 myCards[currentCardIndex].HasPeaceAmulet = true;
                 Debug.Log($"[Bùa Bình An] Slot {currentCardIndex} sẽ được cứu nếu máu về 0");
-                break;
+                return "AMULET";
 
             case BattleRuleType.CREMATION:
                 ApplyCremation(enemyCards, currentCardIndex);
-                break;
+                return "BURN";
         }
+
+        return "NoEffect";
     }
 
 /// Thẩm Phán: vô hiệu toàn bộ stamp cả 2 lá trên cột này -> về so sánh điểm gốc

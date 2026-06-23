@@ -72,6 +72,21 @@ public class GameManager : NetworkSingleton<GameManager>
     public static event Action OnCalculatePhaseEntered;
     public static event Action OnEndPhaseEntered;
 
+    // Bitmask đánh dấu card bị vô hiệu stamps
+    [Networked] public int PermanentlyDisabledCardsBitmask { get; set; }
+
+    // Hàm đánh dấu lá bài này bị phế võ công vĩnh viễn
+    public void DisableCardStampsPermanently(int cardID)
+    {
+        PermanentlyDisabledCardsBitmask |= (1 << cardID);
+    }
+
+    // Hàm kiểm tra xem lá bài này có đang bị phế hay không
+    public bool IsCardStampsPermanentlyDisabled(int cardID)
+    {
+        return (PermanentlyDisabledCardsBitmask & (1 << cardID)) != 0;
+    }
+
 
     [Header("Change Detector")]
     private ChangeDetector _changeDetector;
@@ -95,22 +110,16 @@ public class GameManager : NetworkSingleton<GameManager>
                 MainDeck[i] = i; 
             }
 
-            // NẠP STAMP DECK (Tránh việc toàn số 0)
-            // HostStampDeck.Clear();
-            // ClientStampDeck.Clear();
-            // var hostRandomStamps = Enumerable.Range(1, StampNum)
-            //                                 .OrderBy(x => Guid.NewGuid())
-            //                                 .Take(GameConstants.MAX_STAMP_CAPACITY)
-            //                                 .ToList();
+            HostStampDeck.Clear();
+            ClientStampDeck.Clear();
 
-            // var clientRandomStamps = Enumerable.Range(1, StampNum)
-            //                                 .OrderBy(x => Guid.NewGuid())
-            //                                 .Take(GameConstants.MAX_STAMP_CAPACITY)
-            //                                 .ToList();
+            ////---- --CHEAT
+            List<int> my8NewStamps = new List<int> { 28, 29, 30, 31, 32, 33, 34, 35 }; 
 
-            // HostStampDeck.AddRange(hostRandomStamps);
-            // ClientStampDeck.AddRange(clientRandomStamps);
-
+            HostStampDeck.AddRange(my8NewStamps);
+            ClientStampDeck.AddRange(my8NewStamps);
+            //// ------------- 
+            /// 
             StartCoroutine(WaitAndLoadStampsCoroutine());
 
             // SET BÀI TRÊN TAY LÀ -1 
@@ -127,6 +136,8 @@ public class GameManager : NetworkSingleton<GameManager>
             {
                 CardAttachedStamps.Set(i, -1);
             }
+
+
         }
 
         _drawHandler = new DrawPhaseHandler(this);
@@ -156,8 +167,8 @@ public class GameManager : NetworkSingleton<GameManager>
 
         yield return new WaitUntil(() => hostData.IsStampSynced && clientData.IsStampSynced);
 
-        HostStampDeck.Clear();
-        ClientStampDeck.Clear();
+        // HostStampDeck.Clear();
+        // ClientStampDeck.Clear();
 
         HostStampDeck.AddRange(hostData.GetPlayerStampIDs().Take(9));
         ClientStampDeck.AddRange(clientData.GetPlayerStampIDs().Take(9));

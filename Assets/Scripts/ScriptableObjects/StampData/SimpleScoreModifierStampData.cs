@@ -16,11 +16,12 @@ public class SimpleScoreModifierStampData : BaseStampData
     public float amountToChange;
     public ScoreOperator scoreOperator;
 
-    public override void ApplyEffect(CardSlot[] myCards, CardSlot[] enemyCards, int currentCardIndex)
+    public override string ApplyEffect(CardSlot[] myCards, CardSlot[] enemyCards, int currentCardIndex)
     {
-        if (!isEnabled) return;
+        if (!isEnabled) return "NoEffect";
 
         ApplyToTargets(myCards, enemyCards, currentCardIndex);
+        return "ScoreChanged";
     }
 
     protected void ApplyToTargets(CardSlot[] myCards, CardSlot[] enemyCards, int currentCardIndex)

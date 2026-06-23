@@ -6,13 +6,13 @@ public class ScoreTransferStampData : BaseStampData
 {
     public int amountToTransfer;
 
-    public override void ApplyEffect(CardSlot[] myCards, CardSlot[] enemyCards, int currentCardIndex) 
+    public override string ApplyEffect(CardSlot[] myCards, CardSlot[] enemyCards, int currentCardIndex) 
     {
-        if (!isEnabled || targets == null || targets.Length < 2) return;
+        if (!isEnabled || targets == null || targets.Length < 2) return "NoEffect";
 
         //Mac dinh target dau tien receive score va cac target con lai bi steal score
         CardSlot targetToReceive = FindTargetToCheck(targets[0], myCards, enemyCards, currentCardIndex);
-        if (targetToReceive == null) return;
+        if (targetToReceive == null) return "NoEffect";
         CardSlot targetToSteal = null;
 
         for (int i = 1; i < targets.Length; i++)
@@ -24,5 +24,6 @@ public class ScoreTransferStampData : BaseStampData
                 targetToReceive.Score += amountToTransfer;
             }
         }
+        return "ScoreChanged";
     }
 }

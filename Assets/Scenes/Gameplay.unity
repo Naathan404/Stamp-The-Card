@@ -218,6 +218,7 @@ GameObject:
   - component: {fileID: 47249155}
   - component: {fileID: 47249157}
   - component: {fileID: 47249156}
+  - component: {fileID: 47249158}
   m_Layer: 5
   m_Name: BATTLE START
   m_TagString: Untagged
@@ -344,6 +345,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 47249154}
   m_CullTransparentMesh: 1
+--- !u!114 &47249158
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 47249154}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d8b04437f475f14a8c87a03fac6654a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WavyTextTMP
+  waveSpeed: 5
+  waveHeight: 5
+  waveFrequency: 1
 --- !u!1 &153064211
 GameObject:
   m_ObjectHideFlags: 0
@@ -1078,6 +1094,7 @@ GameObject:
   - component: {fileID: 324382387}
   - component: {fileID: 324382389}
   - component: {fileID: 324382388}
+  - component: {fileID: 324382390}
   m_Layer: 5
   m_Name: ResultMessage
   m_TagString: Untagged
@@ -1204,6 +1221,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 324382386}
   m_CullTransparentMesh: 1
+--- !u!114 &324382390
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 324382386}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d8b04437f475f14a8c87a03fac6654a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WavyTextTMP
+  waveSpeed: 4
+  waveHeight: 5
+  waveFrequency: 1
 --- !u!1 &338215881
 GameObject:
   m_ObjectHideFlags: 0
@@ -1519,6 +1551,7 @@ GameObject:
   - component: {fileID: 451290593}
   - component: {fileID: 451290595}
   - component: {fileID: 451290594}
+  - component: {fileID: 451290596}
   m_Layer: 5
   m_Name: You go First
   m_TagString: Untagged
@@ -1645,6 +1678,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 451290592}
   m_CullTransparentMesh: 1
+--- !u!114 &451290596
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 451290592}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d8b04437f475f14a8c87a03fac6654a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WavyTextTMP
+  waveSpeed: 2
+  waveHeight: 5
+  waveFrequency: 1
 --- !u!1 &456967474
 GameObject:
   m_ObjectHideFlags: 0
@@ -3237,6 +3285,7 @@ GameObject:
   - component: {fileID: 904776884}
   - component: {fileID: 904776886}
   - component: {fileID: 904776885}
+  - component: {fileID: 904776887}
   m_Layer: 5
   m_Name: Stamp Name
   m_TagString: Untagged
@@ -3363,6 +3412,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 904776883}
   m_CullTransparentMesh: 0
+--- !u!114 &904776887
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 904776883}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d8b04437f475f14a8c87a03fac6654a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WavyTextTMP
+  waveSpeed: 3
+  waveHeight: 4
+  waveFrequency: 1
 --- !u!1 &916097693
 GameObject:
   m_ObjectHideFlags: 0
@@ -3375,6 +3439,7 @@ GameObject:
   - component: {fileID: 916097696}
   - component: {fileID: 916097695}
   - component: {fileID: 916097697}
+  - component: {fileID: 916097698}
   m_Layer: 5
   m_Name: Turn Annoument
   m_TagString: Untagged
@@ -3513,6 +3578,21 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &916097698
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 916097693}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d8b04437f475f14a8c87a03fac6654a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WavyTextTMP
+  waveSpeed: 3
+  waveHeight: 5
+  waveFrequency: 1
 --- !u!1 &943751224
 GameObject:
   m_ObjectHideFlags: 0
@@ -4764,6 +4844,7 @@ GameObject:
   - component: {fileID: 1159798121}
   - component: {fileID: 1159798123}
   - component: {fileID: 1159798122}
+  - component: {fileID: 1159798124}
   m_Layer: 5
   m_Name: Message
   m_TagString: Untagged
@@ -4890,6 +4971,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1159798120}
   m_CullTransparentMesh: 1
+--- !u!114 &1159798124
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1159798120}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d8b04437f475f14a8c87a03fac6654a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WavyTextTMP
+  waveSpeed: 3
+  waveHeight: 5
+  waveFrequency: 1
 --- !u!1 &1175721811
 GameObject:
   m_ObjectHideFlags: 0
@@ -5178,6 +5274,8 @@ MonoBehaviour:
   ClientStampDeck: 000000000100000002000000030000000400000005000000060000000700000008000000
   _NetworkedHostStampCount: 0
   _NetworkedClientStampCount: 0
+  _AreStampsReady:
+    _value: 0
   _HostHand: 
   _ClientHand: 
   _HostStampChoices: 
@@ -5191,6 +5289,7 @@ MonoBehaviour:
     _value: 0
   _HostHP: 0
   _ClientHP: 0
+  _PermanentlyDisabledCardsBitmask: 0
 --- !u!114 &1207654205
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8119,6 +8218,7 @@ GameObject:
   - component: {fileID: 1978405592}
   - component: {fileID: 1978405594}
   - component: {fileID: 1978405593}
+  - component: {fileID: 1978405595}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -8245,6 +8345,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1978405591}
   m_CullTransparentMesh: 1
+--- !u!114 &1978405595
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1978405591}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d8b04437f475f14a8c87a03fac6654a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WavyTextTMP
+  waveSpeed: 2
+  waveHeight: 3
+  waveFrequency: 1
 --- !u!1 &2027289300
 GameObject:
   m_ObjectHideFlags: 0
