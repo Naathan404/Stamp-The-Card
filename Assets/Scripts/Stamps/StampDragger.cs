@@ -13,7 +13,7 @@ public class StampDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
     [Header("Game Juice Settings")]
     [SerializeField] private float _pickUpScale = 1.5f;
     [SerializeField] private ParticleSystem _bloodImpactParticle;
-    [SerializeField] private float _shakeAmplitude = 0.2f;
+    [SerializeField] private float _shakeAmplitude = 0.3f;
     [SerializeField] private float _shakeDuration = 0.2f;
 
     [Header("Stamp Settings")]
@@ -42,6 +42,7 @@ public class StampDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
         _stampToolInstance = Instantiate(stampToolPrefab, Vector2.zero, Quaternion.identity);
         _stampToolInstance.SetActive(false); // Ẩn nó đi trước khi dùng
+        isUsed = false;
 
     }
 
@@ -126,8 +127,9 @@ public class StampDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
         seq.AppendCallback(() =>
         {
-            targetCard.transform.DOPunchScale(new Vector3(0.15f, -0.15f, 0), _shakeDuration, 10, 1f);
+            targetCard.transform.DOPunchScale(new Vector3(0.25f, -0.2f, 0), _shakeDuration, 10, 1f);
             Camera.main.transform.DOShakePosition(_shakeDuration, _shakeAmplitude, 20, 90f);
+            FilterManager.Instance.FlashScreen(FilterManager.Instance.FlashColor, _shakeDuration);
 
             if (_bloodImpactParticle != null)
             {
@@ -170,6 +172,7 @@ public class StampDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        if(isUsed) return;
         if(_isDragging || _isReturning) return;
         BaseStampData stampData = DataManager.Instance.GetStampDataByID(stampID);
 
@@ -184,6 +187,7 @@ public class StampDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        if(isUsed) return;
         if(_isDragging || _isReturning) return;
 
         TooltipManager.Instance.HideTooltip();
@@ -193,6 +197,7 @@ public class StampDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
     void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
     {
+        if(isUsed) return;
         if (_isReturning) return;
         _isDragging = true;
         TooltipManager.Instance.HideTooltip();

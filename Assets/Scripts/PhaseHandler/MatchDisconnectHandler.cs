@@ -85,6 +85,20 @@ public class MatchDisconnectHandler : NetworkBehaviour, IPlayerLeft, INetworkRun
             // Nếu lọt vào đây, nghĩa là UIManager của ông đã bị "chết chùm" theo Host.
             Debug.LogError("Toang rồi! UIManager đã bị null. Cần kiểm tra lại!");
         }
+
+        Debug.Log("[MatchResult] ĐỐI THỦ BỎ CHẠY! Xử thắng cho bạn.");
+        Debug.Log("[MatchResult] Bạn được cộng 20 điểm rank và tăng 1 trận thắng");
+        LocalPlayerData.TotalWins++;
+        LocalPlayerData.RankPoints += 20; 
+
+        if (PlayfabManager.Instance != null)
+        {
+            PlayfabManager.Instance.UpdateStatistics(
+                LocalPlayerData.TotalWins, 
+                LocalPlayerData.TotalLoses, 
+                LocalPlayerData.RankPoints
+            );
+        }
     }
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player) {}

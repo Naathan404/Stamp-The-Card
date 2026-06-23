@@ -15,5 +15,7 @@ public class SelectedStampZoneController : MonoBehaviour
                 LocalPlayerData.SelectedStamps.Add(stampSlotUI.stampInstance);
             }
         }
+
+        Debug.Log("[SaveSelectedStampController] Da luu danh sach selected stamp vao local");
     }
 }

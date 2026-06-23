@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
+using DG.Tweening;
 using Fusion;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -17,10 +18,11 @@ public class GameManager : NetworkSingleton<GameManager>
     public int CurrentCardIndexFromMainDeck = 0;
 
     [Header("STAMP DECK")]
-    [HideInInspector] public List<int> HostStampDeck = new List<int>(GameConstants.MAX_STAMP_CAPACITY);
-    [HideInInspector] public List<int> ClientStampDeck = new List<int>(GameConstants.MAX_STAMP_CAPACITY);
+    [HideInInspector] public List<int> HostStampDeck = new List<int>();
+    [HideInInspector] public List<int> ClientStampDeck = new List<int>();
     [Networked] public int NetworkedHostStampCount { get; set; }
     [Networked] public int NetworkedClientStampCount { get; set; }
+    [Networked] public NetworkBool AreStampsReady { get; set; }
     public int HostCurrentStampIndex = 0;
     public int ClientCurrentStampIndex = 0;
 
@@ -94,20 +96,22 @@ public class GameManager : NetworkSingleton<GameManager>
             }
 
             // NẠP STAMP DECK (Tránh việc toàn số 0)
-            HostStampDeck.Clear();
-            ClientStampDeck.Clear();
-            var hostRandomStamps = Enumerable.Range(1, StampNum)
-                                             .OrderBy(x => Guid.NewGuid())
-                                             .Take(GameConstants.MAX_STAMP_CAPACITY)
-                                             .ToList();
+            // HostStampDeck.Clear();
+            // ClientStampDeck.Clear();
+            // var hostRandomStamps = Enumerable.Range(1, StampNum)
+            //                                 .OrderBy(x => Guid.NewGuid())
+            //                                 .Take(GameConstants.MAX_STAMP_CAPACITY)
+            //                                 .ToList();
 
-            var clientRandomStamps = Enumerable.Range(1, StampNum)
-                                               .OrderBy(x => Guid.NewGuid())
-                                               .Take(GameConstants.MAX_STAMP_CAPACITY)
-                                               .ToList();
+            // var clientRandomStamps = Enumerable.Range(1, StampNum)
+            //                                 .OrderBy(x => Guid.NewGuid())
+            //                                 .Take(GameConstants.MAX_STAMP_CAPACITY)
+            //                                 .ToList();
 
-            HostStampDeck.AddRange(hostRandomStamps);
-            ClientStampDeck.AddRange(clientRandomStamps);
+            // HostStampDeck.AddRange(hostRandomStamps);
+            // ClientStampDeck.AddRange(clientRandomStamps);
+
+            StartCoroutine(WaitAndLoadStampsCoroutine());
 
             // SET BÀI TRÊN TAY LÀ -1 
             for(int i = 0; i < GameConstants.PLAYER_HAND_SIZE; i++)
@@ -130,6 +134,42 @@ public class GameManager : NetworkSingleton<GameManager>
         _calculateHandler = new CalculatePhaseHandler(this);
         _endHandler = new EndPhaseHandler(this);
 
+    }
+
+    private System.Collections.IEnumerator WaitAndLoadStampsCoroutine()
+    {
+        PlayerNetworkData hostData = null;
+        PlayerNetworkData clientData = null;
+
+        while (hostData == null || clientData == null)
+        {
+            foreach (var playerData in FindObjectsByType<PlayerNetworkData>(FindObjectsSortMode.None))
+            {
+                // Ai có InputAuthority là chính bản thân Server thì người đó là Host
+                if (playerData.Object.InputAuthority == Runner.LocalPlayer)
+                    hostData = playerData;
+                else
+                    clientData = playerData;
+            }
+            yield return null;
+        }
+
+        yield return new WaitUntil(() => hostData.IsStampSynced && clientData.IsStampSynced);
+
+        HostStampDeck.Clear();
+        ClientStampDeck.Clear();
+
+        HostStampDeck.AddRange(hostData.GetPlayerStampIDs().Take(9));
+        ClientStampDeck.AddRange(clientData.GetPlayerStampIDs().Take(9));
+
+        HostStampDeck = HostStampDeck.OrderBy(x => Guid.NewGuid()).ToList();
+        ClientStampDeck = ClientStampDeck.OrderBy(x => Guid.NewGuid()).ToList();
+
+        NetworkedHostStampCount = HostStampDeck.Count;
+        NetworkedClientStampCount = ClientStampDeck.Count;
+
+        Debug.Log($"[GameManager] Đã nạp xong bộ Tem thực tế! Host: {HostStampDeck.Count} tem | Client: {ClientStampDeck.Count} tem.");
+        AreStampsReady = true;
     }
 
     #region EXECUTING
@@ -308,9 +348,59 @@ public class GameManager : NetworkSingleton<GameManager>
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    public void RPC_ShowGameOverUI(bool isHostWinner)
+    public void RPC_ProcessMatchEnd(bool isHostWinner)
     {
-        UIManager.Instance.ShowGameOverUI(isHostWinner);
+        bool isMeHost = Runner.IsServer;
+        bool didIWin = (isMeHost && isHostWinner) || (!isMeHost && !isHostWinner);
+
+        int oldRank = LocalPlayerData.RankPoints;
+        int oldSouls = LocalPlayerData.Souls;
+        int eloChange = 0;
+        int earnedSouls = 0;
+
+        if (didIWin)
+        {
+            LocalPlayerData.TotalWins++;
+            earnedSouls = UnityEngine.Random.Range(15, 20);
+            if (oldRank < 500)
+                eloChange = UnityEngine.Random.Range(30, 36);
+            else if (oldRank < 1000)
+                eloChange = UnityEngine.Random.Range(20, 26);
+            else if (oldRank < 1500)
+                eloChange = UnityEngine.Random.Range(10, 16);
+            Debug.Log($"[MatchResult] BẠN ĐÃ THẮNG! Rank: {LocalPlayerData.RankPoints}");
+        }
+        else
+        {
+            LocalPlayerData.TotalLoses++;
+            earnedSouls = UnityEngine.Random.Range(2, 6);
+            if (oldRank < 500)
+                eloChange = UnityEngine.Random.Range(-10, -8);
+            else if (oldRank < 1000)
+                eloChange = UnityEngine.Random.Range(-15, -12);
+            else if (oldRank < 1500)
+                eloChange = UnityEngine.Random.Range(-20, -17);
+            Debug.Log($"[MatchResult] BẠN ĐÃ THUA! Rank: {LocalPlayerData.RankPoints}");
+        }
+
+        LocalPlayerData.RankPoints = Mathf.Max(LocalPlayerData.RankPoints + eloChange, 0);
+
+        if (PlayfabManager.Instance != null)
+        {
+            float delayTime = Runner.IsServer ? 0f : 0.5f;
+            DOVirtual.DelayedCall(delay: delayTime, () =>
+            {
+                PlayfabManager.Instance.UpdateStatistics(
+                    LocalPlayerData.TotalWins, 
+                    LocalPlayerData.TotalLoses, 
+                    LocalPlayerData.RankPoints
+                );
+
+                PlayfabManager.Instance.AddSoul(earnedSouls);
+            });
+        }
+
+        UIManager.Instance.ShowGameOverUI(isHostWinner, oldRank: oldRank, eloChange: eloChange, oldSouls: oldSouls, earnedSouls: earnedSouls);
     }
     
     #endregion

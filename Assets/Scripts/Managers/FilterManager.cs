@@ -7,16 +7,32 @@ public class FilterManager : Singleton<FilterManager>
 {
     [Header("References")]
     [SerializeField] private Volume _globalVolume;
+
+    public Color HazardColor = new Color(1f, 0.3f, 0.3f);
+    public Color AdvantageColor = new Color(0.3f, 1f, 0.3f);
+    public Color FlashColor = new Color(2f, 2f, 2f);
     
     private ColorAdjustments _colorAdjustments;
+    private Vignette _vignette;
+    private float _vignetteIntensity;
+    private Color _vignetteColor;
 
     private void Start()
     {
-        if(_globalVolume != null && _globalVolume.profile.TryGet(out _colorAdjustments))
+        if(_globalVolume != null)
         {
-            _colorAdjustments.colorFilter.value = Color.white;
-            _colorAdjustments.saturation.value = 0f;
-            _colorAdjustments.contrast.value = 0f;
+            if (_globalVolume.profile.TryGet(out _colorAdjustments))
+            {
+                _colorAdjustments.colorFilter.value = Color.white;
+                _colorAdjustments.saturation.value = 0f;
+                _colorAdjustments.contrast.value = 0f;
+            }
+
+            if (_globalVolume.profile.TryGet(out _vignette))
+            {
+                _vignetteIntensity = _vignette.intensity.value;
+                _vignetteColor = _vignette.color.value; 
+            }
         }
         else
         {
@@ -45,6 +61,39 @@ public class FilterManager : Singleton<FilterManager>
         )
         .SetEase(Ease.OutQuad)
         .SetTarget(_colorAdjustments);
+    }
+
+    /// <summary>
+    /// Hàm chớp viền camera
+    /// </summary>
+    /// <param name="targetColor">Màu của viền</param>
+    /// <param name="maxIntensity">Độ dày của viền</param>
+    /// <param name="flashDuration">Thời gian viền mờ dần về 0</param>
+    public void FlashVignette(Color targetColor, float maxIntensity = 0.4f, float flashDuration = 0.4f)
+    {
+        if (_vignette == null) return;
+        DOTween.Kill(_vignette);
+
+        _vignette.color.value = targetColor;
+        _vignette.intensity.value = maxIntensity;
+
+        DOTween.To(
+            () => _vignette.intensity.value, 
+            x => _vignette.intensity.value = x, 
+            _vignetteIntensity, 
+            flashDuration
+        )
+        .SetEase(Ease.OutQuad)
+        .SetTarget(_vignette).WaitForCompletion();
+
+        DOTween.To(
+            () => _vignette.color.value, 
+            x => _vignette.color.value = x, 
+            _vignetteColor, 
+            0.2f
+        )
+        .SetEase(Ease.OutQuad)
+        .SetTarget(_vignette);
     }
 
     public void SetDramaticFilter(bool isBlackAndWhite = true)

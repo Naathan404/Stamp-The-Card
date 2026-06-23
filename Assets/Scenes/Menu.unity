@@ -735,7 +735,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 762745917}
-  - component: {fileID: 762745918}
+  - component: {fileID: 781542935}
   m_Layer: 0
   m_Name: Global Volume
   m_TagString: Untagged
@@ -758,7 +758,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1859100109}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &762745918
 --- !u!1 &781542933
 GameObject:
   m_ObjectHideFlags: 0
@@ -771,7 +770,6 @@ GameObject:
   - component: {fileID: 781542938}
   - component: {fileID: 781542937}
   - component: {fileID: 781542936}
-  - component: {fileID: 781542935}
   m_Layer: 5
   m_Name: LeaderboardButton
   m_TagString: Untagged
@@ -797,7 +795,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 736.72, y: -9.421875}
-  m_SizeDelta: {x: 450, y: 300}
+  m_SizeDelta: {x: 450, y: 139.9059}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &781542935
 MonoBehaviour:
@@ -816,14 +814,6 @@ MonoBehaviour:
   blendDistance: 0
   weight: 1
   sharedProfile: {fileID: 11400000, guid: 45f92c6bd9445e843b3084169c3ad334, type: 2}
-  m_GameObject: {fileID: 781542933}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d073578a3ff0acf498dc6c236d3088b6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MenuObjectHover
-  scaleAmount: 1.1
-  timeScaleChange: 0.3
 --- !u!114 &781542936
 MonoBehaviour:
   m_ObjectHideFlags: 0
