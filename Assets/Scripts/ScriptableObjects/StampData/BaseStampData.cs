@@ -48,7 +48,7 @@ public abstract class BaseStampData : ScriptableObject
 
 
     // Ham goi khi kich hoat stamp
-    public abstract void ApplyEffect(CardSlot[] myCards, CardSlot[] enemyCards, int currentCardIndex);
+    public abstract string ApplyEffect(CardSlot[] myCards, CardSlot[] enemyCards, int currentCardIndex);
 
     protected CardSlot FindTargetToCheck(Target target, CardSlot[] myCards, CardSlot[] enemyCards, int currentCardIndex)
     {

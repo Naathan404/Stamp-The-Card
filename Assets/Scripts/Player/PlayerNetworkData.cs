@@ -18,6 +18,8 @@ public class PlayerNetworkData : NetworkBehaviour
     [Networked] 
     public NetworkBool IsStampSynced { get; set; }
 
+    [Networked] public NetworkBool IsStampsPermanentlyDisabled { get; set; }
+
     private ChangeDetector _changeDetector;
 
     public override void Spawned()

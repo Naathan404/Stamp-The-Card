@@ -19,12 +19,20 @@ public class ConditionalScoreModifierStampData : SimpleScoreModifierStampData
     [Header("Condition to trigger stamp effect")]
     public Condition Condition;
 
-    public override void ApplyEffect(CardSlot[] myCards, CardSlot[] enemyCards, int currentCardIndex)
+    public override string ApplyEffect(CardSlot[] myCards, CardSlot[] enemyCards, int currentCardIndex)
     {
-        if (!isEnabled) return;
+        if (!isEnabled) return "NoEffect";
 
         if (CheckCondition(myCards, enemyCards, currentCardIndex))
+        {
             ApplyToTargets(myCards, enemyCards, currentCardIndex);
+            return "ScoreChanged";
+        }
+        else
+        {
+            return "NoEffect";
+        }
+        
     }
 
     private bool CheckCondition(CardSlot[] myCards, CardSlot[] enemyCards, int currentCardIndex)

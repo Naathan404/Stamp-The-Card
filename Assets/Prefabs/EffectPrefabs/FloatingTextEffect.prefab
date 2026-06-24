@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1225896003418652386}
   - component: {fileID: 9083916425889853965}
   - component: {fileID: 6739405049100134803}
+  - component: {fileID: -8966535486692682456}
   m_Layer: 0
   m_Name: FloatingTextEffect
   m_TagString: Untagged
@@ -62,7 +63,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 3447958332184848711, guid: d1e85467c66de8a4c9a9268b543d38e0, type: 2}
+  - {fileID: -1839202096204975661, guid: c60eef2f4c4687e48b1b36459ffc30a9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -109,7 +110,7 @@ MonoBehaviour:
   m_text: 99
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c60eef2f4c4687e48b1b36459ffc30a9, type: 2}
-  m_sharedMaterial: {fileID: 3447958332184848711, guid: d1e85467c66de8a4c9a9268b543d38e0, type: 2}
+  m_sharedMaterial: {fileID: -1839202096204975661, guid: c60eef2f4c4687e48b1b36459ffc30a9, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -181,3 +182,18 @@ MonoBehaviour:
   m_hasFontAssetChanged: 1
   m_renderer: {fileID: 9083916425889853965}
   m_maskType: 0
+--- !u!114 &-8966535486692682456
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 387199655147524123}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d8b04437f475f14a8c87a03fac6654a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WavyTextTMP
+  waveSpeed: 1
+  waveHeight: 0.05
+  waveFrequency: 1

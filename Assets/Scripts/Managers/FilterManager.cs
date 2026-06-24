@@ -96,6 +96,28 @@ public class FilterManager : Singleton<FilterManager>
         .SetTarget(_vignette);
     }
 
+    /// <summary>
+    /// Bật/Tắt chế độ tập trung bằng cách làm tối dày 4 góc màn hình
+    /// </summary>
+    /// <param name="active">True để tối góc, False để trả về bình thường</param>
+    /// <param name="duration">Thời gian chuyển đổi</param>
+    public void SetFocusMode(bool active, float duration = 0.5f)
+    {
+        if (_vignette == null) return;
+        DOTween.Kill(_vignette);
+
+        float targetIntensity = active ? 0.8f : _vignetteIntensity; 
+        Color targetColor = active ? Color.black : _vignetteColor;
+
+        DOTween.To(() => _vignette.intensity.value, x => _vignette.intensity.value = x, targetIntensity, duration)
+            .SetEase(Ease.OutQuad)
+            .SetTarget(_vignette);
+
+        DOTween.To(() => _vignette.color.value, x => _vignette.color.value = x, targetColor, duration)
+            .SetEase(Ease.OutQuad)
+            .SetTarget(_vignette);
+    }
+
     public void SetDramaticFilter(bool isBlackAndWhite = true)
     {
         if(_colorAdjustments == null) return;

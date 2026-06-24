@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using UnityEditor.Build;
 using UnityEngine;
 
 public class EndPhaseHandler : PhaseHandler
@@ -117,7 +118,7 @@ public class EndPhaseHandler : PhaseHandler
                 if (cardSlots[i].HasPeaceAmulet)
                 {
                     Debug.Log("[EndPhase] Client kích hoạt Bùa Bình An để tránh chết");
-                    TriggerPeaceAmulet(true);
+                    TriggerPeaceAmulet(false);
                     return;
                 }
             }
@@ -131,6 +132,56 @@ public class EndPhaseHandler : PhaseHandler
         // TODO: đánh dấu player này đã kích hoạt Bùa Bình An
         // → stamp của họ vô hiệu các lượt còn lại
         // → lượt này an toàn, không bị trừ máu    
+        CardSlot[] mySlots = isHost ? TableVisualManager.Instance.GetHostCardSlots() : TableVisualManager.Instance.GetClientCardSlots();
+        bool hasAmulet = false;
+        int amuletCardSlotIndex = -1;
+
+        for (int i = 0; i < mySlots.Length; i++)
+        {
+            if (mySlots[i].HasPeaceAmulet)
+            {
+                hasAmulet = true;
+                amuletCardSlotIndex = i;
+                break;
+            }
+        }
+
+        if (hasAmulet)
+        {
+            string ownerName = isHost ? "Host" : "Client";
+            Debug.Log($"[Bùa Bình An] Đã kích hoạt cứu mạng cho {ownerName}! Tiến hành áp dụng hình phạt luật chơi.");
+
+            if (isHost) GameManager.Instance.HostHP = 1;
+            else GameManager.Instance.ClientHP = 1;
+
+            // hạ điểm các bài về 0 và vô hiệu hóa stamps
+            for (int i = 0; i < mySlots.Length; i++)
+            {
+                mySlots[i].Score = 0;
+                mySlots[i].StampsDisabled = true; 
+            }
+
+            TableVisualManager.Instance.UpdateBoardScores();
+
+            // Tận diệt con tem Bùa Bình An khỏi lá bài này trên Server (để tránh lỗi reset/dùng lại)
+            // if (GameManager.Instance.Runner.IsServer && mySlots[amuletCardSlotIndex].Data != null)
+            // {
+            //     int cardID = mySlots[amuletCardSlotIndex].Data.CardID;
+            //     int startIndex = cardID * 3;
+            //     for (int s = 0; s < 3; s++)
+            //     {
+            //         // Xóa sạch bộ tem dán trên lá bài hộ mệnh này                                               
+            //         GameManager.Instance.CardAttachedStamps.Set(startIndex + s, -1);
+            //     }
+            // }
+
+            if (mySlots[amuletCardSlotIndex].Data != null)
+            {
+                int targetCardID = mySlots[amuletCardSlotIndex].Data.CardID;
+
+                GameManager.Instance.DisableCardStampsPermanently(targetCardID);
+            }
+        }
         Debug.Log($"[Bùa Bình An] {"Host hoặc Client"} an toàn lượt này, stamps vô hiệu từ đây");
     }                      
 

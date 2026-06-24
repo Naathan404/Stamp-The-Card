@@ -3,9 +3,9 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Stamp", menuName = "Stamp The Card/Stamp Data/VariableScoreModifierStamp")]
 public class VariableScoreModifierStampData : SimpleScoreModifierStampData
 {
-    public override void ApplyEffect(CardSlot[] myCards, CardSlot[] enemyCards, int currentCardIndex)
+    public override string ApplyEffect(CardSlot[] myCards, CardSlot[] enemyCards, int currentCardIndex)
     {
-        if (!isEnabled) return;
+        if (!isEnabled) return "NoEffect";
 
         float valueToChange = 0;
         CardSlot targetToCount = FindTargetToCheck(targets[0], myCards, enemyCards, currentCardIndex);
@@ -31,6 +31,8 @@ public class VariableScoreModifierStampData : SimpleScoreModifierStampData
                 ApplyScoreOperator(targetToChange, valueToChange, scoreOperator);
             }
         }
+
+        return "ScoreChanged";
     }
 
     private int GetStampCount(CardSlot currentCard)
