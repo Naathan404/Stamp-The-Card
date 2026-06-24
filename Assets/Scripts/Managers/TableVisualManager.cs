@@ -453,12 +453,24 @@ public class TableVisualManager : Singleton<TableVisualManager>
             if (bottomSlot != null) 
             {
                 AnimateScoreText(BottomCardTexts[i], bottomSlot.Score);
+
+                CardStatusUI statusUI = bottomSlot.GetComponentInChildren<CardStatusUI>();
+                if (statusUI != null) 
+                {
+                    statusUI.RefreshStatusIcons(bottomSlot);
+                }
             }
 
             CardSlot topSlot = TopCardSprites[i].GetComponent<CardSlot>();
             if (topSlot != null) 
             {
                 AnimateScoreText(TopCardTexts[i], topSlot.Score);
+
+                CardStatusUI statusUI = topSlot.GetComponentInChildren<CardStatusUI>();
+                if (statusUI != null) 
+                {
+                    statusUI.RefreshStatusIcons(topSlot);
+                }
             }
         }
     }
@@ -713,14 +725,16 @@ public class TableVisualManager : Singleton<TableVisualManager>
     {
         for(int i = 0; i < 3; i++)
         {
-            if(mySlots[i].Data == null || mySlots[i].IsIgnored || mySlots[i].StampsDisabled) continue;
-
+            //if(mySlots[i].Data == null || mySlots[i].IsIgnored || mySlots[i].StampsDisabled) continue;
+            if(mySlots[i].Data == null) continue;
             int cardID = mySlots[i].Data.CardID;
             int startIndex = cardID * 3;
             Debug.Log($"[Soi Data] Lá bài ID {cardID} đang chứa 3 Tem: {GameManager.Instance.CardAttachedStamps[startIndex]} | {GameManager.Instance.CardAttachedStamps[startIndex+1]} | {GameManager.Instance.CardAttachedStamps[startIndex+2]}");
 
             for (int s = 0; s < 3; s++)
             {
+                if (mySlots[i].IsIgnored || mySlots[i].StampsDisabled) break;
+                
                 int stampID = GameManager.Instance.CardAttachedStamps[startIndex + s];
                 if (stampID > 0)
                 {
