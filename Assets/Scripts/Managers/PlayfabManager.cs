@@ -360,7 +360,7 @@ public class PlayfabManager : MonoBehaviour
     }
 
     //Ham load stamp da chon khi dang nhap
-    public void LoadSelectedStamps()
+    public void LoadSelectedStamps(Action onComplete = null)
     {
         var request = new GetUserDataRequest();
 
@@ -368,6 +368,8 @@ public class PlayfabManager : MonoBehaviour
             request,
             result =>
             {
+               LocalPlayerData.SelectedStamps.Clear();
+
                 if (result.Data != null && result.Data.ContainsKey("SelectedStamps"))
                 {
                     string jsonString = result.Data["SelectedStamps"].Value;
@@ -391,11 +393,13 @@ public class PlayfabManager : MonoBehaviour
                 {
                     Debug.Log("Player chua co du lieu selected stamp!");
                 }
+                onComplete?.Invoke();
             },
 
             error =>
             {
                 Debug.LogError(error.GenerateErrorReport());
+                onComplete?.Invoke();
             }
         );
     }

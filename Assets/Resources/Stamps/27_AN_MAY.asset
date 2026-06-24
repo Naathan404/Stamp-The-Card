@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpecialEffectStampData
   _stampID: 27
   _stampRank: 1
-  _stampName: "\u0102n may"
-  _stampEffect: "C\u1ED9ng t\u1EEB 1 \u0111\u1EBFn 3 n\xFAt v\xE0o s\u1ED1 n\xFAt
-    tr\xEAn l\xE1 b\xE0i \u0111\u01B0\u1EE3c \u0111\xF3ng d\u1EA5u"
+  _stampName: Wildcard
+  _stampEffect: Gain 1 to 3 Pts.
   targets: 00000000
   _bloodCost: 0
+  ExeTier: 1
   stampArt: {fileID: 0}
   isEnabled: 1
   effectType: 4

@@ -1,6 +1,7 @@
 using UnityEngine;
 
-public class StampInstance : MonoBehaviour
+[System.Serializable]
+public class StampInstance
 {
     public string stampInstanceID;
     public BaseStampData data;

@@ -14,13 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::VariableScoreModifierStampData
   _stampID: 15
   _stampRank: 0
-  _stampName: 
-  _stampEffect: "-X n\xFAt c\u1EE7a l\xE1 b\xE0i \u0111\u1ED1i di\u1EC7n (X l\xE0
-    s\u1ED1 stamp \u0111\xF3ng tr\xEAn l\xE1 b\xE0i)"
+  _stampName: Disperse
+  _stampEffect: 'Foe: -1 Pts per Stamp on this card.'
   targets: 0000000003000000
   _bloodCost: 0
   ExeTier: 2
-  stampArt: {fileID: -2413806693520163455, guid: 6ea1213de0477e44fb81c73e3e1e5a1f, type: 3}
+  stampArt: {fileID: 8728381657120767241, guid: 8622760dfd3cf324eb70c7211a5b1443, type: 3}
   isEnabled: 1
   amountToChange: -1
   scoreOperator: 0

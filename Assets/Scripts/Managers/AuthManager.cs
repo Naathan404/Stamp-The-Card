@@ -130,7 +130,7 @@ public class AuthManager : Singleton<AuthManager>
         else if (error.Error == PlayFabErrorCode.InvalidUsernameOrPassword)
         {
             Debug.LogWarning("Sai mật khẩu!");
-            _loginUI.ShowNotification("Invalid username or password!");
+            _loginUI.ShowNotification("Incorrect username or password!");
         }
         else if (error.Error == PlayFabErrorCode.UsernameNotAvailable)
         {

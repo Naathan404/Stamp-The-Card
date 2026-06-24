@@ -14,12 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpecialEffectStampData
   _stampID: 32
   _stampRank: 2
-  _stampName: "G\u01B0\u01A1ng"
-  _stampEffect: "Copy hi\u1EC7u \u1EE9ng stamp cu\u1ED1i c\xF9ng (n\u1EBFu c\xF3)
-    tr\xEAn l\xE1 b\xE0i \u0111\u1ED1i di\u1EC7n."
+  _stampName: Mirror
+  _stampEffect: Copy Foe's last stamp effect.
   targets: 00000000
   _bloodCost: 0
-  ExeTier: 2
-  stampArt: {fileID: 7482667652216324306, guid: 0c99a264a6de7f24892afb4874eb8965, type: 3}
+  ExeTier: 3
+  stampArt: {fileID: -6096960200835118510, guid: 438bd46b58545ae478693ad04ea1fe24, type: 3}
   isEnabled: 1
   effectType: 1
