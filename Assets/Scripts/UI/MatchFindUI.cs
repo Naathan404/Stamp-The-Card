@@ -92,7 +92,7 @@ public class MatchFindUI : MonoBehaviour
 
         string currentName = _usernameTMP.text.IsNullOrEmpty() ? "Player" : _usernameTMP.text;
         LocalPlayerData.Username = currentName;
-        _launcher.StartGame(GameMode.AutoHostOrClient, string.Empty);
+        _launcher.FindQuickMatch();
     }
 
     public void OnCustomRoomButtonClicked()
@@ -107,7 +107,7 @@ public class MatchFindUI : MonoBehaviour
         if(string.IsNullOrEmpty(roomName)) roomName = "QuickMatchRoom";
         string currentName = _usernameTMP.text.IsNullOrEmpty() ? "Player" : _usernameTMP.text;
         LocalPlayerData.Username = currentName;
-        _launcher.StartGame(GameMode.AutoHostOrClient, roomName); 
+        _launcher.CreateCustomRoom(GameMode.AutoHostOrClient, roomName); 
     }     
 
     public void OnCancelMatchmakingButtonClicked()

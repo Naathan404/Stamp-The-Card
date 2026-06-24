@@ -120,7 +120,7 @@ public class GameStateManager : NetworkSingleton<GameStateManager>
                     _mainPhaseTimer = TickTimer.None; 
                     GameManager.Instance.IsHostDone = true;
                     GameManager.Instance.IsClientDone = true;
-                    TableVisualManager.Instance.HideAllStamps();
+                    GameManager.Instance.Rpc_HideAllStamps();
                     IsWaitingToTransition = true;     
                     
                     _transitionDelayTimer = TickTimer.CreateFromSeconds(Runner, 3f); 

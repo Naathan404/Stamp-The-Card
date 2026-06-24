@@ -420,6 +420,7 @@ public class TableVisualManager : Singleton<TableVisualManager>
                     .OnComplete(() =>
                     {
                         StampSprites[capturedIndex].gameObject.SetActive(false);
+                        StampSprites[capturedIndex].transform.localScale = _originalStampScale[i];
                     });
             }
         }

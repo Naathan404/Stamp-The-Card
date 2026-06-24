@@ -114,12 +114,13 @@ public class GameManager : NetworkSingleton<GameManager>
             ClientStampDeck.Clear();
 
             ////---- --CHEAT
-            List<int> my8NewStamps = new List<int> { 28, 29, 30, 31, 32, 33, 34, 35 }; 
+            // List<int> my8NewStamps = new List<int> { 28, 29, 30, 31, 32, 33, 34, 35 }; 
 
-            HostStampDeck.AddRange(my8NewStamps);
-            ClientStampDeck.AddRange(my8NewStamps);
+            // HostStampDeck.AddRange(my8NewStamps);
+            // ClientStampDeck.AddRange(my8NewStamps);
             //// ------------- 
             /// 
+
             StartCoroutine(WaitAndLoadStampsCoroutine());
 
             // SET BÀI TRÊN TAY LÀ -1 
@@ -131,7 +132,7 @@ public class GameManager : NetworkSingleton<GameManager>
                 ClientStampChoices.Set(i, -1);
             }
 
-            // 4. RESET MẢNG TEM TRÊN BÀI
+            //  RESET MẢNG TEM TRÊN BÀI
             for (int i = 0; i < GameConstants.MAINDECK_SIZE * 3; i++)
             {
                 CardAttachedStamps.Set(i, -1);
@@ -349,6 +350,12 @@ public class GameManager : NetworkSingleton<GameManager>
             IsClientDone = true;
             Debug.Log("Client bấm end phase");
         }
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    public void Rpc_HideAllStamps()
+    {
+        TableVisualManager.Instance.HideAllStamps();
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
