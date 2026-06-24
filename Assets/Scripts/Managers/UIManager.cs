@@ -463,6 +463,7 @@ public class UIManager : MonoBehaviour
         FinalDamageText.transform.localScale = Vector3.one;
 
         FilterManager.Instance.SetDramaticFilter(true);
+        FilterManager.Instance.SetFocusMode(true, 0.4f);
 
         //  bước 1: ĐẾM ĐIỂM ĐỐI THỦ (1 giây) 
         OppCenterText.transform.DOScale(1f, 0.25f).WaitForCompletion();
@@ -503,6 +504,10 @@ public class UIManager : MonoBehaviour
         // bước 5: IMPACT
         PlayerCenterText.gameObject.SetActive(false);
         OppCenterText.gameObject.SetActive(false);
+
+        FilterManager.Instance.SetDramaticFilter(false); 
+        FilterManager.Instance.SetFocusMode(false, 0.2f);
+
         FilterManager.Instance.FlashScreen(FilterManager.Instance.FlashColor, _flashTime);
         Camera.main.transform.DOShakePosition(0.4f, 0.5f, 25);
 

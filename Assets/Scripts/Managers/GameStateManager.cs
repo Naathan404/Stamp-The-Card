@@ -118,6 +118,9 @@ public class GameStateManager : NetworkSingleton<GameStateManager>
                 if(_mainPhaseTimer.Expired(Runner) || isBothPlayerDone)
                 {
                     _mainPhaseTimer = TickTimer.None; 
+                    GameManager.Instance.IsHostDone = true;
+                    GameManager.Instance.IsClientDone = true;
+                    TableVisualManager.Instance.HideAllStamps();
                     IsWaitingToTransition = true;     
                     
                     _transitionDelayTimer = TickTimer.CreateFromSeconds(Runner, 3f); 

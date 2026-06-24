@@ -180,8 +180,6 @@ public class EndPhaseHandler : PhaseHandler
                 int targetCardID = mySlots[amuletCardSlotIndex].Data.CardID;
 
                 GameManager.Instance.DisableCardStampsPermanently(targetCardID);
-
-                
             }
         }
         Debug.Log($"[Bùa Bình An] {"Host hoặc Client"} an toàn lượt này, stamps vô hiệu từ đây");

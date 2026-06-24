@@ -21,6 +21,7 @@ public class CalculatePhaseHandler : PhaseHandler
         CardSlot[] hostSlots = TableVisualManager.Instance.GetHostCardSlots();
         CardSlot[] clientSlots = TableVisualManager.Instance.GetClientCardSlots();
 
+
         // reset tất cả card và clear flags
         ResetAllCard(hostSlots);
         ResetAllCard(clientSlots);
