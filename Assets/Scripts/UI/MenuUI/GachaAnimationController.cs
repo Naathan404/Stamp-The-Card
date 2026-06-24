@@ -16,12 +16,17 @@ public class GachaAnimationController : MonoBehaviour, IPointerClickHandler
     [SerializeField] private Outline mediumBundleOutline;
     [SerializeField] private Outline largeBundleOutline;
 
-    public Image stampResultSprite;
     [SerializeField] private RectTransform stampResultRect;  
     [SerializeField] private CanvasGroup flashWhiteGroup;
     [SerializeField] private RectTransform backgroundSummon;
     [SerializeField] private TextMeshProUGUI soulQuantityCost;
-    
+
+    [Header("Stamp result UI")]
+    public Image stampResultSprite;
+    public TextMeshProUGUI stampResultName;
+    public TextMeshProUGUI stampResultRarity;
+    public TextMeshProUGUI stampResultEffect;
+
     [Header("Animation Settings")]
     [SerializeField] private float shakeDuration = 1.2f;
     [SerializeField] private float popupDuration = 0.5f;

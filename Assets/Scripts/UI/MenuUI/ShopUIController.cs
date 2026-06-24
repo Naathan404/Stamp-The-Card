@@ -50,6 +50,10 @@ public class ShopUIController : MonoBehaviour
                 if (newItemData != null)
                 {
                     GachaAnimationController.Instance.stampResultSprite.sprite = newItemData.stampArt;
+                    GachaAnimationController.Instance.stampResultName.text = newItemData.stampName;
+                    GachaAnimationController.Instance.stampResultRarity.text = newItemData.stampRank.ToString();
+                    GachaAnimationController.Instance.stampResultEffect.text = newItemData.stampEffect;
+
                     GachaAnimationController.Instance.Normal_BundlePlayGachaAnimation();
                 }
                 else
@@ -85,6 +89,10 @@ public class ShopUIController : MonoBehaviour
                 if (newItemData != null)
                 {
                     GachaAnimationController.Instance.stampResultSprite.sprite = newItemData.stampArt;
+                    GachaAnimationController.Instance.stampResultName.text = newItemData.stampName;
+                    GachaAnimationController.Instance.stampResultRarity.text = newItemData.stampRank.ToString();
+                    GachaAnimationController.Instance.stampResultEffect.text = newItemData.stampEffect;
+
                     GachaAnimationController.Instance.Medium_BundlePlayGachaAnimation();
                 }
                 else
@@ -120,6 +128,10 @@ public class ShopUIController : MonoBehaviour
                 if (newItemData != null)
                 {
                     GachaAnimationController.Instance.stampResultSprite.sprite = newItemData.stampArt;
+                    GachaAnimationController.Instance.stampResultName.text = newItemData.stampName;
+                    GachaAnimationController.Instance.stampResultRarity.text = newItemData.stampRank.ToString();
+                    GachaAnimationController.Instance.stampResultEffect.text = newItemData.stampEffect;
+
                     GachaAnimationController.Instance.Large_BundlePlayGachaAnimation();
                 }
                 else

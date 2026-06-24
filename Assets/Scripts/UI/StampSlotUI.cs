@@ -5,12 +5,12 @@ using UnityEngine.UI;
 
 public class StampSlotUI : MonoBehaviour
 {
-    [SerializeField] private Image _stampImage;
+    public Image stampImage;
     public StampInstance stampInstance;
 
-    public void SetUpStampSlotUI(Sprite stampImage)
+    public void SetUpStampSlotUI(Sprite sp)
     {
         if (stampImage != null)
-            _stampImage.sprite = stampImage;
+            stampImage.sprite = sp;
     }
 }
