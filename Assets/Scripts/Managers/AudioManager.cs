@@ -19,6 +19,11 @@ public class AudioManager : MonoBehaviour
     public AudioClip VictorySFX;
     public AudioClip DefeatSFX;
 
+    [Header("Gameplay SFX")]
+    public AudioClip minusHPSFX;
+    public AudioClip HealSFX;
+    public AudioClip CountScoreSFX;
+
     [Header("Game Juice")]
     public AudioClip TimerTickSFX;
     public AudioClip CardHoverSFX;    

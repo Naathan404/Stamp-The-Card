@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class MenuController : MonoBehaviour
 {
@@ -22,6 +23,8 @@ public class MenuController : MonoBehaviour
 
     private void Start()
     {
+        AudioManager.Instance.PlayMusic(AudioManager.Instance.MenuBgMusic);
+        Debug.Log($"Phat bg music\n");
         UpdateMenuUI();
     }
 
