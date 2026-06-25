@@ -39,6 +39,7 @@ public abstract class BaseStampData : ScriptableObject
     public ExecutionTier ExeTier = ExecutionTier.Tier2_MathModifier; 
 
     public Sprite stampArt;
+    public Sprite frameArt;
     public int stampID => _stampID;
     public StampRank stampRank => _stampRank;
     public string stampName => _stampName;

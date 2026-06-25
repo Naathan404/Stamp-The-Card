@@ -22,5 +22,6 @@ MonoBehaviour:
   _bloodCost: 1
   ExeTier: 2
   stampArt: {fileID: 7482667652216324306, guid: 0c99a264a6de7f24892afb4874eb8965, type: 3}
+  frameArt: {fileID: 7836703823118725582, guid: 7b609d5bde9fb9640a61f75da03297a7, type: 3}
   isEnabled: 1
   battleRuleType: 2

@@ -216,7 +216,7 @@ public class PlayfabManager : MonoBehaviour
     }
 
     // Ham goi khi player thuc hien "Giao keo thuong"
-    public void BuyNormalPack(Action<List<ItemInstance>> onSuccess)
+    public void BuyNormalPack(Action<List<ItemInstance>> onSuccess, Action onError = null)
     {
         var request = new PurchaseItemRequest()
         {
@@ -227,14 +227,45 @@ public class PlayfabManager : MonoBehaviour
         };
 
         PlayFabClientAPI.PurchaseItem(request,
+            // result =>
+            // {
+            //     Debug.Log("Thuc hien giao keo thanh cong!");
+            //     // LocalPlayerData.Souls -= 49;
+
+            //     PlayFabInventoryManager.Instance.GetPlayerInventory();
+            //     onSuccess?.Invoke(result.Items);
+            // },
             result =>
             {
-                Debug.Log("Thuc hien giao keo thanh cong!");
-                LocalPlayerData.Souls -= 49;
+                Debug.Log("Mua hộp thành công! Đang tiến hành khui hộp...");
 
-                PlayFabInventoryManager.Instance.GetPlayerInventory();
+                // Lấy cái ID độc nhất của cái hộp vừa mua
+                string containerInstanceId = result.Items[0].ItemInstanceId;
 
-                onSuccess?.Invoke(result.Items);
+                // BƯỚC 2: GỌI LỆNH KHUI HỘP
+                var unlockRequest = new UnlockContainerInstanceRequest()
+                {
+                    CatalogVersion = "MainCatalog",
+                    ContainerItemInstanceId = containerInstanceId
+                };
+
+                PlayFabClientAPI.UnlockContainerInstance(unlockRequest,
+                    unlockResult => 
+                    {
+                        Debug.Log("Khui hộp thành công! Nhận được thẻ bài mới.");
+                        
+                        // Cập nhật lại kho đồ ngầm bên dưới
+                        PlayFabInventoryManager.Instance.GetPlayerInventory();
+
+                        // 🌟 TRẢ VỀ LÁ BÀI NẰM BÊN TRONG HỘP (GrantedItems) CHỨ KHÔNG PHẢI CÁI HỘP
+                        onSuccess?.Invoke(unlockResult.GrantedItems);
+                    },
+                    unlockError => 
+                    {
+                        Debug.LogError("Lỗi khi khui hộp: " + unlockError.GenerateErrorReport());
+                        onError?.Invoke();
+                    }
+                );
             },
 
             error =>
@@ -243,15 +274,19 @@ public class PlayfabManager : MonoBehaviour
                 {
                     Debug.Log("Khong du souls de thuc hien giao keo!");
                     GachaAnimationController.Instance.Normal_BundleInsufficientSoulsPlayGachaAnimation();
+                    onError?.Invoke(); 
                 }
                 else
+                {
                     Debug.LogError(error.GenerateErrorReport());
+                    onError?.Invoke();
+                }
             }
         );
     }
 
     // Ham goi khi player thuc hien "Giao keo vua"
-    public void BuyMediumPack(Action<List<ItemInstance>> onSuccess)
+    public void BuyMediumPack(Action<List<ItemInstance>> onSuccess, Action onError = null)
     {
         var request = new PurchaseItemRequest()
         {
@@ -262,14 +297,46 @@ public class PlayfabManager : MonoBehaviour
         };
 
         PlayFabClientAPI.PurchaseItem(request,
+            // result =>
+            // {
+            //     Debug.Log("Thuc hien giao keo thanh cong!");
+            //     // LocalPlayerData.Souls -= 79;
+
+            //     PlayFabInventoryManager.Instance.GetPlayerInventory();
+
+            //     onSuccess?.Invoke(result.Items);
+            // },
             result =>
             {
-                Debug.Log("Thuc hien giao keo thanh cong!");
-                LocalPlayerData.Souls -= 79;
+                Debug.Log("Mua hộp thành công! Đang tiến hành khui hộp...");
 
-                PlayFabInventoryManager.Instance.GetPlayerInventory();
+                // Lấy cái ID độc nhất của cái hộp vừa mua
+                string containerInstanceId = result.Items[0].ItemInstanceId;
 
-                onSuccess?.Invoke(result.Items);
+                // BƯỚC 2: GỌI LỆNH KHUI HỘP
+                var unlockRequest = new UnlockContainerInstanceRequest()
+                {
+                    CatalogVersion = "MainCatalog",
+                    ContainerItemInstanceId = containerInstanceId
+                };
+
+                PlayFabClientAPI.UnlockContainerInstance(unlockRequest,
+                    unlockResult => 
+                    {
+                        Debug.Log("Khui hộp thành công! Nhận được thẻ bài mới.");
+                        
+                        // Cập nhật lại kho đồ ngầm bên dưới
+                        PlayFabInventoryManager.Instance.GetPlayerInventory();
+
+                        // 🌟 TRẢ VỀ LÁ BÀI NẰM BÊN TRONG HỘP (GrantedItems) CHỨ KHÔNG PHẢI CÁI HỘP
+                        onSuccess?.Invoke(unlockResult.GrantedItems);
+                    },
+                    unlockError => 
+                    {
+                        Debug.LogError("Lỗi khi khui hộp: " + unlockError.GenerateErrorReport());
+                        onError?.Invoke();
+                    }
+                );
             },
 
             error =>
@@ -278,15 +345,19 @@ public class PlayfabManager : MonoBehaviour
                 {
                     Debug.Log("Khong du souls de thuc hien giao keo!");
                     GachaAnimationController.Instance.Medium_BundleInsufficientSoulsPlayGachaAnimation();
+                    onError?.Invoke(); 
                 }
                 else
+                {
                     Debug.LogError(error.GenerateErrorReport());
+                    onError?.Invoke();
+                }
             }
         );
     }
 
     // Ham goi khi player thuc hien "Giao keo to"
-    public void BuyLargePack(Action<List<ItemInstance>> onSuccess)
+    public void BuyLargePack(Action<List<ItemInstance>> onSuccess, Action onError = null)
     {
         var request = new PurchaseItemRequest()
         {
@@ -297,14 +368,46 @@ public class PlayfabManager : MonoBehaviour
         };
 
         PlayFabClientAPI.PurchaseItem(request,
+            // result =>
+            // {
+            //     Debug.Log("Thuc hien giao keo thanh cong!");
+            //     // LocalPlayerData.Souls -= 129;
+
+            //     PlayFabInventoryManager.Instance.GetPlayerInventory();
+
+            //     onSuccess?.Invoke(result.Items);
+            // },
             result =>
             {
-                Debug.Log("Thuc hien giao keo thanh cong!");
-                LocalPlayerData.Souls -= 129;
+                Debug.Log("Mua hộp thành công! Đang tiến hành khui hộp...");
 
-                PlayFabInventoryManager.Instance.GetPlayerInventory();
+                // Lấy cái ID độc nhất của cái hộp vừa mua
+                string containerInstanceId = result.Items[0].ItemInstanceId;
 
-                onSuccess?.Invoke(result.Items);
+                // BƯỚC 2: GỌI LỆNH KHUI HỘP
+                var unlockRequest = new UnlockContainerInstanceRequest()
+                {
+                    CatalogVersion = "MainCatalog",
+                    ContainerItemInstanceId = containerInstanceId
+                };
+
+                PlayFabClientAPI.UnlockContainerInstance(unlockRequest,
+                    unlockResult => 
+                    {
+                        Debug.Log("Khui hộp thành công! Nhận được thẻ bài mới.");
+                        
+                        // Cập nhật lại kho đồ ngầm bên dưới
+                        PlayFabInventoryManager.Instance.GetPlayerInventory();
+
+                        // 🌟 TRẢ VỀ LÁ BÀI NẰM BÊN TRONG HỘP (GrantedItems) CHỨ KHÔNG PHẢI CÁI HỘP
+                        onSuccess?.Invoke(unlockResult.GrantedItems);
+                    },
+                    unlockError => 
+                    {
+                        Debug.LogError("Lỗi khi khui hộp: " + unlockError.GenerateErrorReport());
+                        onError?.Invoke();
+                    }
+                );
             },
 
             error =>
@@ -313,9 +416,13 @@ public class PlayfabManager : MonoBehaviour
                 {
                     Debug.Log("Khong du souls de thuc hien giao keo!");
                     GachaAnimationController.Instance.Large_BundleInsufficientSoulsPlayGachaAnimation();
+                    onError?.Invoke(); 
                 }
                 else
+                {
                     Debug.LogError(error.GenerateErrorReport());
+                    onError?.Invoke();
+                }
             }
         );
     }
