@@ -14,13 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BattleRuleStampData
   _stampID: 38
   _stampRank: 3
-  _stampName: "Vua l\xEC \u0111\xF2n"
-  _stampEffect: "T\xEDnh ri\xEAng c\u1ED9t b\xE0i n\xE0y, n\u1EBFu ta thua th\xEC
-    s\xE1t th\u01B0\u01A1ng nh\u1EADn v\xE0o \u1EDF Calculate Phase b\u1EB1ng 0"
+  _stampName: King of Toughness
+  _stampEffect: On this lane, if you lose, the damage taken during the Calculate
+    Phase is reduced to 0.
   targets: 
   _bloodCost: 1
-  ExeTier: 2
-  stampArt: {fileID: 7482667652216324306, guid: 0c99a264a6de7f24892afb4874eb8965, type: 3}
+  ExeTier: 4
+  stampArt: {fileID: 2485650988188125947, guid: 4ab5eeb571a12114aa73e3c6170723cb, type: 3}
   frameArt: {fileID: 7836703823118725582, guid: 7b609d5bde9fb9640a61f75da03297a7, type: 3}
   isEnabled: 1
   battleRuleType: 1

@@ -18,6 +18,7 @@ public class TableVisualManager : Singleton<TableVisualManager>
 
     [Header("Stamps")]
     public SpriteRenderer[] StampSprites = new SpriteRenderer[3];
+    public SpriteRenderer[] FrameSprites = new SpriteRenderer[3];
     private Vector2[] _originalStampPosition = new Vector2[3];
     private Vector2[] _originalStampScale = new Vector2[3];
 
@@ -378,6 +379,7 @@ public class TableVisualManager : Singleton<TableVisualManager>
                 sr.DOFade(1f, 0f);
 
                 StampSprites[i].sprite = DataManager.Instance.GetStampDataByID(sID).stampArt;
+                FrameSprites[i].sprite = DataManager.Instance.GetStampDataByID(sID).frameArt;
                 StampSprites[i].transform.DOKill();
                 StampSprites[i].transform.position = _originalStampPosition[i];
                 StampSprites[i].gameObject.SetActive(true);

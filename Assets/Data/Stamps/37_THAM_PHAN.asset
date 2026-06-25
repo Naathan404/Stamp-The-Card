@@ -14,14 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpecialEffectStampData
   _stampID: 37
   _stampRank: 3
-  _stampName: "Th\u1EA9m ph\u1EA5n"
-  _stampEffect: "V\xF4 hi\u1EC7u h\xF3a to\xE0n b\u1ED9 Stamp tr\xEAn c\u1ED9t b\xE0i
-    \u2192 \u0110\u01B0a v\u1EC1 so s\xE1nh \u0111i\u1EC3m g\u1ED1c \u0111\u01A1n
-    thu\u1EA7n."
-  targets: 0000000003000000
+  _stampName: Judgement
+  _stampEffect: Disable all Stamps on the board and reset all cards to Base Score.
+  targets: 00000000020000000100000004000000
   _bloodCost: 1
-  ExeTier: 2
-  stampArt: {fileID: 7482667652216324306, guid: 0c99a264a6de7f24892afb4874eb8965, type: 3}
+  ExeTier: 0
+  stampArt: {fileID: 2485650988188125947, guid: 4ab5eeb571a12114aa73e3c6170723cb, type: 3}
   frameArt: {fileID: 7836703823118725582, guid: 7b609d5bde9fb9640a61f75da03297a7, type: 3}
   isEnabled: 1
   effectType: 3
