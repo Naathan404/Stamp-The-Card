@@ -22,6 +22,7 @@ public class GachaAnimationController : MonoBehaviour, IPointerClickHandler
 
     [Header("Stamp result UI")]
     public Image stampResultSprite;
+    public Image stampFrameSprite;
     [SerializeField] private CanvasGroup stampDescriptionRect;  
     public TextMeshProUGUI stampResultName;
     public TextMeshProUGUI stampResultRarity;
@@ -131,6 +132,7 @@ public class GachaAnimationController : MonoBehaviour, IPointerClickHandler
             bundleRect.gameObject.SetActive(false);
             soulQuantityCost.gameObject.SetActive(false); 
             stampResultSprite.gameObject.SetActive(true);
+            stampFrameSprite.gameObject.SetActive(true);
             stampResultSprite.transform.localScale = Vector3.zero; 
             backgroundSummon.gameObject.SetActive(true);
 

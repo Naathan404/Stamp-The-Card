@@ -34,8 +34,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 150, y: 150}
+  m_AnchoredPosition: {x: 0, y: -2.5}
+  m_SizeDelta: {x: 140, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9088556245959726873
 CanvasRenderer:
@@ -65,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -6177475761485202029, guid: b571cbe976df5d944ad68d9743021562, type: 3}
+  m_Sprite: {fileID: 7836703823118725582, guid: 7b609d5bde9fb9640a61f75da03297a7, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -168,7 +168,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StampSlotUI
   stampImage: {fileID: 8409323622120564503}
-  stampInstance: {fileID: 0}
+  frameImage: {fileID: 4904658823376249579}
+  stampInstance:
+    stampInstanceID: 
+    data: {fileID: 0}
 --- !u!114 &1449933775771882623
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -228,8 +231,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1.0769, y: 0.6613}
-  m_SizeDelta: {x: 120, y: 120}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 130, y: 130}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &735291151883036646
 CanvasRenderer:
@@ -259,7 +262,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 3807595495016978537, guid: 0964a24a4d497854c8ceec941dd92048, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

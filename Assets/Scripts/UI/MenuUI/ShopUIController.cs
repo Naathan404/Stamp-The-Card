@@ -38,15 +38,15 @@ public class ShopUIController : MonoBehaviour
         switch (type)
         {
             case BundleClickable.BundleType.Normal:
-                _tooltipText.text = "<color=#FFFFFF><b>NORMAL PACK</b></color>\n" +
+                _tooltipText.text = $"<color={GameConstants.STAMP_RARE_HEX}><b>BASIC CONTRACT</b></color>\n" +
                                     "Common: 70%\nRare: 25%\nEpic: 5%";
                 break;
             case BundleClickable.BundleType.Medium:
-                _tooltipText.text = "<color=#55FF55><b>MEDIUM PACK</b></color>\n" +
+                _tooltipText.text = $"<color={GameConstants.STAMP_EPIC_HEX}><b>ADVANCED CONTRACT</b></color>\n" +
                                     "Common: 30%\nRare: 50%\nEpic: 20%";
                 break;
             case BundleClickable.BundleType.Large:
-                _tooltipText.text = "<color=#FFD700><b>LARGE PACK</b></color>\n" +
+                _tooltipText.text = $"<color={GameConstants.STAMP_LEGENDARY_HEX}><b>BLOOD CONTRACT</b></color>\n" +
                                     "Rare: 30%\nEpic: 50%\nLegendary: 20%";
                 break;
         }
@@ -124,6 +124,7 @@ public class ShopUIController : MonoBehaviour
 
                     // Đổ dữ liệu ra UI
                     GachaAnimationController.Instance.stampResultSprite.sprite = newItemData.stampArt;
+                    GachaAnimationController.Instance.stampFrameSprite.sprite = newItemData.frameArt;
                     GachaAnimationController.Instance.stampResultName.text = newItemData.stampName;
                     GachaAnimationController.Instance.stampResultRarity.text = newItemData.stampRank.ToString();
                     GachaAnimationController.Instance.stampResultEffect.text = newItemData.stampEffect;
@@ -196,6 +197,7 @@ public class ShopUIController : MonoBehaviour
 
                     // Đổ dữ liệu ra UI
                     GachaAnimationController.Instance.stampResultSprite.sprite = newItemData.stampArt;
+                    GachaAnimationController.Instance.stampFrameSprite.sprite = newItemData.frameArt;
                     GachaAnimationController.Instance.stampResultName.text = newItemData.stampName;
                     GachaAnimationController.Instance.stampResultRarity.text = newItemData.stampRank.ToString();
                     GachaAnimationController.Instance.stampResultEffect.text = newItemData.stampEffect;
@@ -267,6 +269,7 @@ public class ShopUIController : MonoBehaviour
                     }
 
                     GachaAnimationController.Instance.stampResultSprite.sprite = newItemData.stampArt;
+                    GachaAnimationController.Instance.stampFrameSprite.sprite = newItemData.frameArt;
                     GachaAnimationController.Instance.stampResultName.text = newItemData.stampName;
                     GachaAnimationController.Instance.stampResultRarity.text = newItemData.stampRank.ToString();
                     GachaAnimationController.Instance.stampResultEffect.text = newItemData.stampEffect;

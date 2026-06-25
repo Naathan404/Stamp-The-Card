@@ -132,7 +132,7 @@ public class InventoryUIController : MonoBehaviour
             if (stampSlotUI != null)
             {
                 stampSlotUI.stampInstance = stamp;
-                stampSlotUI.SetUpStampSlotUI(stamp.data.stampArt, stamp);
+                stampSlotUI.SetUpStampSlotUI(stamp.data.stampArt, stamp.data.frameArt, stamp);
             }
         }
 
