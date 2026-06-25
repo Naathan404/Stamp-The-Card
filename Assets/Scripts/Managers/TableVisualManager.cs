@@ -107,6 +107,9 @@ public class TableVisualManager : Singleton<TableVisualManager>
 
         if (_dealCoroutine != null) StopCoroutine(_dealCoroutine);
         _dealCoroutine = StartCoroutine(DealCardsRoutine(myCards, oppCards));
+
+        int SoundNum = Random.Range(1, 3);
+        AudioManager.Instance.PlaySFX(AudioManager.Instance.DealSFX[SoundNum], true);
     }
 
     public void StartCalculatePhaseVisuals()
@@ -543,7 +546,7 @@ public class TableVisualManager : Singleton<TableVisualManager>
         // }, targetScore, 0.5f).SetEase(Ease.OutQuad);
         int difference = targetScore - currentScore;
         SpawnFloatingText(textMesh, difference);
-
+        AudioManager.Instance.PlaySFX(AudioManager.Instance.CountScoreSFX, true);
         textMesh.transform.DOKill(true); 
         textMesh.transform.DOPunchScale(Vector3.one * 0.5f, 0.5f, vibrato: 3);
 

@@ -165,7 +165,7 @@ public class UIManager : MonoBehaviour
                 hpText.color = Color.red;
                 hpText.transform.DOPunchScale(Vector3.one * 0.5f, 0.5f, vibrato: 10, elasticity: 1);
                 hpText.transform.DOShakePosition(0.5f, strength: 15f);
-                
+                AudioManager.Instance.PlaySFX(AudioManager.Instance.minusHPSFX, true);
                 // Rung cả Camera để thấy chấn động
                 if (Camera.main != null) 
                 {
@@ -201,6 +201,7 @@ public class UIManager : MonoBehaviour
             hpText.color = Color.green;
             hpText.transform.DOPunchScale(Vector3.one * 0.3f, 0.5f, vibrato: 5);
             hpText.DOColor(Color.white, 0.5f).SetDelay(0.5f);
+            AudioManager.Instance.PlaySFX(AudioManager.Instance.HealSFX, true);
         }
 
         DOTween.To(() => oldHp, x => {
