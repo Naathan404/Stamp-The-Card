@@ -1,2 +1,26 @@
 fileFormatVersion: 2
 guid: 9c9891661fe2f90409e52534eb5ce8c9
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - _audioMixer: {fileID: 24100000, guid: 6e524552f9312a94a9cfb499e5937a53, type: 2}
+  - SFX: {instanceID: 0}
+  - Music: {instanceID: 0}
+  - FlipSFX: {instanceID: 0}
+  - StampUsed: {instanceID: 0}
+  - VictorySFX: {instanceID: 0}
+  - DefeatSFX: {instanceID: 0}
+  - TimerTickSFX: {instanceID: 0}
+  - CardHoverSFX: {instanceID: 0}
+  - MenuBgMusic: {fileID: 8300000, guid: 46c52f30f4a9a29438a25dffe23fdddd, type: 3}
+  - BattleBgMusic: {fileID: 8300000, guid: 783a1ef64a16b3947a2ae74d1fab6374, type: 3}
+  - ButtonClick: {instanceID: 0}
+  - SceenTransition: {instanceID: 0}
+  - Hover: {instanceID: 0}
+  - InputFieldClick: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
