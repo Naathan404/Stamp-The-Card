@@ -14,12 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::VariableScoreModifierStampData
   _stampID: 14
   _stampRank: 0
-  _stampName: "Ti\u1EBFp s\u1EE9c"
-  _stampEffect: "+X n\xFAt (X l\xE0 s\u1ED1 stamp \u0111\xF3ng tr\xEAn l\xE1 b\xE0i)"
+  _stampName: Empower
+  _stampEffect: +1 Pts per Stamp on this card.
   targets: 0000000000000000
   _bloodCost: 0
   ExeTier: 2
-  stampArt: {fileID: -2413806693520163455, guid: 6ea1213de0477e44fb81c73e3e1e5a1f, type: 3}
+  stampArt: {fileID: -7757281821517131809, guid: 7bca1ae6fa71eec42847dc94962a1ea9, type: 3}
+  frameArt: {fileID: -7812188948962287072, guid: 3d0e2b2ffc66b6644a568ccfc62cc84e, type: 3}
   isEnabled: 1
   amountToChange: 0
   scoreOperator: 0

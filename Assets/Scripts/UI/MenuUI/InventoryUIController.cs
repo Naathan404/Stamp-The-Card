@@ -1,5 +1,7 @@
+using System.Collections;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class InventoryUIController : MonoBehaviour 
 {
@@ -19,63 +21,125 @@ public class InventoryUIController : MonoBehaviour
         UpdateInventoryUI();
     }
 
-    public void BackToMenu()
+    public void BackToMenu(string sceneName)
     {
         AudioManager.Instance.PlaySFX(AudioManager.Instance.ButtonClick, true);
-        SceneTransitionManager.Instance.LoadSceneAsync("Menu");
+        if (PlayfabManager.Instance != null)
+        {
+            Debug.Log("Đang đồng bộ Balo lên PlayFab...");
+
+            PlayfabManager.Instance.SaveSelectedStamps(() => 
+            {
+                SceneTransitionManager.Instance.LoadSceneAsync(sceneName);
+            });
+        }
+        else
+        {
+            SceneTransitionManager.Instance.LoadSceneAsync(sceneName);
+        }
     }
 
     public void SortInventoryPanelUI()
     {
+        SortPanel(_stampInventoryPanel);
+        SortPanel(_stampSelectionPanel);
 
-        StampSlotUI[] currentUIItems = _stampInventoryPanel.GetComponentsInChildren<StampSlotUI>();
+        Canvas.ForceUpdateCanvases();
+        
+        if (_stampInventoryPanel != null)
+            LayoutRebuilder.ForceRebuildLayoutImmediate(_stampInventoryPanel.GetComponent<RectTransform>());
+            
+        if (_stampSelectionPanel != null)
+            LayoutRebuilder.ForceRebuildLayoutImmediate(_stampSelectionPanel.GetComponent<RectTransform>());
+    }
 
-        //Sap xep lai thu tu inventory UI
-        var sortedUIItems = currentUIItems.OrderBy(uiSlot =>
-        {
-            return LocalPlayerData.StampInInventory.FindIndex(data => data.stampInstanceID == uiSlot.stampInstance.stampInstanceID);
-        }).ToList();
+    private void SortPanel(Transform panel)
+    {
+        if (panel == null) return;
 
-        //Ep UI hien thi theo dung thu tu
+        StampSlotUI[] currentUIItems = panel.GetComponentsInChildren<StampSlotUI>();
+
+        var sortedUIItems = currentUIItems
+            .Where(uiSlot => uiSlot != null && uiSlot.stampInstance != null && uiSlot.stampInstance.data != null)
+            .OrderByDescending(uiSlot => uiSlot.stampInstance.data.stampRank)
+            .ThenBy(uiSlot => uiSlot.stampInstance.data.stampID)
+            .ToList();
+
         for (int i = 0; i < sortedUIItems.Count; i++)
         {
             sortedUIItems[i].transform.SetSiblingIndex(i);
         }
     }
 
+    // public void UpdateInventoryUI()
+    // {
+    //     ClearPanel(_stampSelectionPanel);
+    //     ClearPanel(_stampInventoryPanel);
+
+    //     foreach (var stamp in LocalPlayerData.StampInInventory)
+    //     {
+    //         if (stamp.data == null) continue;
+
+    //         bool isSelected = LocalPlayerData.SelectedStamps.Any(s => s.stampInstanceID == stamp.stampInstanceID);  
+    //         Transform targetPanel = isSelected ? _stampSelectionPanel : _stampInventoryPanel;
+    //         int maxSlot = isSelected ? _maxSelectionSlot : _maxInventorySlot;
+
+    //         if (targetPanel.childCount >= maxSlot)
+    //         {
+    //             Debug.Log("Panel khong du suc chua!");
+    //             continue;
+    //         }
+
+    //         GameObject currentStamp = Instantiate(_stampSlotPrefab, targetPanel);
+    //         currentStamp.transform.localScale = Vector3.one;
+    //         StampSlotUI stampSlotUI = currentStamp.GetComponent<StampSlotUI>();
+
+    //         if (stampSlotUI != null)
+    //         {
+    //             stampSlotUI.stampInstance = stamp;
+    //             stampSlotUI.SetUpStampSlotUI(stamp.data.stampArt, stamp);
+    //         }
+    //     }
+
+    //     SortInventoryPanelUI();
+    // }
+
     public void UpdateInventoryUI()
     {
-        //Don dep truoc khi update
+        StartCoroutine(InitAndSortRoutine());
+    }
+
+    private IEnumerator InitAndSortRoutine()
+    {
         ClearPanel(_stampSelectionPanel);
         ClearPanel(_stampInventoryPanel);
-
 
         foreach (var stamp in LocalPlayerData.StampInInventory)
         {
             if (stamp.data == null) continue;
 
-            // Xac dinh panel de hien thi
-            bool isSelected = LocalPlayerData.SelectedStamps.Any(s => s.stampInstanceID == stamp.stampInstanceID);  //Kiem tra stamp dang duoc chon de battle
+            bool isSelected = LocalPlayerData.SelectedStamps.Any(s => s.stampInstanceID == stamp.stampInstanceID);  
             Transform targetPanel = isSelected ? _stampSelectionPanel : _stampInventoryPanel;
             int maxSlot = isSelected ? _maxSelectionSlot : _maxInventorySlot;
 
-            //Tao stamp slot prefab
-            if (targetPanel.childCount >= maxSlot)
-            {
-                Debug.Log("Panel khong du suc chua!");
-                continue;
-            }
+            if (targetPanel.childCount >= maxSlot) continue;
 
             GameObject currentStamp = Instantiate(_stampSlotPrefab, targetPanel);
-            StampSlotUI stampSlotUI = currentStamp.GetComponent<StampSlotUI>();
+            
+            currentStamp.transform.localScale = Vector3.one;
 
+            StampSlotUI stampSlotUI = currentStamp.GetComponent<StampSlotUI>();
             if (stampSlotUI != null)
             {
                 stampSlotUI.stampInstance = stamp;
-                stampSlotUI.SetUpStampSlotUI(stamp.data.stampArt);
+                stampSlotUI.SetUpStampSlotUI(stamp.data.stampArt, stamp.data.frameArt, stamp);
             }
         }
+
+        yield return new WaitForEndOfFrame();
+        SortInventoryPanelUI();
     }
+
 
     private void ClearPanel(Transform panel)
     {

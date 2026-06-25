@@ -14,13 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ConditionalScoreModifierStampData
   _stampID: 16
   _stampRank: 0
-  _stampName: "\xC1m s\xE1t"
-  _stampEffect: "-1 n\xFAt l\xE1 b\xE0i \u0111\u1ED1i di\u1EC7n, n\u1EBFu n\xF3 ch\u01B0a
-    \u0111\u01B0\u1EE3c \u0111\xF3ng d\u1EA5u, -3 n\xFAt"
+  _stampName: Assassinate
+  _stampEffect: 'Foe: -1 (-3 if Foe is unstamped).'
   targets: 03000000
   _bloodCost: 0
   ExeTier: 2
-  stampArt: {fileID: -2413806693520163455, guid: 6ea1213de0477e44fb81c73e3e1e5a1f, type: 3}
+  stampArt: {fileID: -1255455844566059161, guid: 098bc6844629f8349b0e0d5043a7489e, type: 3}
+  frameArt: {fileID: -7812188948962287072, guid: 3d0e2b2ffc66b6644a568ccfc62cc84e, type: 3}
   isEnabled: 1
   amountToChange: -1
   scoreOperator: 0

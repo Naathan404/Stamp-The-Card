@@ -14,12 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SimpleScoreModifierStampData
   _stampID: 29
   _stampRank: 2
-  _stampName: "\xC1p \u0111\u1EA3o"
-  _stampEffect: "Nh\xE2n \u0111\xF4i s\u1ED1 n\xFAt"
+  _stampName: Overwhelm
+  _stampEffect: Double Pts.
   targets: 00000000
   _bloodCost: 0
   ExeTier: 2
-  stampArt: {fileID: 7482667652216324306, guid: 0c99a264a6de7f24892afb4874eb8965, type: 3}
+  stampArt: {fileID: 76828121160565183, guid: 40684fceda72685479637f1650378d8f, type: 3}
+  frameArt: {fileID: -4785724193458599500, guid: 82496352a1a2c5848a3a87b0490a69ee, type: 3}
   isEnabled: 1
   amountToChange: 2
   scoreOperator: 1

@@ -24,12 +24,13 @@ public class TooltipController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         if (_stampSlotUI != null)
         {
             Sprite sprite = _stampSlotUI.stampImage.sprite;
+            Sprite frame = _stampSlotUI.frameImage.sprite;
             BaseStampData data = _stampSlotUI.stampInstance.data;
             string name = data.stampName;
-            string rarity = data.stampRank.ToString();
+            StampRank rarity = data.stampRank;
             string effect = data.stampEffect;
 
-            StampTooltipManager.Instance.SetUpTooltipUI(sprite, name, rarity, effect);
+            StampTooltipManager.Instance.SetUpTooltipUI(sprite, frame, name, rarity, effect);
         }
 
         //Hien thi tooltip

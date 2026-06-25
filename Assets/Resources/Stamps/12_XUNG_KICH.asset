@@ -14,14 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ConditionalScoreModifierStampData
   _stampID: 12
   _stampRank: 0
-  _stampName: "Xung k\xEDch"
-  _stampEffect: "+3 n\xFAt, nh\u01B0ng l\xE1 b\xE0i \u0111\u01B0\u1EE3c \u0111\xF3ng
-    d\u1EA5u kh\xF4ng th\u1EC3 k\xEDch ho\u1EA1t hi\u1EC7u \u1EE9ng c\xE1c stamp
-    c\xF2n l\u1EA1i"
+  _stampName: Charge
+  _stampEffect: +3 Pts (Disables other stamps).
   targets: 00000000
   _bloodCost: 0
-  ExeTier: 2
-  stampArt: {fileID: -2413806693520163455, guid: 6ea1213de0477e44fb81c73e3e1e5a1f, type: 3}
+  ExeTier: 1
+  stampArt: {fileID: 3676339902619231345, guid: 13816f1e5df0f034cb26998d2ff558fe, type: 3}
+  frameArt: {fileID: -7812188948962287072, guid: 3d0e2b2ffc66b6644a568ccfc62cc84e, type: 3}
   isEnabled: 1
   amountToChange: 3
   scoreOperator: 0

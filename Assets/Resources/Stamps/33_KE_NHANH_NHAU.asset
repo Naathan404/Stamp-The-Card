@@ -14,13 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpecialEffectStampData
   _stampID: 33
   _stampRank: 2
-  _stampName: "K\u1EBB nhanh nh\u1EA3u"
-  _stampEffect: "N\u1EBFu \u0111\u01B0\u1EE3c resolve tr\u01B0\u1EDBc \u1EDF l\u01B0\u1EE3t
-    n\xE0y, v\xF4 hi\u1EC7u h\xF3a to\xE0n b\u1ED9 stamp l\xE1 b\xE0i \u0111\u1ED1i
-    di\u1EC7n"
+  _stampName: Quickstriker
+  _stampEffect: If resolved first this turn, disable all Foe's stamps.
   targets: 03000000
   _bloodCost: 0
-  ExeTier: 2
-  stampArt: {fileID: 7482667652216324306, guid: 0c99a264a6de7f24892afb4874eb8965, type: 3}
+  ExeTier: 0
+  stampArt: {fileID: -645153295783702071, guid: 438bd46b58545ae478693ad04ea1fe24, type: 3}
+  frameArt: {fileID: -4785724193458599500, guid: 82496352a1a2c5848a3a87b0490a69ee, type: 3}
   isEnabled: 1
   effectType: 0

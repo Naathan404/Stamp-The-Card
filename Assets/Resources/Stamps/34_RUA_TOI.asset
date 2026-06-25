@@ -14,13 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpecialEffectStampData
   _stampID: 34
   _stampRank: 2
-  _stampName: "R\u1EEDa t\u1ED9i"
-  _stampEffect: "Reset s\u1ED1 n\xFAt c\u1EE7a l\xE1 b\xE0i \u0111\u01B0\u1EE3c \u0111\xF3ng
-    d\u1EA5u v\xE0 s\u1ED1 n\xFAt l\xE1 b\xE0i \u0111\u1ED1i di\u1EC7n v\u1EC1 m\u1EB7c
-    \u0111\u1ECBnh"
+  _stampName: Absolution
+  _stampEffect: 'Self & Foe: Reset to Base Pts.'
   targets: 0000000003000000
   _bloodCost: 0
-  ExeTier: 2
-  stampArt: {fileID: 7482667652216324306, guid: 0c99a264a6de7f24892afb4874eb8965, type: 3}
+  ExeTier: 4
+  stampArt: {fileID: -7449644178528948053, guid: 438bd46b58545ae478693ad04ea1fe24, type: 3}
+  frameArt: {fileID: -4785724193458599500, guid: 82496352a1a2c5848a3a87b0490a69ee, type: 3}
   isEnabled: 1
   effectType: 3

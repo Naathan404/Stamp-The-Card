@@ -14,12 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ConditionalScoreModifierStampData
   _stampID: 21
   _stampRank: 1
-  _stampName: "K\u1EBB \u0111\u1ED3 t\u1EC3"
-  _stampEffect: "-3 n\xFAt l\xE1 \u0111\u1ED1i di\u1EC7n n\u1EBFu s\u1ED1 n\xFAt
-    m\u1EB7c \u0111\u1ECBnh c\u1EE7a l\xE1 \u0111\xF3 l\xE0 ch\u1EB5n"
+  _stampName: Butcher
+  _stampEffect: 'Foe: -3 Pts if its Base Pts are even.'
   targets: 03000000
   _bloodCost: 0
-  stampArt: {fileID: 0}
+  ExeTier: 1
+  stampArt: {fileID: -6660697603350512009, guid: c656960e568b3e94aa5b9b40ca23bda4, type: 3}
+  frameArt: {fileID: -301872509239524730, guid: d87fd72a626ddd14f9ec75187148c9b9, type: 3}
   isEnabled: 1
   amountToChange: -3
   scoreOperator: 0

@@ -23,6 +23,7 @@ public class StampDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
     [SerializeField] private float _stampImpactDuration = 0.2f;
 
     private SpriteRenderer _spriteRenderer;
+    public SpriteRenderer _frame;
     private Vector2 _originalPosition;
     public Vector2 _originalScale = Vector2.one;
     private int _originalSortingOrder;
@@ -51,6 +52,7 @@ public class StampDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         if(isUsed) return;
         _isDragging = true;
         _spriteRenderer.sortingOrder = 100; // Đưa lên trên cùng
+        _frame.sortingOrder = 101;
         transform.DOScale(_originalScale * _pickUpScale, 0.1f).SetEase(Ease.OutBack);
     }
 
@@ -67,6 +69,7 @@ public class StampDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
     {
         if(isUsed) return;
         _spriteRenderer.sortingOrder = _originalSortingOrder;
+        _frame.sortingOrder = _originalSortingOrder + 1;
         transform.DOScale(_originalScale, 0.1f).SetEase(Ease.OutBack);
         Vector2 dropPoint = Camera.main.ScreenToWorldPoint(eventData.position);
 
@@ -108,6 +111,7 @@ public class StampDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         int slotIndex = targetCard.GetComponent<CardSlot>().Index;
 
         _spriteRenderer.enabled = false;
+        _frame.enabled = false;
         isUsed = true;
 
         // Spawn stamp tool animation
@@ -157,13 +161,16 @@ public class StampDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         });
     }
 
-    public void ResetForNewTurn(int newStampID, Sprite newSprite)
+    public void ResetForNewTurn(int newStampID, Sprite newSprite, Sprite frame)
     {
         stampID = newStampID;
         isUsed = false;
         _spriteRenderer.enabled = true;
+        _frame.enabled = true;
         _spriteRenderer.sprite = newSprite;
+        _frame.sprite = frame;
         _spriteRenderer.DOFade(1f, 0f);
+        _frame.DOFade(1f, 0f);
 
         transform.DOKill();
         transform.position = _originalPosition;

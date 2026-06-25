@@ -19,6 +19,7 @@ MonoBehaviour:
   targets: 000000000100000002000000
   _bloodCost: 0
   ExeTier: 3
-  stampArt: {fileID: -505513521850621977, guid: 8622760dfd3cf324eb70c7211a5b1443, type: 3}
+  stampArt: {fileID: 2485650988188125947, guid: 4ab5eeb571a12114aa73e3c6170723cb, type: 3}
+  frameArt: {fileID: -7812188948962287072, guid: 3d0e2b2ffc66b6644a568ccfc62cc84e, type: 3}
   isEnabled: 1
   amountToTransfer: 1

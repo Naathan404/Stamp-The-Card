@@ -27,11 +27,16 @@ public class DragItem : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
         //Tao ban sao cua drag item
         copyDragItem = Instantiate(this.gameObject, originalParent);
         copyDragItem.transform.SetSiblingIndex(originalInventoryIndex);             //ep copy drag item nam dung vi tri cua drag item
+
         DragItem copyScript = copyDragItem.GetComponent<DragItem>();
         if (copyScript != null)
         {
             Destroy(copyScript);
         }
+
+        StampSlotUI ghostUI = copyDragItem.GetComponent<StampSlotUI>();
+        if (ghostUI != null) Destroy(ghostUI);
+        
         CanvasGroup copyCanvasGroup = copyDragItem.GetComponent<CanvasGroup>();
         copyCanvasGroup.alpha = 0.5f;
 

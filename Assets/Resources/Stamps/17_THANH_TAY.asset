@@ -14,10 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpecialEffectStampData
   _stampID: 17
   _stampRank: 1
-  _stampName: "Thanh t\u1EA9y"
-  _stampEffect: "\u0110\u01B0a s\u1ED1 n\xFAt quay v\u1EC1 s\u1ED1 n\xFAt g\u1ED1c"
+  _stampName: Purify
+  _stampEffect: Reset to Base Pts.
   targets: 00000000
   _bloodCost: 0
-  stampArt: {fileID: 0}
+  ExeTier: 1
+  stampArt: {fileID: 8211862175193699532, guid: 94cd27fac1d98b74d9b49ab8e15e4653, type: 3}
+  frameArt: {fileID: -301872509239524730, guid: d87fd72a626ddd14f9ec75187148c9b9, type: 3}
   isEnabled: 1
   effectType: 3

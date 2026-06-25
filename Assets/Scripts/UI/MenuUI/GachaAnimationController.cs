@@ -1,31 +1,33 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
-using System;
 using UnityEngine.EventSystems;
 using TMPro;
 
 public class GachaAnimationController : MonoBehaviour, IPointerClickHandler
 {
     [Header("Gacha UI Elements")]
-    [SerializeField] private RectTransform normalBundleRect;
-    [SerializeField] private RectTransform mediumBundleRect;
-    [SerializeField] private RectTransform largeBundleRect;
+    [SerializeField] private Transform normalBundleRect;
+    [SerializeField] private Transform mediumBundleRect;
+    [SerializeField] private Transform largeBundleRect;
+    private Vector3 normalOriginPos;
+    private Vector3 mediumOriginPos;
+    private Vector3 largeOriginPos;
+    private Sequence _activeSeq;
+    public bool IsGachaRunning = false;
 
-    [SerializeField] private Outline normalBundleOutline;
-    [SerializeField] private Outline mediumBundleOutline;
-    [SerializeField] private Outline largeBundleOutline;
-
-    [SerializeField] private RectTransform stampResultRect;  
     [SerializeField] private CanvasGroup flashWhiteGroup;
     [SerializeField] private RectTransform backgroundSummon;
     [SerializeField] private TextMeshProUGUI soulQuantityCost;
 
     [Header("Stamp result UI")]
     public Image stampResultSprite;
+    public Image stampFrameSprite;
+    [SerializeField] private CanvasGroup stampDescriptionRect;  
     public TextMeshProUGUI stampResultName;
     public TextMeshProUGUI stampResultRarity;
     public TextMeshProUGUI stampResultEffect;
+    public GameObject newTagObj;
 
     [Header("Animation Settings")]
     [SerializeField] private float shakeDuration = 1.2f;
@@ -33,7 +35,6 @@ public class GachaAnimationController : MonoBehaviour, IPointerClickHandler
 
     public static GachaAnimationController Instance;
     private bool CanClickToReset = false;
-    private Color startColorOutline;
 
     private ShopUIController _shopUI;
 
@@ -51,46 +52,44 @@ public class GachaAnimationController : MonoBehaviour, IPointerClickHandler
         if (_shopUI == null)
             _shopUI = FindAnyObjectByType<ShopUIController>();
 
-        startColorOutline = normalBundleOutline.effectColor;
-        startColorOutline.a = 0f;
+        stampDescriptionRect.alpha = 0f;
+        normalOriginPos = normalBundleRect.localPosition;
+        mediumOriginPos = mediumBundleRect.localPosition;
+        largeOriginPos = largeBundleRect.localPosition;
     }
 
-    public void Normal_BundlePlayGachaAnimation()
+    public void Normal_BundlePlayGachaAnimation(bool isNew)
     {
         soulQuantityCost.text = "-49 SOULS";
-
-        PlayGachaAnimation(normalBundleRect);
+        PlayGachaAnimation(normalBundleRect, isNew);
     }
 
-    public void Medium_BundlePlayGachaAnimation()
+    public void Medium_BundlePlayGachaAnimation(bool isNew)
     {
         soulQuantityCost.text = "-79 SOULS";
-
-        PlayGachaAnimation(mediumBundleRect);
+        PlayGachaAnimation(mediumBundleRect, isNew);
     }
 
-    public void Large_BundlePlayGachaAnimation()
+    public void Large_BundlePlayGachaAnimation(bool isNew)
     {
         soulQuantityCost.text = "-129 SOULS";
-
-        PlayGachaAnimation(largeBundleRect);
+        PlayGachaAnimation(largeBundleRect, isNew);
     }
 
     public void Normal_BundleInsufficientSoulsPlayGachaAnimation()
     {
-        InsufficientSoulsPlayGachaAnimation(normalBundleRect, normalBundleOutline);
+        InsufficientSoulsPlayGachaAnimation(normalBundleRect);
     }
 
     public void Medium_BundleInsufficientSoulsPlayGachaAnimation()
     {
-        InsufficientSoulsPlayGachaAnimation(mediumBundleRect, mediumBundleOutline);
+        InsufficientSoulsPlayGachaAnimation(mediumBundleRect);
     }
 
     public void Large_BundleInsufficientSoulsPlayGachaAnimation()
     {
-        InsufficientSoulsPlayGachaAnimation(largeBundleRect, largeBundleOutline);
+        InsufficientSoulsPlayGachaAnimation(largeBundleRect);
     }
-
 
     public void OnPointerClick(PointerEventData eventData)
     {
@@ -98,115 +97,160 @@ public class GachaAnimationController : MonoBehaviour, IPointerClickHandler
         {
             SetUpOriginState();
             CanClickToReset = false;
+            IsGachaRunning = false;
         }
     }
 
-    private void PlayGachaAnimation(RectTransform bundleRect)
+    private void PlayGachaAnimation(Transform bundleRect, bool isNew)
     {
-
-        // Setup trang thai ban dau
+        IsGachaRunning = true;
         CanClickToReset = false;
         SetUpOriginState();
 
-        // Tao sequence de ket noi hieu ung
-        Sequence gachaSeq = DOTween.Sequence();
+        if (FilterManager.Instance != null)
+            FilterManager.Instance.SetFocusMode(true, 0.5f);
 
-        // --- RUNG LAC BUNDLE ---
-        // Lắc xoay (Z axis) và lắc scale cùng lúc
-        gachaSeq.Append(bundleRect.DOShakeRotation(shakeDuration, new Vector3(0, 0, 15f), 10, 90f, false));
-        gachaSeq.Join(bundleRect.DOShakeScale(shakeDuration, 0.15f, 10, 90f, false));
+        soulQuantityCost.rectTransform.position = Camera.main.WorldToScreenPoint(bundleRect.position);
+        soulQuantityCost.gameObject.SetActive(true);
+        soulQuantityCost.alpha = 1f;
 
-        // --- BƯỚC 2: CHỚP SÁNG ---
-        gachaSeq.Append(flashWhiteGroup.DOFade(1f, 0.15f));
+        Sequence _activeSeq = DOTween.Sequence();
 
-        // Callback: Thực hiện logic tráo đổi UI khi màn hình đang trắng xóa
-        gachaSeq.AppendCallback(() =>
+        _activeSeq.Append(bundleRect.DOShakeRotation(shakeDuration, new Vector3(0, 0, 15f), 10, 90f, false));
+        _activeSeq.Join(bundleRect.DOShakeScale(shakeDuration, 0.15f, 10, 90f, false));
+        _activeSeq.Join(soulQuantityCost.rectTransform.DOLocalMoveY(soulQuantityCost.rectTransform.localPosition.y + 500f, shakeDuration).SetEase(Ease.OutQuad));
+
+        _activeSeq.AppendCallback(() => {
+            if (FilterManager.Instance != null)
+                FilterManager.Instance.FlashScreen(FilterManager.Instance.FlashColor, 0.5f);
+        });
+        _activeSeq.Append(flashWhiteGroup.DOFade(1f, 0.15f));
+        _activeSeq.Join(Camera.main.transform.DOShakePosition(0.3f, 0.5f, 20, 90f, false, true));
+
+        _activeSeq.AppendCallback(() =>
         {
             bundleRect.gameObject.SetActive(false);
-            stampResultRect.gameObject.SetActive(true);
+            soulQuantityCost.gameObject.SetActive(false); 
+            stampResultSprite.gameObject.SetActive(true);
+            stampFrameSprite.gameObject.SetActive(true);
+            stampResultSprite.transform.localScale = Vector3.zero; 
             backgroundSummon.gameObject.SetActive(true);
-            soulQuantityCost.gameObject.SetActive(true);
+
         });
 
-        gachaSeq.Append(flashWhiteGroup.DOFade(0f, 0.3f)); // Mờ dần đi
+        _activeSeq.Append(flashWhiteGroup.DOFade(0f, 0.3f)); 
 
-        // --- BƯỚC 3: HIỂN THỊ TEM ---
-        gachaSeq.Join(soulQuantityCost.DOFade(0f, 1f));
-        gachaSeq.Join(stampResultRect.DOScale(Vector3.one, popupDuration).SetEase(Ease.OutBack));
-        gachaSeq.Join(stampResultRect.DORotate(new Vector3(0, 360, 0), popupDuration, RotateMode.FastBeyond360).SetEase(Ease.OutQuad));
+        _activeSeq.Append(stampResultSprite.transform.DOScale(Vector3.one, popupDuration).SetEase(Ease.OutBack));
+        _activeSeq.Join(stampResultSprite.transform.DORotate(new Vector3(0, 360, 0), popupDuration, RotateMode.FastBeyond360).SetEase(Ease.OutQuad));
 
-        // --- HOÀN THÀNH ---
-        gachaSeq.OnComplete(() =>
+        if (isNew && newTagObj != null)
+        {
+            _activeSeq.AppendCallback(() => newTagObj.SetActive(true));
+
+            _activeSeq.Append(newTagObj.transform.DOScale(Vector3.one, 0.6f).SetEase(Ease.OutElastic));
+
+            _activeSeq.Join(newTagObj.transform.DOShakeRotation(0.4f, new Vector3(0, 0, 15f), 10, 90f));
+        }
+
+        _activeSeq.AppendCallback(() => {
+            if (FilterManager.Instance != null)
+                FilterManager.Instance.FlashVignette(FilterManager.Instance.FlashColor, 0.8f, 0.8f);
+            
+        });
+
+        _activeSeq.Append(stampDescriptionRect.DOFade(1f, 0.5f).SetEase(Ease.InCubic));
+        _activeSeq.Join(Camera.main.transform.DOShakePosition(0.15f, 0.5f, 20, 90f, false, true));
+
+        _activeSeq.OnComplete(() =>
         {
             flashWhiteGroup.gameObject.SetActive(false);
             CanClickToReset = true;
-
-            _shopUI.UpdateShopUI();
+            if (_shopUI != null) _shopUI.UpdateShopUI();
         });
     }
 
-    private void InsufficientSoulsPlayGachaAnimation(RectTransform bundleRect, Outline bundleOutline)
+    private void InsufficientSoulsPlayGachaAnimation(Transform bundleRect)
     {
+        IsGachaRunning = true;
         soulQuantityCost.text = "INSUFFICIENT SOULS!";
         CanClickToReset = false;
-        SetUpOriginState();
+        
+        SetUpOriginState(); 
+        _activeSeq = DOTween.Sequence(); 
+        FilterManager.Instance.FlashVignette(FilterManager.Instance.HazardColor, 0.6f, 0.8f);
 
-        DOTween.Kill(bundleOutline);
-        DOTween.Kill(bundleRect);
+        soulQuantityCost.rectTransform.position = Camera.main.WorldToScreenPoint(bundleRect.position);
 
-        Sequence gachaSeq = DOTween.Sequence();
+        _activeSeq.Append(bundleRect.DOShakePosition(0.5f, new Vector3(0.5f, 0, 0), 20, 90f, false, true));
 
-        Color solidStartColorOutline = startColorOutline;
-        solidStartColorOutline.a = 1f;
-        gachaSeq.Append(
-            DOTween.To(
-            () => bundleOutline.effectColor,             // Lấy giá trị hiện tại
-            x => bundleOutline.effectColor = x,          // Gán giá trị mới trong quá trình chạy
-            solidStartColorOutline,                      // Giá trị đích (màu đỏ đậm)
-            0.15f                                        // Thời gian
-            )
-            .SetLoops(4, LoopType.Yoyo)
-            .OnComplete(() =>
-            {
-                // Trả về tàng hình khi kết thúc
-                bundleOutline.effectColor = startColorOutline;
-            })
-        );
-
-        gachaSeq.AppendCallback(() =>
+        SpriteRenderer bundleSprite = bundleRect.GetComponent<SpriteRenderer>();
+        if (bundleSprite != null)
         {
+            _activeSeq.Join(bundleSprite.DOColor(Color.red, 0.15f).SetLoops(4, LoopType.Yoyo));
+        }
+
+        _activeSeq.AppendCallback(() =>
+        {
+            IsGachaRunning = false;
             soulQuantityCost.gameObject.SetActive(true);
         });
 
-        gachaSeq.Append(soulQuantityCost.DOFade(0f, 1f));
+        _activeSeq.Append(soulQuantityCost.rectTransform.DOLocalMoveY(soulQuantityCost.rectTransform.localPosition.y + 100f, 1f).SetEase(Ease.OutQuad));
+        _activeSeq.Join(soulQuantityCost.DOFade(0f, 1f));
     }
 
     private void SetUpOriginState()
     {
+        // IsGachaRunning = false;
+        if (_activeSeq != null && _activeSeq.IsActive())
+        {
+            _activeSeq.Kill();
+        }
+        DOTween.Kill(soulQuantityCost);
+        DOTween.Kill(soulQuantityCost.rectTransform);
+
         soulQuantityCost.gameObject.SetActive(false);
         soulQuantityCost.alpha = 1f;
 
         normalBundleRect.gameObject.SetActive(true);
-        normalBundleRect.localScale = Vector3.one;
-        normalBundleRect.localRotation = Quaternion.identity;
-        normalBundleOutline.effectColor = startColorOutline;
+        ResetBundleState(normalBundleRect, normalOriginPos);
 
         mediumBundleRect.gameObject.SetActive(true);
-        mediumBundleRect.localScale = Vector3.one;
-        mediumBundleRect.localRotation = Quaternion.identity;
-        mediumBundleOutline.effectColor = startColorOutline;
+        ResetBundleState(mediumBundleRect, mediumOriginPos);
 
         largeBundleRect.gameObject.SetActive(true);
-        largeBundleRect.localScale = Vector3.one;
-        largeBundleRect.localRotation = Quaternion.identity;
-        largeBundleOutline.effectColor = startColorOutline;
+        ResetBundleState(largeBundleRect, largeOriginPos);
 
-        stampResultRect.gameObject.SetActive(false);
-        stampResultRect.localScale = Vector3.zero;
+        stampResultSprite.gameObject.SetActive(false);
+        stampDescriptionRect.alpha = 0f;
+
+        if (newTagObj != null) 
+        {
+            newTagObj.SetActive(false);
+            newTagObj.transform.localScale = Vector3.zero; 
+            DOTween.Kill(newTagObj.transform);
+        }
 
         flashWhiteGroup.alpha = 0f;
         flashWhiteGroup.gameObject.SetActive(true);
-
         backgroundSummon.gameObject.SetActive(false);
+
+        if (FilterManager.Instance != null)
+            FilterManager.Instance.SetFocusMode(false, 0.5f);
+    }
+
+    private void ResetBundleState(Transform bundle, Vector3 originPos)
+    {
+        DOTween.Kill(bundle); 
+        bundle.localPosition = originPos;
+        bundle.localScale = Vector3.one;
+        bundle.localRotation = Quaternion.identity;
+
+        SpriteRenderer sr = bundle.GetComponent<SpriteRenderer>();
+        if (sr != null)
+        {
+            DOTween.Kill(sr); 
+            sr.color = Color.white; 
+        }
     }
 }

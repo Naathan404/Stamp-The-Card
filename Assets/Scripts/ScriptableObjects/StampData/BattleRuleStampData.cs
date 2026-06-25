@@ -40,7 +40,7 @@ public class BattleRuleStampData : BaseStampData
                 return "AMULET";
 
             case BattleRuleType.CREMATION:
-                ApplyCremation(enemyCards, currentCardIndex);
+                ApplyCremation(myCards, enemyCards, currentCardIndex);
                 return "BURN";
         }
 
@@ -69,7 +69,7 @@ public class BattleRuleStampData : BaseStampData
     }
 
     /// Hỏa Thiêu: chọn 1 lá random của đối thủ → đánh dấu IsIgnored lượt này
-    private void ApplyCremation(CardSlot[] enemyCards, int currentCardIndex)
+    private void ApplyCremation(CardSlot[] myCards,CardSlot[] enemyCards, int currentCardIndex)
     {
         System.Collections.Generic.List<int> validTargets = new System.Collections.Generic.List<int>();
         for (int i = 0; i < 3; i++)
@@ -77,14 +77,21 @@ public class BattleRuleStampData : BaseStampData
             if (!enemyCards[i].IsIgnored) validTargets.Add(i);
         }
 
-        if (validTargets.Count == 0) return;
+        if (validTargets.Count > 0)
+        {
+            int randomIndex = validTargets[Random.Range(0, validTargets.Count)];
+            enemyCards[randomIndex].IsIgnored = true;
+            enemyCards[randomIndex].Score = 0;
+            NullifyStampsOnCard(enemyCards[randomIndex], null);
+            Debug.Log($"[Hỏa Thiêu] Đốt lá {randomIndex} của đối thủ");
+        }
 
-        int randomIndex = validTargets[Random.Range(0, validTargets.Count)];
-        enemyCards[randomIndex].IsIgnored = true;
-
-        NullifyStampsOnCard(enemyCards[randomIndex], null);
-
-        Debug.Log($"[Hỏa Thiêu] Đốt lá {randomIndex} của đối thủ");
+        if (GameStateManager.Instance.CurrentTurn > 1)
+        {
+            myCards[currentCardIndex].Score = 0;
+            myCards[currentCardIndex].IsIgnored = true;
+            Debug.Log($"[Hỏa Thiêu] Lá {currentCardIndex} tự thiêu!");
+        }
     }
 
     private void NullifyStampsOnCard(CardSlot cardSlot, BaseStampData exceptionStamp)

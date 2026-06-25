@@ -16,6 +16,8 @@ public class Launcher : MonoBehaviour, INetworkRunnerCallbacks
 
     public static Launcher Instance;
 
+    private bool _isSearchingQuickMatch = false;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -26,6 +28,21 @@ public class Launcher : MonoBehaviour, INetworkRunnerCallbacks
         Instance = this;
         this.transform.SetParent(null); 
         DontDestroyOnLoad(this.gameObject); 
+    }
+
+    public void CreateCustomRoom(GameMode mode, string roomName)
+    {
+        _isSearchingQuickMatch = false;
+        Debug.Log($"Đang tạo phòng: {roomName}");
+        StartGame(mode, roomName);
+    }
+
+    public void FindQuickMatch()
+    {
+        _isSearchingQuickMatch = true;
+        Debug.Log("Đang tìm phòng ngẫu nhiên...");
+        // Truyền SessionName = null để Fusion tự tìm phòng trống
+        StartGame(GameMode.AutoHostOrClient, null); 
     }
 
     public async void StartGame(GameMode mode, string roomName)
@@ -191,6 +208,19 @@ public class Launcher : MonoBehaviour, INetworkRunnerCallbacks
 
     void INetworkRunnerCallbacks.OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
     {
+        if (_isSearchingQuickMatch)
+        {
+            foreach (var session in sessionList)
+            {
+                if (session.PlayerCount < 2)
+                {
+                    _isSearchingQuickMatch = false; // Tìm thấy rồi, tắt cờ
+                    Debug.Log($"Ghép trận thành công vào: {session.Name}");
+                    StartGame(GameMode.Client, session.Name);
+                    return;
+                }
+            }
+        }
     }
 
     void INetworkRunnerCallbacks.OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)

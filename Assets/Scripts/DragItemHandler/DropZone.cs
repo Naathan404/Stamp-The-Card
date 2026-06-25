@@ -11,44 +11,37 @@ public class DropZone : MonoBehaviour, IDropHandler
 
     private void Awake()
     {
-        if (_selectedStampZoneController == null)
-        {
-            _selectedStampZoneController = FindAnyObjectByType<SelectedStampZoneController>();
-        }
-
-        if (_inventoryUIController == null)
-        {
-            _inventoryUIController = FindAnyObjectByType<InventoryUIController>();
-        }
+        _selectedStampZoneController = FindAnyObjectByType<SelectedStampZoneController>();
+        _inventoryUIController = FindAnyObjectByType<InventoryUIController>();
     }
 
     public void OnDrop(PointerEventData eventData)
     {
-        if (transform.childCount >= _maxSlot)
-        {
-            Debug.Log("Khong du slot de them stamp");
-            return;
-        }
-
         GameObject dropItem = eventData.pointerDrag;
-
         if (dropItem != null)
         {
             DragItem dragItem = dropItem.GetComponent<DragItem>();
+            StampSlotUI stampSlot = dropItem.GetComponent<StampSlotUI>();
 
-            if (dragItem != null)
+            if (dragItem != null && stampSlot != null)
             {
+                int currentStamps = GetComponentsInChildren<StampSlotUI>().Length;
+                if (dragItem.originalParent != this.transform && currentStamps >= _maxSlot)
+                {
+                    Debug.Log("Không đủ slot để thả stamp!");
+                    return; 
+                }
+
                 dragItem.originalParent = this.transform;
                 dropItem.transform.SetParent(this.transform, false);
 
-                //Luu selected item vao local player data
-                _selectedStampZoneController.SaveSelectedStampsToLocal();
-
-                //Sap xep lai inventory panel
-                if (_isInventory && _inventoryUIController != null)
-                {
+                // Dọn dẹp kho đồ
+                if (_inventoryUIController != null)
                     _inventoryUIController.SortInventoryPanelUI();
-                }
+
+                // Lưu Balo
+                if (_selectedStampZoneController != null)
+                    _selectedStampZoneController.SaveSelectedStampsToLocal();
             }
         }
     }

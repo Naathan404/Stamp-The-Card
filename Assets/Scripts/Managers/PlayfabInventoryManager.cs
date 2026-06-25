@@ -42,11 +42,17 @@ public class PlayFabInventoryManager : MonoBehaviour
             newStamp.stampInstanceID = item.ItemInstanceId;
             newStamp.data = LocalPlayerData.AllStampsDatabase.Find(stamp => stamp.stampID.ToString() == item.ItemId);
 
+            if (newStamp.data == null) continue;
+
             LocalPlayerData.StampInInventory.Add(newStamp);
         }
 
-        OnInventoryChanged?.Invoke();
-        PlayfabManager.Instance.LoadSelectedStamps();
+        // OnInventoryChanged?.Invoke();
+        // PlayfabManager.Instance.LoadSelectedStamps();
+        PlayfabManager.Instance.LoadSelectedStamps(() =>
+        {
+            OnInventoryChanged?.Invoke();
+        });
     }
 
     private void OnGetInventoryFailed(PlayFabError error)

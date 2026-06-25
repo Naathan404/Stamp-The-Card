@@ -14,12 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ConditionalScoreModifierStampData
   _stampID: 18
   _stampRank: 1
-  _stampName: "Th\u1EE3 s\u0103n"
-  _stampEffect: "+3 n\xFAt n\u1EBFu s\u1ED1 n\xFAt m\u1EB7c \u0111\u1ECBnh l\xE0
-    l\u1EBB"
+  _stampName: Hunter
+  _stampEffect: +3 if Base Pts are odd.
   targets: 00000000
   _bloodCost: 0
-  stampArt: {fileID: 0}
+  ExeTier: 1
+  stampArt: {fileID: 8517562189041588628, guid: a51df43e32408714d945b081aa34d79b, type: 3}
+  frameArt: {fileID: -301872509239524730, guid: d87fd72a626ddd14f9ec75187148c9b9, type: 3}
   isEnabled: 1
   amountToChange: 3
   scoreOperator: 0
