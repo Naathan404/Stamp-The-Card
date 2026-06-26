@@ -141,6 +141,8 @@ public class StampDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
                 _bloodImpactParticle.gameObject.SetActive(true);
                 _bloodImpactParticle.Play();
             }
+
+            AudioManager.Instance.PlaySFX(AudioManager.Instance.StampUsed, false, true, 5f);
         });
 
         seq.Append(_stampToolInstance.transform

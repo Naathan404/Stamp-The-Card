@@ -44,5 +44,7 @@ public class DropZone : MonoBehaviour, IDropHandler
                     _selectedStampZoneController.SaveSelectedStampsToLocal();
             }
         }
+
+        AudioManager.Instance.PlaySFX(AudioManager.Instance.StampUsed);
     }
 }
