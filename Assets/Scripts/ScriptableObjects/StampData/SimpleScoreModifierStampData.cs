@@ -23,10 +23,13 @@ public class SimpleScoreModifierStampData : BaseStampData
         ApplyToTargets(myCards, enemyCards, currentCardIndex);
         return "ScoreChanged";
     }
+    
 
-    protected void ApplyToTargets(CardSlot[] myCards, CardSlot[] enemyCards, int currentCardIndex)
+    protected void ApplyToTargets(CardSlot[] myCards, CardSlot[] enemyCards, int currentCardIndex, float? valueOverride = null)
     {
         var uniqueTargets = targets.Distinct();                 //Dam bao cac target phan biet nhau trong truong hop nhap du lieu trung lap
+        
+        float finalValue = valueOverride.HasValue ? valueOverride.Value : amountToChange;
 
         foreach (var target in uniqueTargets)
         {
@@ -47,13 +50,13 @@ public class SimpleScoreModifierStampData : BaseStampData
                 case Target.ALL_ENEMY_CARDS:
                     foreach (var card in enemyCards)
                     {
-                        ApplyScoreOperator(card, amountToChange, scoreOperator);
+                        ApplyScoreOperator(card, finalValue, scoreOperator);
                     }
                     continue;
             }
 
             if (targetSlot != null)
-                ApplyScoreOperator(targetSlot, amountToChange, scoreOperator);
+                ApplyScoreOperator(targetSlot, finalValue, scoreOperator);
         }
     }
 

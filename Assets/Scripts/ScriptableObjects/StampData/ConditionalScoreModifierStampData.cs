@@ -19,13 +19,17 @@ public class ConditionalScoreModifierStampData : SimpleScoreModifierStampData
     [Header("Condition to trigger stamp effect")]
     public Condition Condition;
 
+    private float _tempValueToChange;
+
     public override string ApplyEffect(CardSlot[] myCards, CardSlot[] enemyCards, int currentCardIndex)
     {
         if (!isEnabled) return "NoEffect";
 
+        _tempValueToChange = amountToChange;
+
         if (CheckCondition(myCards, enemyCards, currentCardIndex))
         {
-            ApplyToTargets(myCards, enemyCards, currentCardIndex);
+            ApplyToTargets(myCards, enemyCards, currentCardIndex, _tempValueToChange);
             return "ScoreChanged";
         }
         else
@@ -51,7 +55,7 @@ public class ConditionalScoreModifierStampData : SimpleScoreModifierStampData
 
             case Condition.IS_STAMPED:
                 bool isStamped = GetStampCount(targetToCheck) > 0;
-                amountToChange = isStamped ? -1 : -3;
+                _tempValueToChange = isStamped ? -1 : -3;
                 return true;
 
             case Condition.IS_NOT_HIGHER_THAN_5:
@@ -75,6 +79,7 @@ public class ConditionalScoreModifierStampData : SimpleScoreModifierStampData
              case Condition.DISABLE_OTHER_STAMPS:
                   // Sửa lỗi: Dò Server để vô hiệu hóa tem
                   int startIndex = targetToCheck.Data.CardID * 3;
+                  bool hasDisabledAny = false;
                   for (int i = 0; i < 3; i++)
                   {
                       int stampID = GameManager.Instance.CardAttachedStamps[startIndex + i];
@@ -83,9 +88,14 @@ public class ConditionalScoreModifierStampData : SimpleScoreModifierStampData
                           BaseStampData stampData = DataManager.Instance.GetStampDataByID(stampID);
                           if (stampData != null && stampData.stampName != this.stampName)
                           {
-                              stampData.isEnabled = false;
+                              hasDisabledAny = true;
                           }
                       }
+                  }
+                  if (hasDisabledAny)
+                  {
+                      targetToCheck.StampsDisabled = true;
+                      targetToCheck.UpdateStatusUI();
                   }
                   return true;
 

@@ -68,12 +68,14 @@ public class TableVisualManager : Singleton<TableVisualManager>
     {
         for(int i = 0; i < 3; i++)
         {
+            
             _bottomInitialPos[i] = BottomCardSprites[i].transform.position;
             _topInitialPos[i] = TopCardSprites[i].transform.position;
 
             BottomCardSprites[i].gameObject.SetActive(false);
             TopCardSprites[i].gameObject.SetActive(false);
             StampSprites[i].gameObject.SetActive(false);
+            FrameSprites[i].gameObject.SetActive(true);
 
             _originalStampPosition[i] = StampSprites[i].transform.position;
             _originalStampScale[i] = StampSprites[i].transform.localScale;
@@ -109,7 +111,7 @@ public class TableVisualManager : Singleton<TableVisualManager>
         _dealCoroutine = StartCoroutine(DealCardsRoutine(myCards, oppCards));
 
         int SoundNum = Random.Range(1, 3);
-        AudioManager.Instance.PlaySFX(AudioManager.Instance.DealSFX[SoundNum], true);
+        //AudioManager.Instance.PlaySFX(AudioManager.Instance.DealSFX[SoundNum], true);
     }
 
     public void StartCalculatePhaseVisuals()
@@ -121,6 +123,7 @@ public class TableVisualManager : Singleton<TableVisualManager>
     {
         CardSlot[] hostSlots = GetHostCardSlots();
         CardSlot[] clientSlots = GetClientCardSlots();
+
         for (int i = 0; i < 3; i++)
         {
             if (hostSlots[i].Data != null)
@@ -130,6 +133,12 @@ public class TableVisualManager : Singleton<TableVisualManager>
                 {
                     hostSlots[i].StampsDisabled = true;
                 }
+                if (GameManager.Instance.Runner.IsServer)
+                {
+                    CardStatusUI hostStatus = hostSlots[i].GetComponent<CardStatusUI>();
+                    if (hostStatus != null) 
+                        hostStatus.RefreshStatusIcons(hostSlots[i]);   
+                }
             }
             if (clientSlots[i].Data != null)
             {
@@ -137,6 +146,12 @@ public class TableVisualManager : Singleton<TableVisualManager>
                 if (GameManager.Instance.IsCardStampsPermanentlyDisabled(clientSlots[i].Data.CardID))
                 {
                     clientSlots[i].StampsDisabled = true;
+                }
+                if(GameManager.Instance.Runner.IsClient)
+                {
+                    CardStatusUI clientStatus = clientSlots[i].GetComponent<CardStatusUI>();
+                    if (clientStatus != null) 
+                        clientStatus.RefreshStatusIcons(clientSlots[i]);  
                 }
             }
         }
@@ -228,11 +243,17 @@ public class TableVisualManager : Singleton<TableVisualManager>
             {
                 if(bottomSlot != null && bottomSlot.StampRenderers[s] != null)
                 {
+                    bottomSlot.Reset();
+                    if(bottomSlot.TryGetComponent<CardStatusUI>(out CardStatusUI bottomStatus))
+                        bottomStatus.ForceClearIcons();
+                        
                     bottomSlot.StampRenderers[s].gameObject.SetActive(false);
                     bottomSlot.StampRenderers[s].enabled = false;
                 }
                 if (topSlot != null && topSlot.StampRenderers[s] != null)
                 {
+                    if(topSlot.TryGetComponent<CardStatusUI>(out CardStatusUI topStatus))
+                        topStatus.ForceClearIcons();
                     topSlot.StampRenderers[s].gameObject.SetActive(false);
                     topSlot.StampRenderers[s].enabled = false;
                 }
@@ -386,6 +407,7 @@ public class TableVisualManager : Singleton<TableVisualManager>
                 StampSprites[i].transform.DOKill();
                 StampSprites[i].transform.position = _originalStampPosition[i];
                 StampSprites[i].gameObject.SetActive(true);
+                FrameSprites[i].gameObject.SetActive(true);
                 StampSprites[i].transform
                     .DOScale(_originalStampScale[i], 0.4f)
                     .SetEase(Ease.OutBack)
@@ -546,7 +568,7 @@ public class TableVisualManager : Singleton<TableVisualManager>
         // }, targetScore, 0.5f).SetEase(Ease.OutQuad);
         int difference = targetScore - currentScore;
         SpawnFloatingText(textMesh, difference);
-        AudioManager.Instance.PlaySFX(AudioManager.Instance.CountScoreSFX, true);
+        //AudioManager.Instance.PlaySFX(AudioManager.Instance.CountScoreSFX, true);
         textMesh.transform.DOKill(true); 
         textMesh.transform.DOPunchScale(Vector3.one * 0.5f, 0.5f, vibrato: 3);
 
@@ -636,6 +658,11 @@ public class TableVisualManager : Singleton<TableVisualManager>
             topCard.sprite = cardData.Artwork;
             topslot.Data = cardData;
             topslot.Score = cardData.BaseScore;
+
+            CardStatusUI statusUI = topslot.GetComponent<CardStatusUI>();
+            if (statusUI != null) 
+                statusUI.RefreshStatusIcons(topslot);
+
             topCard.transform.DORotate(Vector3.zero, _rotateOpponentCardTime).SetEase(Ease.OutQuad);
 
             TopCardTexts[i].gameObject.SetActive(true);

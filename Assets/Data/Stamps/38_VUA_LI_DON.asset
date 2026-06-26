@@ -15,8 +15,7 @@ MonoBehaviour:
   _stampID: 38
   _stampRank: 3
   _stampName: King of Toughness
-  _stampEffect: On this lane, if you lose, the damage taken during the Calculate
-    Phase is reduced to 0.
+  _stampEffect: If lower score this turn, damage taken is reduced to 0.
   targets: 
   _bloodCost: 1
   ExeTier: 4

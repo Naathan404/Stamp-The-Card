@@ -17,44 +17,111 @@ public class EndPhaseHandler : PhaseHandler
         CardSlot[] hostSlots = TableVisualManager.Instance.GetHostCardSlots();
         CardSlot[] clientSlots = TableVisualManager.Instance.GetClientCardSlots();
 
+        bool hostHasToughness = false;
+        bool clientHasToughness = false;
+
         int tempHostTotal = 0;
         int tempClientTotal = 0;
+
+        int hostReverseDmg = 0;   
+        int clientReverseDmg = 0;
+
         for(int i = 0; i < 3; i++)
         {
-            if (hostSlots[i].IsReverseBalance || clientSlots[i].IsReverseBalance || 
-                hostSlots[i].IsKingOfToughness || clientSlots[i].IsKingOfToughness) 
+            if (hostSlots[i].IsKingOfToughness) hostHasToughness = true;
+            if (clientSlots[i].IsKingOfToughness) clientHasToughness = true;
+        }
+
+        for(int i = 0; i < 3; i++)
+        {
+            if (hostSlots[i].IsReverseBalance || clientSlots[i].IsReverseBalance) 
+            {
+                int diff = Mathf.Abs(hostSlots[i].Score - clientSlots[i].Score);
+                if (hostSlots[i].IsReverseBalance && clientSlots[i].IsReverseBalance) 
+                {
+                    diff *= 2;
+                }
+                
+                if (hostSlots[i].Score > clientSlots[i].Score && !hostHasToughness) 
+                    hostReverseDmg += diff;
+                else if (clientSlots[i].Score > hostSlots[i].Score && !clientHasToughness) 
+                    clientReverseDmg += diff;
                 continue;
+            }
 
             tempHostTotal += hostSlots[i].Score;
             tempClientTotal += clientSlots[i].Score;
         }
 
-        gameManager.RPC_PlayEndPhaseCinematic(tempHostTotal, tempClientTotal);
+        gameManager.RPC_PlayEndPhaseCinematic(tempHostTotal, tempClientTotal, hostReverseDmg, clientReverseDmg, hostHasToughness, clientHasToughness);
 
-        await Task.Delay(7000);
+        int dynamicDelay = CalculateCinematicDelay(tempHostTotal, tempClientTotal, hostReverseDmg, clientReverseDmg, hostHasToughness, clientHasToughness);
+
+        await Task.Delay(dynamicDelay);
         CalculateAndApplyDamage(hostSlots, clientSlots);
 
         await Task.Delay(1500);
-        if(CheckWinCondition()) return;
+        if(CheckWinCondition()) 
+            return;
+
         PrepareNextTurn();
+    }
+
+        /// <summary>
+    /// Hàm tính toán tổng thời gian Cinematic 
+    /// </summary>
+    private int CalculateCinematicDelay(int hostTotal, int clientTotal, int hostRev, int clientRev, bool hostTough, bool clientTough)
+    {
+        int hostReal = hostTotal % 10;
+        int clientReal = clientTotal % 10;
+
+        int hostBase = (hostReal < clientReal && !hostTough) ? (clientReal - hostReal) : 0;
+        int clientBase = (clientReal < hostReal && !clientTough) ? (hostReal - clientReal) : 0;
+
+        float timeInSeconds = 5.5f; 
+
+        if (hostBase == 0 && clientBase == 0 && hostRev == 0 && clientRev == 0)
+        {
+            timeInSeconds += 2.0f; 
+        }
+        else
+        {
+            if (hostBase > 0) timeInSeconds += 2.0f; 
+            if (clientBase > 0)
+            {
+                if (hostBase > 0) timeInSeconds += 0.4f; 
+                timeInSeconds += 2.0f;
+            }
+
+            if (hostRev > 0 || clientRev > 0)
+            {
+                timeInSeconds += 0.4f; 
+                if (hostRev > 0) timeInSeconds += 2.0f;
+                if (clientRev > 0)
+                {
+                    if (hostRev > 0) timeInSeconds += 0.4f; 
+                    timeInSeconds += 2.0f;
+                }
+            }
+        }
+        return (int)(timeInSeconds * 1000); 
     }
 
     private (int, int) CalculateAndApplyDamage(CardSlot[] hostSlots, CardSlot[] clientSlots)
     {
         int hostTotal = 0;
         int clientTotal = 0;
+        bool hostHasToughness = false;
+        bool clientHasToughness = false;
 
         for(int i = 0; i < 3; i++)
         {
+            if (hostSlots[i].IsKingOfToughness) hostHasToughness = true;
+            if (clientSlots[i].IsKingOfToughness) clientHasToughness = true;
+
             if (hostSlots[i].IsReverseBalance || clientSlots[i].IsReverseBalance)
             {
-                ApplyReverseBalanceDamage(hostSlots[i], clientSlots[i]);
-                continue; // Bỏ qua, KHÔNG cộng vào tổng
-            }
-
-            if (hostSlots[i].IsKingOfToughness || clientSlots[i].IsKingOfToughness)
-            {
-                ApplyKingOfToughnessDamage(hostSlots[i], clientSlots[i]);
+                ApplyReverseBalanceDamage(hostSlots[i], clientSlots[i], hostHasToughness, clientHasToughness);
                 continue; // Bỏ qua, KHÔNG cộng vào tổng
             }
 
@@ -71,13 +138,31 @@ public class EndPhaseHandler : PhaseHandler
 
         if (hostFinal < clientFinal)
         {
-            ApplyDamageToHost(damage, hostSlots);
-            Debug.Log($"[EndPhase] Host nhận {damage} sát thương");
+            // ApplyDamageToHost(damage, hostSlots);
+            // Debug.Log($"[EndPhase] Host nhận {damage} sát thương");
+            if (hostHasToughness) 
+            {
+                Debug.Log("[Vua Lì Đòn] Host thua điểm TỔNG LƯỢT nhưng được miễn toàn bộ sát thương!");
+            }
+            else 
+            {
+                ApplyDamageToHost(damage, hostSlots);
+                Debug.Log($"[EndPhase] Host nhận {damage} sát thương");
+            }
         }
         else if (clientFinal < hostFinal)
         {
-            ApplyDamageToClient(damage, clientSlots);
-            Debug.Log($"[EndPhase] Client nhận {damage} sát thương");
+            // ApplyDamageToClient(damage, clientSlots);
+            // Debug.Log($"[EndPhase] Client nhận {damage} sát thương");
+            if (clientHasToughness) 
+            {
+                Debug.Log("[Vua Lì Đòn] Client thua điểm TỔNG LƯỢT nhưng được miễn toàn bộ sát thương!");
+            }
+            else 
+            {
+                ApplyDamageToClient(damage, clientSlots);
+                Debug.Log($"[EndPhase] Client nhận {damage} sát thương");
+            }
         }
         else
         {
@@ -218,46 +303,60 @@ public class EndPhaseHandler : PhaseHandler
     #region LOGIC của các STAMPS đặc biệt
 
     // Stamp Đảo nược cán cân: bên nào điểm cao hơn sẽ bị trừ máu bằng đúng chênh lệch điểm
-    private void ApplyReverseBalanceDamage(CardSlot hostSlot, CardSlot clientSlot)
+    private void ApplyReverseBalanceDamage(CardSlot hostSlot, CardSlot clientSlot, bool hostTough, bool clientTough)
     {
         int diff = Mathf.Abs(hostSlot.Score - clientSlot.Score);
         if (diff == 0) return;
 
         if (hostSlot.Score > clientSlot.Score)
         {
-            ApplyDamageToHost(diff, null);
-            Debug.Log($"[Đảo Ngược Cán Cân] Host điểm cao hơn -> nhận {diff} sát thương");
+            // ApplyDamageToHost(diff, null);
+            // Debug.Log($"[Đảo Ngược Cán Cân] Host điểm cao hơn -> nhận {diff} sát thương");
+            if (hostTough) 
+                Debug.Log($"[Vua Lì Đòn] Host bị Đảo Ngược Cán Cân nhưng được MIỄN {diff} sát thương");
+            else 
+            {
+                ApplyDamageToHost(diff, null);
+                Debug.Log($"[Đảo Ngược Cán Cân] Host điểm cao hơn -> nhận {diff} sát thương");
+            }
         }
         else
         {
-            ApplyDamageToClient(diff, null);
-            Debug.Log($"[Đảo Ngược Cán Cân] Client điểm cao hơn -> nhận {diff} sát thương");
+            // ApplyDamageToClient(diff, null);
+            // Debug.Log($"[Đảo Ngược Cán Cân] Client điểm cao hơn -> nhận {diff} sát thương");
+            if (clientTough) 
+                Debug.Log($"[Vua Lì Đòn] Client bị Đảo Ngược Cán Cân nhưng được MIỄN {diff} sát thương");
+            else 
+            {
+                ApplyDamageToClient(diff, null);
+                Debug.Log($"[Đảo Ngược Cán Cân] Client điểm cao hơn -> nhận {diff} sát thương");
+            }
         }
     }
 
-    /// stamp Vua Lì Đòn: nếu thua cột này thì sát thương nhận vào = 0
-    private void ApplyKingOfToughnessDamage(CardSlot hostSlot, CardSlot clientSlot)
-    {
-        int diff = Mathf.Abs(hostSlot.Score - clientSlot.Score);
-        if (diff == 0) return;
+    // /// stamp Vua Lì Đòn: nếu thua cột này thì sát thương nhận vào = 0
+    // private void ApplyKingOfToughnessDamage(CardSlot hostSlot, CardSlot clientSlot)
+    // {
+    //     int diff = Mathf.Abs(hostSlot.Score - clientSlot.Score);
+    //     if (diff == 0) return;
 
-        if (hostSlot.Score < clientSlot.Score && hostSlot.IsKingOfToughness)
-        {
-            Debug.Log("[Vua Lì Đòn] Host thua cột này nhưng được miễn sát thương");
-            return;
-        }
-        if (clientSlot.Score < hostSlot.Score && clientSlot.IsKingOfToughness)
-        {
-            Debug.Log("[Vua Lì Đòn] Client thua cột này nhưng được miễn sát thương");
-            return;
-        }
+    //     if (hostSlot.Score < clientSlot.Score && hostSlot.IsKingOfToughness)
+    //     {
+    //         Debug.Log("[Vua Lì Đòn] Host thua cột này nhưng được miễn sát thương");
+    //         return;
+    //     }
+    //     if (clientSlot.Score < hostSlot.Score && clientSlot.IsKingOfToughness)
+    //     {
+    //         Debug.Log("[Vua Lì Đòn] Client thua cột này nhưng được miễn sát thương");
+    //         return;
+    //     }
 
-        // Không có Vua Lì Đòn ở bên thua -> tính bình thường
-        if (hostSlot.Score < clientSlot.Score)
-            ApplyDamageToHost(diff, null);
-        else
-            ApplyDamageToClient(diff, null);
-    }
+    //     // Không có Vua Lì Đòn ở bên thua -> tính bình thường
+    //     if (hostSlot.Score < clientSlot.Score)
+    //         ApplyDamageToHost(diff, null);
+    //     else
+    //         ApplyDamageToClient(diff, null);
+    // }
 
     /// stamp Bùa Bình An: nếu máu về 0 thì kích hoạt, tránh chết và vô hiệu stamp từ đây
     /// 

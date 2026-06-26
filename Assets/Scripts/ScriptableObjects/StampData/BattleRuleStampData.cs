@@ -26,16 +26,19 @@ public class BattleRuleStampData : BaseStampData
 
             case BattleRuleType.KING_OF_TOUGHNESS:
                 myCards[currentCardIndex].IsKingOfToughness = true;
+                myCards[currentCardIndex].UpdateStatusUI();
                 Debug.Log($"[Vua Lì Đòn] Slot {currentCardIndex} được miễn sát thương nếu thua cột này");
                 return "TOUGH";
 
             case BattleRuleType.REVERSE_BALANCE:
                 myCards[currentCardIndex].IsReverseBalance = true;
+                myCards[currentCardIndex].UpdateStatusUI();
                 Debug.Log($"[Đảo Ngược Cán Cân] Slot {currentCardIndex} - bên điểm cao hơn sẽ bị trừ máu");
                 return "REVERSE";
 
             case BattleRuleType.PEACE_AMULET:
                 myCards[currentCardIndex].HasPeaceAmulet = true;
+                myCards[currentCardIndex].UpdateStatusUI();
                 Debug.Log($"[Bùa Bình An] Slot {currentCardIndex} sẽ được cứu nếu máu về 0");
                 return "AMULET";
 
@@ -54,8 +57,8 @@ public class BattleRuleStampData : BaseStampData
         CardSlot enemySlot = enemyCards[2 - currentCardIndex];
 
         // Tra cứu Sổ Cái và vô hiệu hóa (trừ chính cái tem Thẩm Phán này)
-        NullifyStampsOnCard(mySlot, this);
-        NullifyStampsOnCard(enemySlot, null);
+        // NullifyStampsOnCard(mySlot, this);
+        // NullifyStampsOnCard(enemySlot, null);
 
         // Reset điểm về gốc
         mySlot.Score = mySlot.Data.BaseScore;
@@ -65,6 +68,9 @@ public class BattleRuleStampData : BaseStampData
         mySlot.StampsDisabled    = true;
         enemySlot.StampsDisabled = true;
 
+        mySlot.UpdateStatusUI();
+        enemySlot.UpdateStatusUI();
+
         Debug.Log($"[Thẩm Phán] Cột {currentCardIndex} bị vô hiệu toàn bộ stamp, về điểm gốc");
     }
 
@@ -72,6 +78,8 @@ public class BattleRuleStampData : BaseStampData
     private void ApplyCremation(CardSlot[] myCards,CardSlot[] enemyCards, int currentCardIndex)
     {
         System.Collections.Generic.List<int> validTargets = new System.Collections.Generic.List<int>();
+        CardSlot mySlot = myCards[currentCardIndex];
+
         for (int i = 0; i < 3; i++)
         {
             if (!enemyCards[i].IsIgnored) validTargets.Add(i);
@@ -82,16 +90,18 @@ public class BattleRuleStampData : BaseStampData
             int randomIndex = validTargets[Random.Range(0, validTargets.Count)];
             enemyCards[randomIndex].IsIgnored = true;
             enemyCards[randomIndex].Score = 0;
-            NullifyStampsOnCard(enemyCards[randomIndex], null);
+            //NullifyStampsOnCard(enemyCards[randomIndex], null);
+            enemyCards[randomIndex].StampsDisabled = true;
+            enemyCards[randomIndex].UpdateStatusUI();
             Debug.Log($"[Hỏa Thiêu] Đốt lá {randomIndex} của đối thủ");
         }
 
-        if (GameStateManager.Instance.CurrentTurn > 1)
-        {
-            myCards[currentCardIndex].Score = 0;
-            myCards[currentCardIndex].IsIgnored = true;
-            Debug.Log($"[Hỏa Thiêu] Lá {currentCardIndex} tự thiêu!");
-        }
+        myCards[currentCardIndex].Score = 0;
+        myCards[currentCardIndex].IsIgnored = true;
+        // NullifyStampsOnCard(mySlot, this);
+        myCards[currentCardIndex].StampsDisabled = true;
+        mySlot.UpdateStatusUI();
+        Debug.Log($"[Hỏa Thiêu] Lá {currentCardIndex} tự thiêu!");
     }
 
     private void NullifyStampsOnCard(CardSlot cardSlot, BaseStampData exceptionStamp)

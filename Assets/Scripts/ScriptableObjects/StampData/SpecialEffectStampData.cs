@@ -55,6 +55,7 @@ public class SpecialEffectStampData : BaseStampData
 
             case EffectType.IMMUNITY:
                 myCards[currentCardIndex].IsImmuneLowerScore = true;
+                myCards[currentCardIndex].UpdateStatusUI();
                 return "IMMUNE";
 
             case EffectType.RESET_SCORE:
@@ -82,6 +83,7 @@ public class SpecialEffectStampData : BaseStampData
     private void NullifyStampEffect(CardSlot currentCard)
     {
         int startIndex = currentCard.Data.CardID * 3;
+        bool hasDisabledAny = false;
         for (int i = 0; i < 3; i++)
         {
             int stampID = GameManager.Instance.CardAttachedStamps[startIndex + i];
@@ -90,9 +92,15 @@ public class SpecialEffectStampData : BaseStampData
                 BaseStampData stampData = DataManager.Instance.GetStampDataByID(stampID);
                 if (stampData != null && stampData != this)
                 {
-                    stampData.isEnabled = false;
+                    //stampData.isEnabled = false;
+                    hasDisabledAny = true;
                 }
             }
+        }
+        if (hasDisabledAny)
+        {
+            currentCard.StampsDisabled = true;
+            currentCard.UpdateStatusUI();
         }
     }
 

@@ -9,17 +9,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1cdb312c59beb5548818c3bd7907a573, type: 3}
+  m_Script: {fileID: 11500000, guid: 3d1f71ba2781f8c43a163c2d67f9e888, type: 3}
   m_Name: 37_THAM_PHAN
-  m_EditorClassIdentifier: Assembly-CSharp::SpecialEffectStampData
+  m_EditorClassIdentifier: Assembly-CSharp::BattleRuleStampData
   _stampID: 37
   _stampRank: 3
   _stampName: Judgement
   _stampEffect: Disable all Stamps on the board and reset all cards to Base Score.
-  targets: 00000000020000000100000004000000
-  _bloodCost: 1
-  ExeTier: 0
-  stampArt: {fileID: 2485650988188125947, guid: 4ab5eeb571a12114aa73e3c6170723cb, type: 3}
+  targets: 00000000010000000200000004000000
+  _bloodCost: 0
+  ExeTier: 2
+  stampArt: {fileID: 7896338597633576152, guid: 7ad045e8738192d4ab61ada41b67c130, type: 3}
   frameArt: {fileID: 7836703823118725582, guid: 7b609d5bde9fb9640a61f75da03297a7, type: 3}
   isEnabled: 1
-  effectType: 3
+  battleRuleType: 0
