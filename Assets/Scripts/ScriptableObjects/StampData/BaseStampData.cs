@@ -14,6 +14,7 @@ public enum Target
     LEFT,
     OPPOSITE,
     ALL_ENEMY_CARDS,
+    ALL_ALLY_CARDS
 }
 
 public enum ExecutionTier

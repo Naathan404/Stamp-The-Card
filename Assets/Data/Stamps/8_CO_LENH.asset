@@ -16,7 +16,7 @@ MonoBehaviour:
   _stampRank: 0
   _stampName: War Banner
   _stampEffect: 'All Allies: +1 Pts.'
-  targets: 000000000100000002000000
+  targets: 05000000
   _bloodCost: 0
   ExeTier: 2
   stampArt: {fileID: -4335973737766992837, guid: a9663c82c6d18fc4abc026a95a56a54b, type: 3}

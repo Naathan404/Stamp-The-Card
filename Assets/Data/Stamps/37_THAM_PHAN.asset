@@ -16,7 +16,7 @@ MonoBehaviour:
   _stampRank: 3
   _stampName: Judgement
   _stampEffect: Disable all Stamps on the board and reset all cards to Base Score.
-  targets: 00000000010000000200000004000000
+  targets: 0000000001000000020000000400000005000000
   _bloodCost: 0
   ExeTier: 2
   stampArt: {fileID: 7896338597633576152, guid: 7ad045e8738192d4ab61ada41b67c130, type: 3}

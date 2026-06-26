@@ -53,6 +53,12 @@ public class SimpleScoreModifierStampData : BaseStampData
                         ApplyScoreOperator(card, finalValue, scoreOperator);
                     }
                     continue;
+                case Target.ALL_ALLY_CARDS:
+                    foreach (var card in myCards)
+                    {
+                        ApplyScoreOperator(card, finalValue, scoreOperator);
+                    }
+                    continue;
             }
 
             if (targetSlot != null)
