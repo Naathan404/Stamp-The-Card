@@ -1,6 +1,7 @@
 using UnityEngine;
-using UnityEngine.EventSystems; // Bắt buộc phải có
+using UnityEngine.EventSystems;
 using DG.Tweening;
+using Unity.VisualScripting;
 
 [RequireComponent(typeof(BoxCollider2D), typeof(SpriteRenderer))]
 public class StampDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
@@ -111,7 +112,8 @@ public class StampDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         int slotIndex = targetCard.GetComponent<CardSlot>().Index;
 
         _spriteRenderer.enabled = false;
-        _frame.enabled = false;
+        //_frame.enabled = false;
+        _frame.gameObject.SetActive(false);
         isUsed = true;
 
         // Spawn stamp tool animation
@@ -123,7 +125,7 @@ public class StampDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         // Reset fade phòng trường hợp lượt trước bị dở
         _stampToolInstance.GetComponent<SpriteRenderer>().DOFade(1f, 0f);
 
-        Sequence seq = DOTween.Sequence();
+        DG.Tweening.Sequence seq = DOTween.Sequence();
 
         seq.Append(_stampToolInstance.transform
             .DOMove(targetCard.transform.position, _stampImpactDuration)
@@ -157,6 +159,7 @@ public class StampDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
             bool amIHost = GameManager.Instance.Runner.IsServer;
             GameManager.Instance.RPC_PlayStamp(slotIndex, stampID, amIHost);
 
+            _frame.gameObject.SetActive(true);
             gameObject.SetActive(false);
         });
     }
@@ -166,7 +169,8 @@ public class StampDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         stampID = newStampID;
         isUsed = false;
         _spriteRenderer.enabled = true;
-        _frame.enabled = true;
+        //_frame.enabled = true;
+        _frame.gameObject.SetActive(true);
         _spriteRenderer.sprite = newSprite;
         _frame.sprite = frame;
         _spriteRenderer.DOFade(1f, 0f);

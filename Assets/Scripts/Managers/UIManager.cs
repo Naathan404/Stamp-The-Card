@@ -96,8 +96,8 @@ public class UIManager : MonoBehaviour
 
     private void Start()
     {
-        _bottomHpText.text = "15";
-        _topHpText.text = "15";
+        _bottomHpText.text = "HP: 15";
+        _topHpText.text = "HP: 15";
         _bottomStampCount.text = "9";
         _topStampCount.text = "9";
         BlackScreenCurtain.gameObject.SetActive(true);
@@ -165,7 +165,7 @@ public class UIManager : MonoBehaviour
                 hpText.color = Color.red;
                 hpText.transform.DOPunchScale(Vector3.one * 0.5f, 0.5f, vibrato: 10, elasticity: 1);
                 hpText.transform.DOShakePosition(0.5f, strength: 15f);
-                AudioManager.Instance.PlaySFX(AudioManager.Instance.minusHPSFX, true);
+                //AudioManager.Instance.PlaySFX(AudioManager.Instance.minusHPSFX, true);
                 // Rung cả Camera để thấy chấn động
                 if (Camera.main != null) 
                 {
@@ -201,7 +201,7 @@ public class UIManager : MonoBehaviour
             hpText.color = Color.green;
             hpText.transform.DOPunchScale(Vector3.one * 0.3f, 0.5f, vibrato: 5);
             hpText.DOColor(Color.white, 0.5f).SetDelay(0.5f);
-            AudioManager.Instance.PlaySFX(AudioManager.Instance.HealSFX, true);
+            //AudioManager.Instance.PlaySFX(AudioManager.Instance.HealSFX, true);
         }
 
         DOTween.To(() => oldHp, x => {
@@ -430,19 +430,33 @@ public class UIManager : MonoBehaviour
         });
     }
 
-    public IEnumerator CinematicEndPhaseRoutine(int hostRawScore, int clientRawScore)
+    public IEnumerator CinematicEndPhaseRoutine(int hostRawScore, int clientRawScore, int hostReverseDmg = 0, int clientReverseDmg = 0, bool hostTough = false, bool clientTough = false)
     {
         bool amIHost = GameManager.Instance.Runner.IsServer; 
         int playerRawScore = amIHost ? hostRawScore : clientRawScore;
         int oppRawScore = amIHost ? clientRawScore : hostRawScore;
 
+        // Nhận lượng sát thương Đảo Ngược
+        int myReverseDmg = amIHost ? hostReverseDmg : clientReverseDmg;
+        int oppReverseDmg = amIHost ? clientReverseDmg : hostReverseDmg;
+
+        int myVisualHP = amIHost ? GameManager.Instance.HostHP : GameManager.Instance.ClientHP;
+        int oppVisualHP = amIHost ? GameManager.Instance.ClientHP : GameManager.Instance.HostHP;
+
+        bool myToughness = amIHost ? hostTough : clientTough;
+        bool oppToughness = amIHost ? clientTough : hostTough;
+
         // --- bước 0: Tính toán Logic
         int playerRealScore = playerRawScore % 10;
         int oppRealScore = oppRawScore % 10;
-        int damage = Mathf.Abs(playerRealScore - oppRealScore);
+
+        // int damage = Mathf.Abs(playerRealScore - oppRealScore);
         
-        // Nếu điểm thực của mình nhỏ hơn địch -> Mình ăn đấm
-        bool iTakeDamage = playerRealScore < oppRealScore; 
+        // // Nếu điểm thực của mình nhỏ hơn địch -> Mình ăn đấm
+        // bool iTakeDamage = playerRealScore < oppRealScore; 
+
+        int myBaseDmg = (playerRealScore < oppRealScore && !myToughness) ? (oppRealScore - playerRealScore) : 0;
+        int oppBaseDmg = (oppRealScore < playerRealScore && !oppToughness) ? (playerRealScore - oppRealScore) : 0;
 
         // Tọa độ điểm chính giữa màn hình
         Vector3 centerScreenPos = new Vector3(Screen.width / 2f, Screen.height / 2f, 0);
@@ -471,23 +485,20 @@ public class UIManager : MonoBehaviour
         yield return DOTween.To(() => 0, x => OppCenterText.text = x.ToString(), oppRawScore, _countTime)
             .SetEase(Ease.OutCubic)
             .WaitForCompletion();
-
         yield return new WaitForSeconds(0.2f);
 
+        // bước 2: ĐẾM ĐIỂM CỦA MÌNH (1 giây)
         PlayerCenterText.gameObject.SetActive(true);
         PlayerCenterText.transform.DOScale(1f, 0.25f).WaitForCompletion();
-        // bước 2: ĐẾM ĐIỂM CỦA MÌNH (1 giây)
         yield return DOTween.To(() => 0, x => PlayerCenterText.text = x.ToString(), playerRawScore, _countTime)
             .SetEase(Ease.OutCubic)
             .WaitForCompletion();
-
         yield return new WaitForSeconds(0.5f);
 
         // -bbước 3: GIẢM ĐỒNG LOẠT VỀ SỐ DƯ
         DG.Tweening.Sequence modSeq = DOTween.Sequence();
         modSeq.Join(DOTween.To(() => oppRawScore, x => OppCenterText.text = x.ToString(), oppRealScore, _countTime).SetEase(Ease.InOutSine));
         modSeq.Join(DOTween.To(() => playerRawScore, x => PlayerCenterText.text = x.ToString(), playerRealScore, _countTime).SetEase(Ease.InOutSine));
-        
         // Vừa giảm vừa giật nhẹ để có cảm giác bị ép
         modSeq.Join(OppCenterText.transform.DOShakePosition(_countTime, 10f));
         modSeq.Join(PlayerCenterText.transform.DOShakePosition(_countTime, 10f));
@@ -513,83 +524,195 @@ public class UIManager : MonoBehaviour
         Camera.main.transform.DOShakePosition(0.4f, 0.5f, 25);
 
         // bước 6: HIỆN CHÊNH LỆCH
-        FinalDamageText.gameObject.SetActive(true);
-        FinalDamageText.transform.position = centerScreenPos;
-        FinalDamageText.alpha = 1f;
-        FinalDamageText.transform.rotation = Quaternion.identity;
+        // FinalDamageText.gameObject.SetActive(true);
+        // FinalDamageText.transform.position = centerScreenPos;
+        // FinalDamageText.alpha = 1f;
+        // FinalDamageText.transform.rotation = Quaternion.identity;
 
-        if(damage == 0)
-        {
-            FinalDamageText.text = _drawLines[UnityEngine.Random.Range(0, _drawLines.Count)];
-            FinalDamageText.color = Color.white;
-            FinalDamageText.fontSize = 70;
-        }
-        else
-        {
-            FinalDamageText.text = iTakeDamage ? "-" + damage : damage.ToString();
-            FinalDamageText.color = iTakeDamage ? FilterManager.Instance.HazardColor : FilterManager.Instance.AdvantageColor; 
-            FinalDamageText.fontSize = 150;
-        }
+        // if(damage == 0)
+        // {
+        //     FinalDamageText.text = _drawLines[UnityEngine.Random.Range(0, _drawLines.Count)];
+        //     FinalDamageText.color = Color.white;
+        //     FinalDamageText.fontSize = 70;
+        // }
+        // else
+        // {
+        //     FinalDamageText.text = iTakeDamage ? "-" + damage : damage.ToString();
+        //     FinalDamageText.color = iTakeDamage ? FilterManager.Instance.HazardColor : FilterManager.Instance.AdvantageColor; 
+        //     FinalDamageText.fontSize = 150;
+        // }
         
-        FinalDamageText.transform.localScale = Vector3.zero;
+        // FinalDamageText.transform.localScale = Vector3.zero;
 
-        DG.Tweening.Sequence popSeq = DOTween.Sequence();
-        popSeq.Append(FinalDamageText.transform.DOScale(Vector3.one * 2.5f, _flashTime).SetEase(Ease.OutBack));
-        popSeq.Join(FinalDamageText.transform.DOPunchRotation(new Vector3(0, 0, UnityEngine.Random.Range(-25f, 25f)), _flashTime * 1.25f, vibrato: 6));
-        yield return popSeq.WaitForCompletion();
+        // DG.Tweening.Sequence popSeq = DOTween.Sequence();
+        // popSeq.Append(FinalDamageText.transform.DOScale(Vector3.one * 2.5f, _flashTime).SetEase(Ease.OutBack));
+        // popSeq.Join(FinalDamageText.transform.DOPunchRotation(new Vector3(0, 0, UnityEngine.Random.Range(-25f, 25f)), _flashTime * 1.25f, vibrato: 6));
+        // yield return popSeq.WaitForCompletion();
 
-        yield return new WaitForSeconds(0.5f);
+        // yield return new WaitForSeconds(0.5f);
 
-        // bước 7: ATTACK
-        if(damage > 0)
-        {
-            Vector3 targetPos = iTakeDamage ? PlayerAvatarTransform.position : OppAvatarTransform.position;
-            Vector3 uiTargetPos = Camera.main.WorldToScreenPoint(targetPos);
-            uiTargetPos.z = 0f;
+        // // bước 7: ATTACK
+        // if(damage > 0)
+        // {
+        //     Vector3 targetPos = iTakeDamage ? PlayerAvatarTransform.position : OppAvatarTransform.position;
+        //     Vector3 uiTargetPos = Camera.main.WorldToScreenPoint(targetPos);
+        //     uiTargetPos.z = 0f;
             
-            // Bay vút đi
-            DG.Tweening.Sequence attackSeq = DOTween.Sequence();
-            attackSeq.Append(FinalDamageText.transform.DOMove(uiTargetPos, _attackTime)
-                .SetEase(Ease.InBack, 1.5f));
-            attackSeq.Join(FinalDamageText.transform.DOScale(1.5f, _attackTime)
-                .SetEase(Ease.InBack));
-            attackSeq.Join(FinalDamageText.DOFade(0.7f, _attackTime)
-                .SetEase(Ease.InExpo));
-            yield return attackSeq.WaitForCompletion();
+        //     // Bay vút đi
+        //     DG.Tweening.Sequence attackSeq = DOTween.Sequence();
+        //     attackSeq.Append(FinalDamageText.transform.DOMove(uiTargetPos, _attackTime)
+        //         .SetEase(Ease.InBack, 1.5f));
+        //     attackSeq.Join(FinalDamageText.transform.DOScale(1.5f, _attackTime)
+        //         .SetEase(Ease.InBack));
+        //     attackSeq.Join(FinalDamageText.DOFade(0.7f, _attackTime)
+        //         .SetEase(Ease.InExpo));
+        //     yield return attackSeq.WaitForCompletion();
 
-            FinalDamageText.gameObject.SetActive(false);
+        //     FinalDamageText.gameObject.SetActive(false);
 
-            // Nháy đỏ nếu mình ăn đấm
-            if (iTakeDamage) 
-            {
-                FilterManager.Instance.FlashScreen(FilterManager.Instance.HazardColor, _flashTime);
-                FilterManager.Instance.FlashVignette(FilterManager.Instance.HazardColor, 0.45f, 0.4f);
-                Camera.main.transform.DOShakePosition(0.4f, 0.5f, 25);
-            } 
-            else 
-            {
-                // Đối thủ ăn đấm nháy trắng
-                FilterManager.Instance.FlashScreen(FilterManager.Instance.FlashColor, _flashTime);
-                Camera.main.transform.DOShakePosition(0.2f, strength: 0.3f, vibrato: 15);
-            }
-        }
-        else
+        //     // Nháy đỏ nếu mình ăn đấm
+        //     if (iTakeDamage) 
+        //     {
+        //         FilterManager.Instance.FlashScreen(FilterManager.Instance.HazardColor, _flashTime);
+        //         FilterManager.Instance.FlashVignette(FilterManager.Instance.HazardColor, 0.45f, 0.4f);
+        //         Camera.main.transform.DOShakePosition(0.4f, 0.5f, 25);
+        //     } 
+        //     else 
+        //     {
+        //         // Đối thủ ăn đấm nháy trắng
+        //         FilterManager.Instance.FlashScreen(FilterManager.Instance.FlashColor, _flashTime);
+        //         Camera.main.transform.DOShakePosition(0.2f, strength: 0.3f, vibrato: 15);
+        //     }
+        // }
+        // else
+        // {
+        //     DG.Tweening.Sequence drawSeq = DOTween.Sequence();
+        //     drawSeq.Append(FinalDamageText.transform.DOShakePosition(duration: 0.4f, strength: 20f, vibrato: 15));
+        //     drawSeq.AppendInterval(0.5f);
+        //     drawSeq.Join(FinalDamageText.transform.DOMoveY(FinalDamageText.transform.position.y - 200f, 0.3f).SetEase(Ease.InQuad));
+        //     drawSeq.Join(FinalDamageText.DOFade(0f, 0.3f).SetEase(Ease.InQuad));
+        //     //drawSeq.Join(FinalDamageText.transform.DOScale(Vector3.one * 3f, _attackTime)); // Phình to rồi biến mất
+            
+        //     yield return drawSeq.WaitForCompletion();
+            
+        //     FinalDamageText.gameObject.SetActive(false);
+        // }
+
+        // BƯỚC 6
+        if (myBaseDmg == 0 && oppBaseDmg == 0 && myReverseDmg == 0 && oppReverseDmg == 0)
         {
+            // HÒA HOÀN TOÀN (Không ai mất máu)
+            FinalDamageText.gameObject.SetActive(true);
+            FinalDamageText.transform.position = centerScreenPos;
+            FinalDamageText.alpha = 1f;
+            FinalDamageText.transform.rotation = Quaternion.identity;
+            
+            if (playerRealScore == oppRealScore)
+            {
+                FinalDamageText.text = _drawLines[UnityEngine.Random.Range(0, _drawLines.Count)];
+                FinalDamageText.color = Color.white;
+            }
+            else
+            {
+                FinalDamageText.text = "NO DAMAGE!";
+                FinalDamageText.color = GameConstants.STAMP_LEGENDARY_COLOR;
+            }
+
+            FinalDamageText.fontSize = 70;
+            FinalDamageText.transform.localScale = Vector3.zero;
+
             DG.Tweening.Sequence drawSeq = DOTween.Sequence();
+            drawSeq.Append(FinalDamageText.transform.DOScale(Vector3.one * 2f, _flashTime).SetEase(Ease.OutBack));
             drawSeq.Append(FinalDamageText.transform.DOShakePosition(duration: 0.4f, strength: 20f, vibrato: 15));
             drawSeq.AppendInterval(0.5f);
             drawSeq.Join(FinalDamageText.transform.DOMoveY(FinalDamageText.transform.position.y - 200f, 0.3f).SetEase(Ease.InQuad));
             drawSeq.Join(FinalDamageText.DOFade(0f, 0.3f).SetEase(Ease.InQuad));
-            //drawSeq.Join(FinalDamageText.transform.DOScale(Vector3.one * 3f, _attackTime)); // Phình to rồi biến mất
-            
             yield return drawSeq.WaitForCompletion();
             
             FinalDamageText.gameObject.SetActive(false);
+        }
+        else
+        {
+            // ĐỢT 1: SÁT THƯƠNG CƠ BẢN
+            if (oppBaseDmg > 0) yield return StartCoroutine(AnimateDamageRoutine(oppBaseDmg, false, centerScreenPos, "", oppVisualHP, (newHp) => oppVisualHP = newHp));
+            if (myBaseDmg > 0) yield return StartCoroutine(AnimateDamageRoutine(myBaseDmg, true, centerScreenPos, "", myVisualHP, (newHp) => myVisualHP = newHp));
+
+            // ĐỢT 2: SÁT THƯƠNG ĐẢO NGƯỢC CÁN CÂN
+            if (oppReverseDmg > 0 || myReverseDmg > 0)
+            {
+                yield return new WaitForSeconds(0.4f); 
+                
+                if (oppReverseDmg > 0) yield return StartCoroutine(AnimateDamageRoutine(oppReverseDmg, false, centerScreenPos, "Reverse Balance", oppVisualHP, (newHp) => oppVisualHP = newHp));
+                if (myReverseDmg > 0) yield return StartCoroutine(AnimateDamageRoutine(myReverseDmg, true, centerScreenPos, "Reverse Balance", myVisualHP, (newHp) => myVisualHP = newHp));
+            }
         }
 
         //UpdateHpTexts(amIHost);
     }
 
+    /// <summary>
+    /// Hàm con xử lý hoạt ảnh nảy Text và Phi vào người (Có hỗ trợ thêm dòng text phụ họa)
+    /// </summary>
+    private IEnumerator AnimateDamageRoutine(int damage, bool isMeTakeDamage, Vector3 centerScreenPos, string sourceName, int currentVisualHP, System.Action<int> onVisualHpUpdated)
+    {
+        FinalDamageText.gameObject.SetActive(true);
+        FinalDamageText.transform.position = centerScreenPos;
+        FinalDamageText.alpha = 1f;
+        FinalDamageText.transform.rotation = Quaternion.identity;
+
+        string dmgString = "-" + damage;
+        if (!string.IsNullOrEmpty(sourceName))
+        {
+            dmgString += $"\n<size=60><color={GameConstants.STAMP_LEGENDARY_HEX}>({sourceName})</color></size>";
+        }
+
+        FinalDamageText.text = dmgString;
+        FinalDamageText.color = isMeTakeDamage ? FilterManager.Instance.HazardColor : FilterManager.Instance.AdvantageColor; 
+        
+        FinalDamageText.fontSize = string.IsNullOrEmpty(sourceName) ? 150 : 120; 
+        FinalDamageText.transform.localScale = Vector3.zero;
+
+        // Nảy to ra giữa màn hình
+        DG.Tweening.Sequence popSeq = DOTween.Sequence();
+        float scaleTarget = string.IsNullOrEmpty(sourceName) ? 2.5f : 1.8f; 
+        popSeq.Append(FinalDamageText.transform.DOScale(Vector3.one * scaleTarget, _flashTime).SetEase(Ease.OutBack));
+        popSeq.Join(FinalDamageText.transform.DOPunchRotation(new Vector3(0, 0, UnityEngine.Random.Range(-25f, 25f)), _flashTime * 1.25f, vibrato: 6));
+        yield return popSeq.WaitForCompletion();
+
+        yield return new WaitForSeconds(0.5f);
+
+        // Xác định mục tiêu bay tới
+        Vector3 targetPos = isMeTakeDamage ? PlayerAvatarTransform.position : OppAvatarTransform.position;
+        Vector3 uiTargetPos = Camera.main.WorldToScreenPoint(targetPos);
+        uiTargetPos.z = 0f;
+        
+        // Bay vút đi cắm thẳng vào Avatar
+        DG.Tweening.Sequence attackSeq = DOTween.Sequence();
+        attackSeq.Append(FinalDamageText.transform.DOMove(uiTargetPos, _attackTime).SetEase(Ease.InBack, 1.5f));
+        attackSeq.Join(FinalDamageText.transform.DOScale(1.5f, _attackTime).SetEase(Ease.InBack));
+        attackSeq.Join(FinalDamageText.DOFade(0.7f, _attackTime).SetEase(Ease.InExpo));
+        yield return attackSeq.WaitForCompletion();
+
+        FinalDamageText.gameObject.SetActive(false);
+
+        int newVisualHP = Mathf.Max(currentVisualHP - damage, 0); // Đảm bảo máu không âm
+        onVisualHpUpdated?.Invoke(newVisualHP);
+
+        // Hiệu ứng giật màn hình
+        if (isMeTakeDamage) 
+        {
+            DOTween.To(() => currentVisualHP, x => _bottomHpText.text = "HP: " + x.ToString(), newVisualHP, 0.3f).SetEase(Ease.OutCubic);
+            FilterManager.Instance.FlashScreen(FilterManager.Instance.HazardColor, _flashTime);
+            FilterManager.Instance.FlashVignette(FilterManager.Instance.HazardColor, 0.45f, 0.4f);
+            Camera.main.transform.DOShakePosition(0.4f, 0.5f, 25);
+        } 
+        else 
+        {
+            DOTween.To(() => currentVisualHP, x => _topHpText.text = "HP: " + x.ToString(), newVisualHP, 0.3f).SetEase(Ease.OutCubic);
+            FilterManager.Instance.FlashScreen(FilterManager.Instance.FlashColor, _flashTime);
+            Camera.main.transform.DOShakePosition(0.2f, strength: 0.3f, vibrato: 15);
+        }
+    }
 
     public void ShowCustomGameOver(string title, string message)
     {

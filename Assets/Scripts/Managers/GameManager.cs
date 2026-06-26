@@ -360,10 +360,10 @@ public class GameManager : NetworkSingleton<GameManager>
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    public void RPC_PlayEndPhaseCinematic(int hostTotalScore, int clientTotalScore)
+    public void RPC_PlayEndPhaseCinematic(int hostScore, int clientScore, int hostReverseDmg = 0, int clientReverseDmg = 0, bool hostTough = false, bool clientTough = false)
     {
         Debug.Log("[RPC] Tất cả client bắt đầu chạy Cinematic End Phase!");
-        UIManager.Instance.StartCoroutine(UIManager.Instance.CinematicEndPhaseRoutine(hostTotalScore, clientTotalScore));
+        UIManager.Instance.StartCoroutine(UIManager.Instance.CinematicEndPhaseRoutine(hostScore, clientScore, hostReverseDmg, clientReverseDmg, hostTough, clientTough));
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]

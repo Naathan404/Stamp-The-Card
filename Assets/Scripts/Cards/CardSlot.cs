@@ -26,7 +26,11 @@ public class CardSlot : MonoBehaviour
 
     public void Reset()
     {
-        Score = Data.BaseScore;
+        if (Data != null) 
+            Score = Data.BaseScore;
+        else 
+            Score = 0;
+            
         IsIgnored = false;              
         StampsDisabled = false;        
         IsImmuneLowerScore = false;     
@@ -34,5 +38,14 @@ public class CardSlot : MonoBehaviour
         IsKingOfToughness = false;      
         HasPeaceAmulet = false;   
         LastRandomValue = 0;
+    }
+
+    public void UpdateStatusUI()
+    {
+        CardStatusUI statusUI = GetComponentInChildren<CardStatusUI>();
+        if (statusUI != null) 
+        {
+            statusUI.RefreshStatusIcons(this);
+        }
     }
 }

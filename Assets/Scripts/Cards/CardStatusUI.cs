@@ -10,6 +10,7 @@ public class CardStatusUI : MonoBehaviour
     [SerializeField] private GameObject _toughIcon;         // Icon khiên 
     [SerializeField] private GameObject _reverseIcon;       // Icon mũi tên đảo chiều 
     [SerializeField] private GameObject _peaceAmuletIcon;   // Icon bùa hộ mệnh 
+    [SerializeField] private GameObject _immuneIcon;
     [SerializeField] private Vector3 _startOffset = new Vector3(-0.8f, 1.2f, 0f);
 
     [SerializeField] private float _spacing = 0.4f;
@@ -38,10 +39,11 @@ public class CardStatusUI : MonoBehaviour
             slot.IsIgnored,
             slot.IsKingOfToughness,
             slot.IsReverseBalance,
-            slot.HasPeaceAmulet
+            slot.HasPeaceAmulet,
+            slot.IsImmuneLowerScore
         };
 
-        GameObject[] icons = { _silencedIcon, _burnedIcon, _toughIcon, _reverseIcon, _peaceAmuletIcon };
+        GameObject[] icons = { _silencedIcon, _burnedIcon, _toughIcon, _reverseIcon, _peaceAmuletIcon, _immuneIcon };
         int activeCount = 0;
 
         for (int i = 0; i < icons.Length; i++)
@@ -111,6 +113,22 @@ public class CardStatusUI : MonoBehaviour
                     icon.transform.DOKill();
                     icon.transform.DOScale(Vector3.zero, 0.15f).OnComplete(() => icon.SetActive(false));
                 }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Hàm tắt nóng toàn bộ icon ngay lập tức 
+    /// </summary>
+    public void ForceClearIcons()
+    {
+        GameObject[] icons = { _silencedIcon, _burnedIcon, _toughIcon, _reverseIcon, _peaceAmuletIcon, _immuneIcon };
+        foreach (var icon in icons)
+        {
+            if (icon != null && icon.activeSelf)
+            {
+                icon.transform.DOKill();
+                icon.SetActive(false);
             }
         }
     }
