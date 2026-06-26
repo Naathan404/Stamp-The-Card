@@ -50,26 +50,30 @@ public class BattleRuleStampData : BaseStampData
         return "NoEffect";
     }
 
-/// Thẩm Phán: vô hiệu toàn bộ stamp cả 2 lá trên cột này -> về so sánh điểm gốc
+/// Thẩm Phán: vô hiệu toàn bộ stamp và đưa mọi lá bài về điểm gốc-> về so sánh điểm gốc
     private void ApplyJudge(CardSlot[] myCards, CardSlot[] enemyCards, int currentCardIndex)
     {
-        CardSlot mySlot    = myCards[currentCardIndex];
-        CardSlot enemySlot = enemyCards[2 - currentCardIndex];
+
+        for(int i = 0; i < 3; i++)
+        {
+            CardSlot mySlot    = myCards[i];
+            CardSlot enemySlot = enemyCards[2 - i];
+            mySlot.Score = mySlot.Data.BaseScore;
+            enemySlot.Score = enemySlot.Data.BaseScore;
+
+            // Đánh dấu để các stamp sau không chạy nữa
+            mySlot.StampsDisabled    = true;
+            enemySlot.StampsDisabled = true;
+
+            mySlot.UpdateStatusUI();
+            enemySlot.UpdateStatusUI();
+        }
 
         // Tra cứu Sổ Cái và vô hiệu hóa (trừ chính cái tem Thẩm Phán này)
         // NullifyStampsOnCard(mySlot, this);
         // NullifyStampsOnCard(enemySlot, null);
 
         // Reset điểm về gốc
-        mySlot.Score = mySlot.Data.BaseScore;
-        enemySlot.Score = enemySlot.Data.BaseScore;
-
-        // Đánh dấu để các stamp sau không chạy nữa
-        mySlot.StampsDisabled    = true;
-        enemySlot.StampsDisabled = true;
-
-        mySlot.UpdateStatusUI();
-        enemySlot.UpdateStatusUI();
 
         Debug.Log($"[Thẩm Phán] Cột {currentCardIndex} bị vô hiệu toàn bộ stamp, về điểm gốc");
     }

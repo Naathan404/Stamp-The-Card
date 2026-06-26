@@ -132,6 +132,7 @@ GameObject:
   - component: {fileID: 40999435}
   - component: {fileID: 40999434}
   - component: {fileID: 40999437}
+  - component: {fileID: 40999438}
   m_Layer: 5
   m_Name: SettingButton
   m_TagString: Untagged
@@ -267,6 +268,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MenuObjectHover
   scaleAmount: 1.1
   timeScaleChange: 0.3
+--- !u!114 &40999438
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 40999432}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa1ebdf126ec860419aa74d748320116, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CursorHoverHandler
+  _hotSpot: {x: 10, y: 0}
+  CursorType: 0
 --- !u!1 &53424367
 GameObject:
   m_ObjectHideFlags: 0
@@ -770,6 +785,7 @@ GameObject:
   - component: {fileID: 781542938}
   - component: {fileID: 781542937}
   - component: {fileID: 781542936}
+  - component: {fileID: 781542939}
   m_Layer: 5
   m_Name: LeaderboardButton
   m_TagString: Untagged
@@ -908,6 +924,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 781542933}
   m_CullTransparentMesh: 1
+--- !u!114 &781542939
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 781542933}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa1ebdf126ec860419aa74d748320116, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CursorHoverHandler
+  _hotSpot: {x: 10, y: 0}
+  CursorType: 0
 --- !u!1 &843157700
 GameObject:
   m_ObjectHideFlags: 0
@@ -1183,6 +1213,7 @@ GameObject:
   - component: {fileID: 1188306505}
   - component: {fileID: 1188306504}
   - component: {fileID: 1188306507}
+  - component: {fileID: 1188306508}
   m_Layer: 5
   m_Name: StampButton
   m_TagString: Untagged
@@ -1318,6 +1349,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MenuObjectHover
   scaleAmount: 1.1
   timeScaleChange: 0.3
+--- !u!114 &1188306508
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1188306502}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa1ebdf126ec860419aa74d748320116, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CursorHoverHandler
+  _hotSpot: {x: 10, y: 0}
+  CursorType: 0
 --- !u!1 &1203585228
 GameObject:
   m_ObjectHideFlags: 0
@@ -1504,6 +1549,9 @@ MonoBehaviour:
   StampUsed: {fileID: 8300000, guid: 14ffa611e6dbb8743acbabeaa721f93f, type: 3}
   VictorySFX: {fileID: 0}
   DefeatSFX: {fileID: 0}
+  minusHPSFX: {fileID: 0}
+  HealSFX: {fileID: 0}
+  CountScoreSFX: {fileID: 0}
   TimerTickSFX: {fileID: 0}
   CardHoverSFX: {fileID: 0}
   MenuBgMusic: {fileID: 0}
@@ -2258,6 +2306,7 @@ GameObject:
   - component: {fileID: 1632130169}
   - component: {fileID: 1632130168}
   - component: {fileID: 1632130171}
+  - component: {fileID: 1632130172}
   m_Layer: 5
   m_Name: QuitButton
   m_TagString: Untagged
@@ -2393,6 +2442,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MenuObjectHover
   scaleAmount: 1.1
   timeScaleChange: 0.3
+--- !u!114 &1632130172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1632130166}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa1ebdf126ec860419aa74d748320116, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CursorHoverHandler
+  _hotSpot: {x: 10, y: 0}
+  CursorType: 0
 --- !u!1 &1634855254
 GameObject:
   m_ObjectHideFlags: 0
@@ -2566,6 +2629,7 @@ GameObject:
   - component: {fileID: 1714337065}
   - component: {fileID: 1714337064}
   - component: {fileID: 1714337067}
+  - component: {fileID: 1714337068}
   m_Layer: 5
   m_Name: UserButton
   m_TagString: Untagged
@@ -2701,6 +2765,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MenuObjectHover
   scaleAmount: 1.05
   timeScaleChange: 0.3
+--- !u!114 &1714337068
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1714337062}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa1ebdf126ec860419aa74d748320116, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CursorHoverHandler
+  _hotSpot: {x: 10, y: 0}
+  CursorType: 0
 --- !u!1 &1719383451
 GameObject:
   m_ObjectHideFlags: 0
@@ -2851,6 +2929,7 @@ GameObject:
   - component: {fileID: 1798925393}
   - component: {fileID: 1798925392}
   - component: {fileID: 1798925395}
+  - component: {fileID: 1798925396}
   m_Layer: 5
   m_Name: PlayButton
   m_TagString: Untagged
@@ -2985,6 +3064,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MenuObjectHover
   scaleAmount: 1.1
   timeScaleChange: 0.3
+--- !u!114 &1798925396
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1798925390}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa1ebdf126ec860419aa74d748320116, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CursorHoverHandler
+  _hotSpot: {x: 10, y: 0}
+  CursorType: 0
 --- !u!1 &1859100108
 GameObject:
   m_ObjectHideFlags: 0

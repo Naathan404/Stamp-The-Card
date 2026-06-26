@@ -3726,6 +3726,7 @@ GameObject:
   - component: {fileID: 964805330}
   - component: {fileID: 964805329}
   - component: {fileID: 964805328}
+  - component: {fileID: 964805331}
   m_Layer: 5
   m_Name: SettingButton
   m_TagString: Untagged
@@ -3834,6 +3835,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 964805326}
   m_CullTransparentMesh: 1
+--- !u!114 &964805331
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 964805326}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa1ebdf126ec860419aa74d748320116, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CursorHoverHandler
+  _hotSpot: {x: 10, y: 0}
+  CursorType: 0
 --- !u!1 &968152232
 GameObject:
   m_ObjectHideFlags: 0
@@ -6199,6 +6214,7 @@ GameObject:
   - component: {fileID: 1484420853}
   - component: {fileID: 1484420854}
   - component: {fileID: 1484420855}
+  - component: {fileID: 1484420856}
   m_Layer: 0
   m_Name: Stamp_3rd
   m_TagString: Untagged
@@ -6352,6 +6368,20 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1.8608599, y: 1.845129}
   m_EdgeRadius: 0
+--- !u!114 &1484420856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1484420851}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa1ebdf126ec860419aa74d748320116, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CursorHoverHandler
+  _hotSpot: {x: 10, y: 0}
+  CursorType: 1
 --- !u!1 &1494915404
 GameObject:
   m_ObjectHideFlags: 0
@@ -7440,6 +7470,7 @@ GameObject:
   - component: {fileID: 1848851245}
   - component: {fileID: 1848851244}
   - component: {fileID: 1848851243}
+  - component: {fileID: 1848851246}
   m_Layer: 5
   m_Name: EndPhaseButton
   m_TagString: Untagged
@@ -7561,6 +7592,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1848851241}
   m_CullTransparentMesh: 1
+--- !u!114 &1848851246
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1848851241}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa1ebdf126ec860419aa74d748320116, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CursorHoverHandler
+  _hotSpot: {x: 10, y: 0}
+  CursorType: 0
 --- !u!1 &1856355572
 GameObject:
   m_ObjectHideFlags: 0
@@ -7830,6 +7875,7 @@ GameObject:
   - component: {fileID: 1876576386}
   - component: {fileID: 1876576387}
   - component: {fileID: 1876576388}
+  - component: {fileID: 1876576389}
   m_Layer: 0
   m_Name: Stamp_2nd
   m_TagString: Untagged
@@ -7983,6 +8029,20 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1.851408, y: 1.8637459}
   m_EdgeRadius: 0
+--- !u!114 &1876576389
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1876576384}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa1ebdf126ec860419aa74d748320116, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CursorHoverHandler
+  _hotSpot: {x: 10, y: 0}
+  CursorType: 1
 --- !u!1 &1882729166
 GameObject:
   m_ObjectHideFlags: 0
@@ -8719,6 +8779,7 @@ GameObject:
   - component: {fileID: 2050327816}
   - component: {fileID: 2050327817}
   - component: {fileID: 2050327818}
+  - component: {fileID: 2050327819}
   m_Layer: 0
   m_Name: Stamp_1st
   m_TagString: Untagged
@@ -8872,6 +8933,20 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1.848834, y: 1.8336248}
   m_EdgeRadius: 0
+--- !u!114 &2050327819
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2050327814}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa1ebdf126ec860419aa74d748320116, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CursorHoverHandler
+  _hotSpot: {x: 10, y: 0}
+  CursorType: 1
 --- !u!1 &2053377954
 GameObject:
   m_ObjectHideFlags: 0
