@@ -20,6 +20,7 @@ public class MatchDisconnectHandler : NetworkBehaviour, IPlayerLeft, INetworkRun
             Debug.Log("[Mạng] Client đã bỏ trốn! Xử thắng mặc định cho Host.");
             TriggerDefaultWin("COWARD FLED");
         }
+
     }
 
     public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
@@ -35,28 +36,9 @@ public class MatchDisconnectHandler : NetworkBehaviour, IPlayerLeft, INetworkRun
         }
     }
 
-    // private void TriggerDefaultWin(string reasonMessage)
-    // {
-    //     _matchEnded = true;
-
-    //     if (GameStateManager.Instance != null)
-    //     {
-    //         GameStateManager.Instance.ChangePhase(GameStateManager.GamePhase.GameOver);
-    //     }
-
-    //     if (UIManager.Instance != null)
-    //     {
-    //         UIManager.Instance.ShowCustomGameOver("YOU WON", reasonMessage);
-    //     }
-    // }
-
     private void TriggerDefaultWin(string reasonMessage)
     {
         _matchEnded = true;
-
-        // 1. TẤM KHIÊN BẢO VỆ LỖI TRÀN MẠNG:
-        // Chỉ gọi hàm khóa Game Phase nếu Runner VẪN CÒN SỐNG (Trường hợp Client bỏ trốn, Host vẫn giữ phòng).
-        // Nếu Host sập mạng (IsShutdown), tuyệt đối KHÔNG đụng vào mấy hàm đồng bộ mạng nữa!
 
         if (TableVisualManager.Instance != null)
         {
@@ -76,20 +58,22 @@ public class MatchDisconnectHandler : NetworkBehaviour, IPlayerLeft, INetworkRun
             Debug.LogWarning("[Mạng] Bỏ qua thao tác đổi Phase vì Server đã sập.");
         }
 
-        if (UIManager.Instance != null)
-        {
-            UIManager.Instance.ShowCustomGameOver("You Won", reasonMessage);
-        }
-        else
-        {
-            // Nếu lọt vào đây, nghĩa là UIManager của ông đã bị "chết chùm" theo Host.
-            Debug.LogError("Toang rồi! UIManager đã bị null. Cần kiểm tra lại!");
-        }
+        int oldRank = LocalPlayerData.RankPoints;
+        int oldSouls = LocalPlayerData.Souls;
+        int eloChange = 0; 
+        int earnedSouls = 0;
 
-        Debug.Log("[MatchResult] ĐỐI THỦ BỎ CHẠY! Xử thắng cho bạn.");
-        Debug.Log("[MatchResult] Bạn được cộng 20 điểm rank và tăng 1 trận thắng");
+        earnedSouls = UnityEngine.Random.Range(15, 20);
+        if (oldRank < 500)
+            eloChange = UnityEngine.Random.Range(30, 36);
+        else if (oldRank < 1000)
+            eloChange = UnityEngine.Random.Range(20, 26);
+        else if (oldRank < 1500)
+            eloChange = UnityEngine.Random.Range(10, 16);
+
         LocalPlayerData.TotalWins++;
-        LocalPlayerData.RankPoints += 20; 
+        LocalPlayerData.RankPoints += eloChange;
+        LocalPlayerData.Souls += earnedSouls;
 
         if (PlayfabManager.Instance != null)
         {
@@ -98,6 +82,16 @@ public class MatchDisconnectHandler : NetworkBehaviour, IPlayerLeft, INetworkRun
                 LocalPlayerData.TotalLoses, 
                 LocalPlayerData.RankPoints
             );
+            PlayfabManager.Instance.AddSoul(earnedSouls);
+        }
+
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.ShowDisconnectWinUI("YOU WON", reasonMessage, oldRank, eloChange, oldSouls, earnedSouls);
+        }
+        else
+        {
+            Debug.LogError("Toang rồi! UIManager đã bị null. Cần kiểm tra lại!");
         }
     }
 
@@ -121,6 +115,14 @@ public class MatchDisconnectHandler : NetworkBehaviour, IPlayerLeft, INetworkRun
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
     {
-        throw new NotImplementedException();
+        if (GameStateManager.Instance != null && GameStateManager.Instance.CurrentGameState == GameStateManager.GamePhase.GameOver)
+        {
+            return; 
+        }
+        if (player != runner.LocalPlayer && !_matchEnded)
+        {
+            Debug.Log("[Mạng] Client đã bỏ trốn! Xử thắng mặc định cho Host.");
+            TriggerDefaultWin("COWARD FLED");
+        }
     }
 }

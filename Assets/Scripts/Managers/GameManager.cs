@@ -422,6 +422,7 @@ public class GameManager : NetworkSingleton<GameManager>
         UIManager.Instance.ShowGameOverUI(isHostWinner, oldRank: oldRank, eloChange: eloChange, oldSouls: oldSouls, earnedSouls: earnedSouls);
     }
     
+    
     #endregion
 
     public void DebugPlayerHand()

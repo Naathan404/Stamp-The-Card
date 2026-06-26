@@ -166,6 +166,7 @@ public class GameStateManager : NetworkSingleton<GameStateManager>
                 break;
 
             case GamePhase.CalculatePhase:
+                AudioManager.Instance.StopTimerTick();
                 Debug.Log("Bắt đầu Calculate Phase");
                 GameManager.Instance.ExecuteCalcutePhase();
                 break;
@@ -277,17 +278,37 @@ public class GameStateManager : NetworkSingleton<GameStateManager>
                 float? timeRemaining = _mainPhaseTimer.RemainingTime(Runner);
                 if (timeRemaining.HasValue)
                 {
+                    if (!_timerZone.gameObject.activeSelf) _timerZone.gameObject.SetActive(true);
                     int displayTime = Mathf.CeilToInt(timeRemaining.Value);
                     _timer.text = displayTime.ToString();
 
+                    if (displayTime <= 0.5)
+                    {
+                        AudioManager.Instance.StopTimerTick();
+                    }
+
+                    if (displayTime <= 20 && CurrentGameState == GamePhase.MainPhase && !IsWaitingToTransition)
+                    {
+                        _timer.color = Color.red; 
+                        
+                        if (displayTime != _lastTickSecond)
+                        {
+                            _timer.transform.DOKill(); 
+                            _timer.transform.DOPunchScale(Vector3.one * 0.5f, 0.3f, 1, 0);
+                        }
+                    }
+                    else
+                    {
+                        _timer.color = Color.black; 
+                    }
+
                     if (displayTime != _lastTickSecond)
                     {
-                        // Cập nhật lại mốc thời gian
                         _lastTickSecond = displayTime;
 
-                        if (Runner.IsForward)
+                        if (displayTime <= 20 && Runner.IsForward)
                         {
-                            AudioManager.Instance.PlaySFX(AudioManager.Instance.TimerTickSFX, false, true);
+                            AudioManager.Instance.PlayTimerTick(AudioManager.Instance.TimerTickSFX);
                         }
                     }
                 }

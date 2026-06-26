@@ -493,9 +493,8 @@ public class UIManager : MonoBehaviour
         FilterManager.Instance.SetFocusMode(true, 0.4f);
 
         //  bước 1: ĐẾM ĐIỂM ĐỐI THỦ (1 giây)
-        AudioManager.Instance.PlaySFX(AudioManager.Instance.CountScoreSFX, true);
-
         OppCenterText.transform.DOScale(1f, 0.25f).WaitForCompletion();
+        AudioManager.Instance.PlaySFX(AudioManager.Instance.CountScoreSFX, true);
         yield return DOTween.To(() => 0, x => OppCenterText.text = x.ToString(), oppRawScore, _countTime)
             .SetEase(Ease.OutCubic)
             .WaitForCompletion();
@@ -506,6 +505,8 @@ public class UIManager : MonoBehaviour
         PlayerCenterText.transform.DOScale(1f, 0.25f).WaitForCompletion();
 
         // bước 2: ĐẾM ĐIỂM CỦA MÌNH (1 giây)
+        AudioManager.Instance.StopSFX();
+        AudioManager.Instance.PlaySFX(AudioManager.Instance.CountScoreSFX, true);
         yield return DOTween.To(() => 0, x => PlayerCenterText.text = x.ToString(), playerRawScore, _countTime)
             .SetEase(Ease.OutCubic)
             .WaitForCompletion();
@@ -721,14 +722,16 @@ public class UIManager : MonoBehaviour
         // Hiệu ứng giật màn hình
         if (isMeTakeDamage) 
         {
-            DOTween.To(() => currentVisualHP, x => _bottomHpText.text = "HP: " + x.ToString(), newVisualHP, 0.3f).SetEase(Ease.OutCubic);
+            DOTween.To(() => currentVisualHP, x => _bottomHpText.text = "HP: " + x.ToString(), newVisualHP, 0.3f)
+                .SetEase(Ease.OutCubic);
             FilterManager.Instance.FlashScreen(FilterManager.Instance.HazardColor, _flashTime);
             FilterManager.Instance.FlashVignette(FilterManager.Instance.HazardColor, 0.45f, 0.4f);
             Camera.main.transform.DOShakePosition(0.4f, 0.5f, 25);
         } 
         else 
         {
-            DOTween.To(() => currentVisualHP, x => _topHpText.text = "HP: " + x.ToString(), newVisualHP, 0.3f).SetEase(Ease.OutCubic);
+            DOTween.To(() => currentVisualHP, x => _topHpText.text = "HP: " + x.ToString(), newVisualHP, 0.3f)
+                .SetEase(Ease.OutCubic);
             FilterManager.Instance.FlashScreen(FilterManager.Instance.FlashColor, _flashTime);
             Camera.main.transform.DOShakePosition(0.2f, strength: 0.3f, vibrato: 15);
         }
@@ -767,6 +770,77 @@ public class UIManager : MonoBehaviour
             {
                 MenuButton.GetComponent<Button>().enabled = true;
             });
+    }
+
+    public void ShowDisconnectWinUI(string title, string message, int oldRank, int eloChange, int oldSouls, int earnedSouls)
+    {
+        AudioManager.Instance.PlaySFX(AudioManager.Instance.VictorySFX);
+
+        GameOverPanel.gameObject.SetActive(true);
+        MenuButton.transform.localScale = Vector2.zero;
+        MenuButton.GetComponent<Button>().enabled = false;
+        ResultText.text = title;
+        MessageText.text = message;
+
+        RankPointText.text = $"{oldRank}";
+        SoulText.text = $"{oldSouls}";
+        RankPointText.transform.localScale = Vector3.zero;
+        SoulText.transform.localScale = Vector3.zero;
+
+        TableVisualManager.Instance.StopAllCoroutines();
+        FilterManager.Instance.SetDramaticFilter(true);
+
+        GameOverPanel.alpha = 0f;
+        ResultText.transform.localScale = Vector3.zero;
+        MessageText.transform.localScale = Vector3.zero;
+
+        Sequence gameOverSeq = DOTween.Sequence().SetUpdate(true);
+
+        gameOverSeq.Append(GameOverPanel.DOFade(1f, _gameOverAppearTime));
+        gameOverSeq.Join(ResultText.transform.DOScale(Vector3.one, _gameOverAppearTime).SetEase(Ease.OutBack));
+        gameOverSeq.Join(MessageText.transform.DOScale(Vector3.one, _gameOverAppearTime).SetEase(Ease.OutBack));
+        gameOverSeq.Join(Camera.main.transform.DOShakePosition(1f, 0.5f, 20));
+
+        gameOverSeq.AppendInterval(0.5f);
+
+        gameOverSeq.Append(RankPointText.transform.DOScale(Vector3.one, 0.4f).SetEase(Ease.OutBack));
+        gameOverSeq.Join(SoulText.transform.DOScale(Vector3.one, 0.4f).SetEase(Ease.OutBack));
+
+        gameOverSeq.AppendInterval(0.5f);
+
+        int currentVisualRank = oldRank;
+        int targetRank = Mathf.Max(0, oldRank + eloChange);
+        string rankPrefix = eloChange >= 0 ? "+" : ""; 
+        string rankColor = eloChange >= 0 ? "#00FF00" : "#FF4444"; 
+
+        gameOverSeq.Append(DOTween.To(() => currentVisualRank, x => {
+            currentVisualRank = x;
+            RankPointText.text = $"{currentVisualRank} <color={rankColor}>({rankPrefix}{eloChange})</color>";
+        }, targetRank, 1.5f).SetEase(Ease.OutCubic));
+        gameOverSeq.Append(RankPointText.transform.DOPunchScale(Vector3.one * 0.3f, 0.5f, vibrato: 5));
+
+        int currentVisualSoul = oldSouls;
+        int targetSoul = oldSouls + earnedSouls;
+        string soulPrefix = earnedSouls >= 0 ? "+" : "";
+        string soulColor = "#00FFFF";
+
+        gameOverSeq.AppendInterval(0.3f);
+
+        gameOverSeq.Append(DOTween.To(() => currentVisualSoul, x => {
+            currentVisualSoul = x;
+            SoulText.text = $"{currentVisualSoul} <color={soulColor}>({soulPrefix}{earnedSouls})</color>";
+        }, targetSoul, 1.5f).SetEase(Ease.OutCubic));
+        gameOverSeq.Append(SoulText.transform.DOPunchScale(Vector3.one * 0.3f, 0.5f, vibrato: 5));
+
+        gameOverSeq.AppendInterval(1.0f);
+
+        MenuButton.gameObject.SetActive(true);
+        gameOverSeq.Append(MenuButton.transform.DOScale(Vector3.one, 0.5f).SetEase(Ease.OutBack));
+
+        gameOverSeq.OnComplete(() =>
+        {
+            MenuButton.GetComponent<Button>().enabled = true;
+        });
     }
 
     public void ShowGameOverUI(bool isHostWinner, int oldRank, int eloChange, int oldSouls, int earnedSouls)

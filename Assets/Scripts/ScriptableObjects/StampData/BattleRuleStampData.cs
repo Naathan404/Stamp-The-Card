@@ -92,12 +92,12 @@ public class BattleRuleStampData : BaseStampData
         if (validTargets.Count > 0)
         {
             int randomIndex = validTargets[Random.Range(0, validTargets.Count)];
-            enemyCards[randomIndex].IsIgnored = true;
-            enemyCards[randomIndex].Score = 0;
+            enemyCards[2 - currentCardIndex].IsIgnored = true;
+            enemyCards[2 - currentCardIndex].Score = 0;
             //NullifyStampsOnCard(enemyCards[randomIndex], null);
-            enemyCards[randomIndex].StampsDisabled = true;
-            enemyCards[randomIndex].UpdateStatusUI();
-            Debug.Log($"[Hỏa Thiêu] Đốt lá {randomIndex} của đối thủ");
+            enemyCards[2 - currentCardIndex].StampsDisabled = true;
+            enemyCards[2 - currentCardIndex].UpdateStatusUI();
+            Debug.Log($"[Hỏa Thiêu] Đốt lá {currentCardIndex} của đối thủ");
         }
 
         myCards[currentCardIndex].Score = 0;

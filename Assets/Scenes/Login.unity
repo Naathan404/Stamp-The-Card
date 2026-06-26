@@ -4446,50 +4446,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2722195036103018032, guid: 164270157e9030d4ebafb307cc925629, type: 3}
-      propertyPath: Loop
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7808273703606012390, guid: 164270157e9030d4ebafb307cc925629, type: 3}
-      propertyPath: HealSFX
-      value: 
-      objectReference: {fileID: 8300000, guid: a064a0cd6a378ce4d8b3e03fa34c27ef, type: 3}
-    - target: {fileID: 7808273703606012390, guid: 164270157e9030d4ebafb307cc925629, type: 3}
-      propertyPath: minusHPSFX
-      value: 
-      objectReference: {fileID: 8300000, guid: b87ef4ca9bacf6a4d8aabe9d692b744e, type: 3}
-    - target: {fileID: 7808273703606012390, guid: 164270157e9030d4ebafb307cc925629, type: 3}
-      propertyPath: CardHoverSFX
-      value: 
-      objectReference: {fileID: 8300000, guid: 262e1fe1984bc0b44a535cff3fce273e, type: 3}
     - target: {fileID: 7808273703606012390, guid: 164270157e9030d4ebafb307cc925629, type: 3}
       propertyPath: CountScoreSFX
       value: 
-      objectReference: {fileID: 8300000, guid: a7e23ab99ae450e469feac12826f2803, type: 3}
-    - target: {fileID: 7808273703606012390, guid: 164270157e9030d4ebafb307cc925629, type: 3}
-      propertyPath: GachaStampSFX
-      value: 
-      objectReference: {fileID: 8300000, guid: 6e0833f267468674c94ce24c7b76248f, type: 3}
-    - target: {fileID: 7808273703606012390, guid: 164270157e9030d4ebafb307cc925629, type: 3}
-      propertyPath: OpenBundleSFX
-      value: 
-      objectReference: {fileID: 8300000, guid: 848b9878beab95f49a795db00278106c, type: 3}
-    - target: {fileID: 7808273703606012390, guid: 164270157e9030d4ebafb307cc925629, type: 3}
-      propertyPath: ScoreMergeSFX
-      value: 
-      objectReference: {fileID: 8300000, guid: 8295b2155d03c3f4d908cf1190e6a5e5, type: 3}
-    - target: {fileID: 7808273703606012390, guid: 164270157e9030d4ebafb307cc925629, type: 3}
-      propertyPath: ChangeRoundSFX
-      value: 
-      objectReference: {fileID: 8300000, guid: 83ffd52e51161084db75adf735722832, type: 3}
-    - target: {fileID: 7808273703606012390, guid: 164270157e9030d4ebafb307cc925629, type: 3}
-      propertyPath: StampInfoAppearSFX
-      value: 
-      objectReference: {fileID: 8300000, guid: 688f532f08604404d96a5da64a3e2e62, type: 3}
-    - target: {fileID: 7808273703606012390, guid: 164270157e9030d4ebafb307cc925629, type: 3}
-      propertyPath: InsufficientSoulsSFX
-      value: 
-      objectReference: {fileID: 8300000, guid: 5b4df022dac498a46880b8d1a10926aa, type: 3}
+      objectReference: {fileID: 8300000, guid: e6c613f054277b0429f0885113cb0cf7, type: 3}
     - target: {fileID: 8317605030248119801, guid: 164270157e9030d4ebafb307cc925629, type: 3}
       propertyPath: m_LocalPosition.x
       value: 423.03076

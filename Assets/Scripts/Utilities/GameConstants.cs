@@ -12,6 +12,11 @@ public static class GameConstants
     public static readonly Color STAMP_EPIC_COLOR = new Color32(170, 20, 255, 255);
     public static readonly Color STAMP_LEGENDARY_COLOR = new Color32(255, 200, 20, 255);
 
+    public static readonly Color COLOR_HAZARD = new Color(1f, 0.3f, 0.3f);
+    public static readonly Color COLOR_ADVANTAGE = new Color(0.3f, 1f, 0.3f);
+    public static readonly Color COLOR_FLASH = new Color(2f, 2f, 2f);
+    public static readonly Color COLOR_WHITE = new Color(0f, 0f, 0f);
+
     // Khai báo bằng chuỗi luôn cho TextMeshPro xài
     public const string STAMP_RARE_HEX = "#146eff";
     public const string STAMP_EPIC_HEX = "#a914ff";
