@@ -98,6 +98,10 @@ public class UIManager : MonoBehaviour
     {
         _bottomHpText.text = "HP: 15";
         _topHpText.text = "HP: 15";
+        AudioManager.Instance.PlayMusic(AudioManager.Instance.BattleBgMusic, 0.3f);
+
+        _bottomHpText.text = "15";
+        _topHpText.text = "15";
         _bottomStampCount.text = "9";
         _topStampCount.text = "9";
         BlackScreenCurtain.gameObject.SetActive(true);
@@ -183,6 +187,8 @@ public class UIManager : MonoBehaviour
                 hpText.transform.DOPunchScale(Vector3.one * 0.8f, 0.4f, vibrato: 15);
                 // Lắc ngả nghiêng Text thay vì lắc vị trí 
                 hpText.transform.DOShakeRotation(0.4f, strength: new Vector3(0, 0, 20f), vibrato: 15);
+
+                AudioManager.Instance.PlaySFX(AudioManager.Instance.minusHPSFX, true);
 
                 // Rung cả Camera để thấy chấn động
                 if (Camera.main != null) 
@@ -337,6 +343,8 @@ public class UIManager : MonoBehaviour
             {
                 FilterManager.Instance.FlashScreen(FilterManager.Instance.FlashColor, 0.2f);
             }
+
+            AudioManager.Instance.PlaySFX(AudioManager.Instance.ScoreMergeSFX, true);
         });
 
         seq.Append(BattleStartTextRect.DOAnchorPosX(100f, _battleStartTextDuration).SetEase(Ease.Linear));
@@ -384,7 +392,9 @@ public class UIManager : MonoBehaviour
             seq.AppendCallback(() =>
             {
                TurnAnnouncementTMP.text = $"DRAW {turnNumber}";
-               TurnAnnouncementRect.localScale = Vector3.one * 3f; 
+               TurnAnnouncementRect.localScale = Vector3.one * 3f;
+
+                AudioManager.Instance.PlaySFX(AudioManager.Instance.ChangeRoundSFX, true, true);
             });
         }
         else
@@ -392,6 +402,8 @@ public class UIManager : MonoBehaviour
             TurnAnnouncementTMP.text = $"DRAW {turnNumber}";
             TurnAnnouncementRect.localScale = Vector3.one * 3f;
             TurnAnnouncementCanvasGroup.alpha = 0f;
+
+            AudioManager.Instance.PlaySFX(AudioManager.Instance.ChangeRoundSFX, true, true);
         }
 
         // seq.Append(TurnAnnouncementRect.DOScale(Vector3.one, _turnTextAppearDuration).SetEase(Ease.OutExpo));
@@ -480,7 +492,9 @@ public class UIManager : MonoBehaviour
         FilterManager.Instance.SetDramaticFilter(true);
         FilterManager.Instance.SetFocusMode(true, 0.4f);
 
-        //  bước 1: ĐẾM ĐIỂM ĐỐI THỦ (1 giây) 
+        //  bước 1: ĐẾM ĐIỂM ĐỐI THỦ (1 giây)
+        AudioManager.Instance.PlaySFX(AudioManager.Instance.CountScoreSFX, true);
+
         OppCenterText.transform.DOScale(1f, 0.25f).WaitForCompletion();
         yield return DOTween.To(() => 0, x => OppCenterText.text = x.ToString(), oppRawScore, _countTime)
             .SetEase(Ease.OutCubic)
@@ -490,6 +504,8 @@ public class UIManager : MonoBehaviour
         // bước 2: ĐẾM ĐIỂM CỦA MÌNH (1 giây)
         PlayerCenterText.gameObject.SetActive(true);
         PlayerCenterText.transform.DOScale(1f, 0.25f).WaitForCompletion();
+
+        // bước 2: ĐẾM ĐIỂM CỦA MÌNH (1 giây)
         yield return DOTween.To(() => 0, x => PlayerCenterText.text = x.ToString(), playerRawScore, _countTime)
             .SetEase(Ease.OutCubic)
             .WaitForCompletion();
@@ -511,6 +527,10 @@ public class UIManager : MonoBehaviour
         mergeSeq.Join(OppCenterText.transform.DOScale(Vector3.one * 1.5f, _mergeTime).SetEase(Ease.InBack));
         mergeSeq.Join(PlayerCenterText.transform.DOMove(centerScreenPos, _mergeTime).SetEase(Ease.InBack));
         mergeSeq.Join(PlayerCenterText.transform.DOScale(Vector3.one * 1.5f, _mergeTime).SetEase(Ease.InBack));
+        mergeSeq.AppendCallback(() =>
+        {
+            AudioManager.Instance.PlaySFX(AudioManager.Instance.ScoreMergeSFX, true);
+        });
         yield return mergeSeq.WaitForCompletion();
 
         // bước 5: IMPACT
@@ -760,11 +780,15 @@ public class UIManager : MonoBehaviour
         {
             resultMessage = "YOU WON";
             message = _winMessages[UnityEngine.Random.Range(0, _winMessages.Count)];
+
+            AudioManager.Instance.PlaySFX(AudioManager.Instance.VictorySFX);
         }
         else
         {
             resultMessage = "YOU LOSE";
             message = _loseMessages[UnityEngine.Random.Range(0, _loseMessages.Count)];
+
+            AudioManager.Instance.PlaySFX(AudioManager.Instance.DefeatSFX);
         }
 
         GameOverPanel.gameObject.SetActive(true);

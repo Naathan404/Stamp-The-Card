@@ -103,6 +103,8 @@ public class GachaAnimationController : MonoBehaviour, IPointerClickHandler
 
     private void PlayGachaAnimation(Transform bundleRect, bool isNew)
     {
+        AudioManager.Instance.PlaySFX(AudioManager.Instance.OpenBundleSFX);
+
         IsGachaRunning = true;
         CanClickToReset = false;
         SetUpOriginState();
@@ -136,6 +138,7 @@ public class GachaAnimationController : MonoBehaviour, IPointerClickHandler
             stampResultSprite.transform.localScale = Vector3.zero; 
             backgroundSummon.gameObject.SetActive(true);
 
+            AudioManager.Instance.PlaySFX(AudioManager.Instance.GachaStampSFX, false, true);
         });
 
         _activeSeq.Append(flashWhiteGroup.DOFade(0f, 0.3f)); 
@@ -155,7 +158,8 @@ public class GachaAnimationController : MonoBehaviour, IPointerClickHandler
         _activeSeq.AppendCallback(() => {
             if (FilterManager.Instance != null)
                 FilterManager.Instance.FlashVignette(FilterManager.Instance.FlashColor, 0.8f, 0.8f);
-            
+
+            AudioManager.Instance.PlaySFX(AudioManager.Instance.StampInfoAppearSFX);
         });
 
         _activeSeq.Append(stampDescriptionRect.DOFade(1f, 0.5f).SetEase(Ease.InCubic));
@@ -193,6 +197,8 @@ public class GachaAnimationController : MonoBehaviour, IPointerClickHandler
         {
             IsGachaRunning = false;
             soulQuantityCost.gameObject.SetActive(true);
+
+            AudioManager.Instance.PlaySFX(AudioManager.Instance.InsufficientSoulsSFX);
         });
 
         _activeSeq.Append(soulQuantityCost.rectTransform.DOLocalMoveY(soulQuantityCost.rectTransform.localPosition.y + 100f, 1f).SetEase(Ease.OutQuad));

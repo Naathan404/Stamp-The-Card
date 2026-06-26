@@ -39,6 +39,8 @@ public class GameStateManager : NetworkSingleton<GameStateManager>
     [Header("Detector")]
     private ChangeDetector _changeDetector;
 
+    private int _lastTickSecond = -1;
+
     public override void Spawned()
     {
         _changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
@@ -277,6 +279,17 @@ public class GameStateManager : NetworkSingleton<GameStateManager>
                 {
                     int displayTime = Mathf.CeilToInt(timeRemaining.Value);
                     _timer.text = displayTime.ToString();
+
+                    if (displayTime != _lastTickSecond)
+                    {
+                        // Cập nhật lại mốc thời gian
+                        _lastTickSecond = displayTime;
+
+                        if (Runner.IsForward)
+                        {
+                            AudioManager.Instance.PlaySFX(AudioManager.Instance.TimerTickSFX, false, true);
+                        }
+                    }
                 }
             }
         }

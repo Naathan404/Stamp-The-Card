@@ -110,7 +110,7 @@ public class TableVisualManager : Singleton<TableVisualManager>
         if (_dealCoroutine != null) StopCoroutine(_dealCoroutine);
         _dealCoroutine = StartCoroutine(DealCardsRoutine(myCards, oppCards));
 
-        int SoundNum = Random.Range(1, 3);
+        //int SoundNum = Random.Range(1, 3);
         //AudioManager.Instance.PlaySFX(AudioManager.Instance.DealSFX[SoundNum], true);
     }
 
@@ -218,8 +218,10 @@ public class TableVisualManager : Singleton<TableVisualManager>
             {
                 yield break;
             }
-            
-            // set up 
+
+            // set up
+            AudioManager.Instance.PlaySFX(AudioManager.Instance.DealSFX[i], false, true);
+
             BottomCardSprites[i].gameObject.SetActive(true);
             BottomCardTexts[i].gameObject.SetActive(true);
             BottomCardSprites[i].transform.position = _mainDeckTransform.position;
@@ -282,6 +284,8 @@ public class TableVisualManager : Singleton<TableVisualManager>
             
             BottomCardSprites[index].transform.DOScaleX(0f, 0.15f).OnComplete(() => 
             {
+                //AudioManager.Instance.PlaySFX(AudioManager.Instance.FlipSFX);
+
                 BottomCardSprites[index].sprite = myCards[index].Artwork;
                 BottomCardTexts[index].text = myCards[index].BaseScore.ToString();
 
@@ -568,7 +572,9 @@ public class TableVisualManager : Singleton<TableVisualManager>
         // }, targetScore, 0.5f).SetEase(Ease.OutQuad);
         int difference = targetScore - currentScore;
         SpawnFloatingText(textMesh, difference);
-        //AudioManager.Instance.PlaySFX(AudioManager.Instance.CountScoreSFX, true);
+
+       // AudioManager.Instance.PlaySFX(AudioManager.Instance.CountScoreSFX, true);
+
         textMesh.transform.DOKill(true); 
         textMesh.transform.DOPunchScale(Vector3.one * 0.5f, 0.5f, vibrato: 3);
 
@@ -641,6 +647,8 @@ public class TableVisualManager : Singleton<TableVisualManager>
 
         for(int i = 0; i < 3; i++)
         {
+            AudioManager.Instance.PlaySFX(AudioManager.Instance.FlipSFX);
+
             SpriteRenderer topCard = TopCardSprites[i];
             CardSlot topslot = topCard.GetComponent<CardSlot>();
 
@@ -864,6 +872,8 @@ public class TableVisualManager : Singleton<TableVisualManager>
         {
             Camera.main.transform.DOComplete();
             Camera.main.transform.DOShakePosition(0.2f, strength: 0.1f, vibrato: 10);
+
+            AudioManager.Instance.PlaySFX(AudioManager.Instance.StampUsed, true, true, 2f);
         }
 
         yield return new WaitForSeconds(0.5f); 

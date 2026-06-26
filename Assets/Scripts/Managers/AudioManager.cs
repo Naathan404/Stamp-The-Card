@@ -23,6 +23,8 @@ public class AudioManager : MonoBehaviour
     public AudioClip minusHPSFX;
     public AudioClip HealSFX;
     public AudioClip CountScoreSFX;
+    public AudioClip ChangeRoundSFX;
+    public AudioClip ScoreMergeSFX;
 
     [Header("Game Juice")]
     public AudioClip TimerTickSFX;
@@ -37,6 +39,12 @@ public class AudioManager : MonoBehaviour
     public AudioClip SceenTransition;
     public AudioClip Hover;
     public AudioClip InputFieldClick;
+
+    [Header("Gacha stamp")]
+    public AudioClip GachaStampSFX;
+    public AudioClip OpenBundleSFX;
+    public AudioClip StampInfoAppearSFX;
+    public AudioClip InsufficientSoulsSFX;
 
     public static AudioManager Instance;
     private void Awake()
@@ -55,6 +63,7 @@ public class AudioManager : MonoBehaviour
     public void PlaySFX(AudioClip sfx, bool randomPitch = false, bool isOverrided = false, float volume = 1f)
     {
         SFX.volume = volume;
+
         if(randomPitch)
         {
             SFX.pitch = Random.Range(0.8f, 1.2f);
@@ -63,6 +72,7 @@ public class AudioManager : MonoBehaviour
         {
             SFX.pitch = 1f;
         }
+
         if(isOverrided)
         {
             SFX.Stop();
@@ -78,8 +88,10 @@ public class AudioManager : MonoBehaviour
         SFX.volume = 1f;
     }
 
-    public void PlayMusic(AudioClip music)
+    public void PlayMusic(AudioClip music, float volume = 1f)
     {
+        Music.volume = volume;
+
         if(Music.clip == music) return;
         Music.clip = music;
         Music.Play();
