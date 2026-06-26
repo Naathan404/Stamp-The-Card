@@ -89,6 +89,7 @@ GameObject:
   - component: {fileID: 6865266205172503128}
   - component: {fileID: 1449933775771882623}
   - component: {fileID: -4198854291702291100}
+  - component: {fileID: 8768517173079663243}
   m_Layer: 5
   m_Name: StampSlotPrefab
   m_TagString: Untagged
@@ -197,6 +198,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77d56289f9d9f4b46902b7a24c237bb7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TooltipController
+--- !u!114 &8768517173079663243
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1771731899171715997}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa1ebdf126ec860419aa74d748320116, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CursorHoverHandler
+  _hotSpot: {x: 10, y: 0}
+  CursorType: 0
 --- !u!1 &6353451447451516052
 GameObject:
   m_ObjectHideFlags: 0

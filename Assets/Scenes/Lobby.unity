@@ -313,6 +313,7 @@ GameObject:
   - component: {fileID: 127137266}
   - component: {fileID: 127137265}
   - component: {fileID: 127137264}
+  - component: {fileID: 127137267}
   m_Layer: 5
   m_Name: MenuButton
   m_TagString: Untagged
@@ -434,6 +435,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 127137262}
   m_CullTransparentMesh: 1
+--- !u!114 &127137267
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 127137262}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa1ebdf126ec860419aa74d748320116, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CursorHoverHandler
+  _hotSpot: {x: 10, y: 0}
+  CursorType: 0
 --- !u!1 &137121570
 GameObject:
   m_ObjectHideFlags: 0
@@ -980,6 +995,7 @@ GameObject:
   - component: {fileID: 329668014}
   - component: {fileID: 329668013}
   - component: {fileID: 329668012}
+  - component: {fileID: 329668015}
   m_Layer: 5
   m_Name: RoomNameField
   m_TagString: Untagged
@@ -1146,6 +1162,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 329668010}
   m_CullTransparentMesh: 1
+--- !u!114 &329668015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 329668010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa1ebdf126ec860419aa74d748320116, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CursorHoverHandler
+  _hotSpot: {x: 10, y: 0}
+  CursorType: 0
 --- !u!1 &457745101
 GameObject:
   m_ObjectHideFlags: 0
@@ -1671,6 +1701,7 @@ GameObject:
   - component: {fileID: 645197705}
   - component: {fileID: 645197704}
   - component: {fileID: 645197703}
+  - component: {fileID: 645197706}
   m_Layer: 5
   m_Name: JoinRoomButton
   m_TagString: Untagged
@@ -1792,6 +1823,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 645197701}
   m_CullTransparentMesh: 1
+--- !u!114 &645197706
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 645197701}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa1ebdf126ec860419aa74d748320116, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CursorHoverHandler
+  _hotSpot: {x: 10, y: 0}
+  CursorType: 0
 --- !u!1 &652682073
 GameObject:
   m_ObjectHideFlags: 0
@@ -3048,6 +3093,7 @@ GameObject:
   - component: {fileID: 1780115994}
   - component: {fileID: 1780115993}
   - component: {fileID: 1780115992}
+  - component: {fileID: 1780115995}
   m_Layer: 5
   m_Name: StampDeckButton
   m_TagString: Untagged
@@ -3169,6 +3215,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1780115990}
   m_CullTransparentMesh: 1
+--- !u!114 &1780115995
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1780115990}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa1ebdf126ec860419aa74d748320116, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CursorHoverHandler
+  _hotSpot: {x: 10, y: 0}
+  CursorType: 0
 --- !u!1 &1824568134
 GameObject:
   m_ObjectHideFlags: 0
@@ -3279,6 +3339,7 @@ GameObject:
   - component: {fileID: 1861783720}
   - component: {fileID: 1861783719}
   - component: {fileID: 1861783718}
+  - component: {fileID: 1861783721}
   m_Layer: 5
   m_Name: QuickPlayButton
   m_TagString: Untagged
@@ -3400,6 +3461,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1861783716}
   m_CullTransparentMesh: 1
+--- !u!114 &1861783721
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1861783716}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa1ebdf126ec860419aa74d748320116, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CursorHoverHandler
+  _hotSpot: {x: 10, y: 0}
+  CursorType: 0
 --- !u!1 &1975741328
 GameObject:
   m_ObjectHideFlags: 0

@@ -868,6 +868,7 @@ GameObject:
   - component: {fileID: 6829512282177706844}
   - component: {fileID: 6074839788630000971}
   - component: {fileID: 6916812636577119621}
+  - component: {fileID: 3991940406523059561}
   m_Layer: 0
   m_Name: Card_1
   m_TagString: MyCard
@@ -1048,6 +1049,20 @@ MonoBehaviour:
   _startOffset: {x: -0.3, y: 0.6, z: 0}
   _spacing: 0.2
   _animDuration: 0.3
+--- !u!114 &3991940406523059561
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7697644720409172977}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa1ebdf126ec860419aa74d748320116, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CursorHoverHandler
+  _hotSpot: {x: 10, y: 0}
+  CursorType: 0
 --- !u!1 &7772232144812225773
 GameObject:
   m_ObjectHideFlags: 0

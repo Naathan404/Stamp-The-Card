@@ -558,6 +558,7 @@ GameObject:
   - component: {fileID: 6769058444377030104}
   - component: {fileID: 3548673264504987907}
   - component: {fileID: 5556552548334964654}
+  - component: {fileID: -2207550054538790771}
   m_Layer: 0
   m_Name: TopCard_0
   m_TagString: OpponentCard
@@ -738,6 +739,20 @@ MonoBehaviour:
   _startOffset: {x: -0.3, y: -0.6, z: 0}
   _spacing: 0.2
   _animDuration: 0.3
+--- !u!114 &-2207550054538790771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5563732778485103702}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa1ebdf126ec860419aa74d748320116, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CursorHoverHandler
+  _hotSpot: {x: 10, y: 0}
+  CursorType: 0
 --- !u!1 &5780725655702053272
 GameObject:
   m_ObjectHideFlags: 0
