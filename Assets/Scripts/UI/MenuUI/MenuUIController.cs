@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.Rendering;
 
 public class MenuController : MonoBehaviour
@@ -8,6 +9,7 @@ public class MenuController : MonoBehaviour
 
     [Header("Menu UI")]
     [SerializeField] private TextMeshProUGUI _soulQuantityTMP;
+    [SerializeField] private AudioMixer _audioMixer;
 
     private void Awake()
     {
@@ -19,6 +21,15 @@ public class MenuController : MonoBehaviour
         {
             Instance = this;
         }
+
+        float savedMusicVol = PlayerPrefs.GetFloat("MusicVol", 1f);
+        float savedSFXVol = PlayerPrefs.GetFloat("SFXVol", 1f);
+
+        float musicVolumeInDb = Mathf.Log10(savedMusicVol) * 20;
+        float sfxVolumeInDb = Mathf.Log10(savedSFXVol) * 20;
+
+        _audioMixer.SetFloat("MusicVolume", musicVolumeInDb);
+        _audioMixer.SetFloat("SFXVolume", sfxVolumeInDb);
     }
 
     private void Start()
